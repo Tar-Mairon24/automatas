@@ -49,8 +49,37 @@ public class Main {
                     }
                     case 3 ->
                         System.out.println("Proximamente");
-                    case 4 ->
-                        System.out.println("En desarrollo");
+					case 4 -> {
+						// System.out.println("En desarrollo");
+						ArrayList<String> cadenasValidas = new ArrayList<String>();
+						ArrayList<String> cadenasInvalidas = new ArrayList<String>();
+
+						texto = leer(nombre);
+
+						for (String string : texto) { // Evaluar cada cadena dentro del ArrayList si es valida se guarda
+														// en el ArrayList "cadenasValidas" en caso contrario en
+														// "cadenasInvalidas"
+							boolean valida = evaluarExpresion3(string);
+							if (valida) {
+								cadenasValidas.add(string);
+							} else {
+								cadenasInvalidas.add(string);
+							}
+						}
+						//Imprime contenidos de las ArrayList
+                        /*
+                        System.out.println("Cadenas validas");
+                        for(String string: cadenasValidas) {
+                        	System.out.println(string);
+                        }
+                        System.out.println();
+                        System.out.println("Cadenas invalidas");
+                        for(String string: cadenasInvalidas) {
+                        	System.out.println(string);
+                        }
+                        System.out.println();
+                        */
+					}
                     default -> System.out.println("Escriba una opcion valida");
                 }
             }
@@ -93,5 +122,37 @@ public class Main {
         }
         catch(Exception e)
         {e.printStackTrace();}
+    }
+    
+    /**
+     * Este metodo evalua si una cadena cumple con las condiciones de la expresion regular (0| 1)(77)*(a-z)+
+     * @param cadena	La cadena a evaluar.
+     * @return 			true si la cadena cumple las condiciones de la expresion regular, falso de lo contrario.
+     */
+    public static boolean evaluarExpresion3(String cadena) {
+    	if(!(cadena.charAt(0) == '0' || cadena.charAt(0) == '1') || cadena.length() <= 1) return false;		//Verifica que el primer caracter sea 0 o 1
+    	if(!(cadena.charAt(1) == '7')) { // Si el caracter en la posicion 1 no es 7 checar que todas las letras siguientes sean de la a-z 
+    		int i = 1;
+    		while(i < cadena.length()) {
+    			if(cadena.charAt(i) < 'a' || cadena.charAt(i) > 'z') return false;
+    			i++;
+    		}
+    		return true;
+    	} else { // En caso de que el caracter 1 sea 7 comprobar que la cantidad de 7 sea par y los siguientes caracteres de la a-z
+    		int i = 1;
+    		int cont = 0;
+    		//Contar numeros de apariciones del caracter 7 
+    		while(i < cadena.length() && cadena.charAt(i) == '7') {	
+    			cont++;
+    			i++;
+    		}
+    		if(!(cont % 2 == 0) || i == cadena.length()) return false; // Si no hay una cantidad par de 7 o termina en 7 regresar falso
+    		// Verificar que los caracteres despues de los 7 pertenezcan a a-z
+    		while(i < cadena.length()) {
+    			if(cadena.charAt(i) < 'a' || cadena.charAt(i) > 'z') return false;
+    			i++;
+    		}
+    		return true;
+    	}
     }
 }
