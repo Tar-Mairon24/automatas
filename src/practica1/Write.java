@@ -9,7 +9,7 @@ public class Write {
 
     }
 
-    String ruta = "/home/tarmairon/Documents/sistemas/6to semestre/Automatas/Practicas/src/practica1/tabla.txt";
+    String ruta = "src/practica1/tabla.txt";
     File file = new File(ruta);
 
     FileWriter fw = new FileWriter(file);
