@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         Scanner sc = new Scanner(System.in);
         int opcion = 0;
         String nombre;
@@ -39,13 +39,20 @@ public class Main {
                     }
                     case 2 -> {
                         //Se guarda el array list resultante y se muestran su contenido
-                        texto = leer(nombre);
-                        System.out.println("\n-------------------\n");
-                        for(String string : texto){
-                            //En vez de imprimir las lineas, se analizaran para ver si cumplen con la ER una por una
-                            System.out.println(string);
+                        try {
+                            texto = leer(nombre);
+
+                            System.out.println("\n-------------------\n");
+
+                            for(String string : texto){
+                                //En vez de imprimir las lineas, se analizaran para ver si cumplen con la ER una por una
+                                System.out.println(string);
+                            }
+
+                            enterParaContinuar();
+                        }catch (FileNotFoundException e){
+                            System.out.println("\nEl archivo no existe\n");
                         }
-                        enterParaContinuar();
                     }
                     case 3 ->
                         System.out.println("Proximamente");
@@ -60,25 +67,20 @@ public class Main {
     /*
     Metodo para leer, devuelve un arraylist con todas las lineas del archivo, para poder usarlas individualmente
      */
-    private static ArrayList<String> leer(String nombre) {
+    private static ArrayList<String> leer(String nombre) throws FileNotFoundException {
         ArrayList<String> lineas =  new ArrayList<>();
-        try{
-            String ruta = "src/practica2/archivosTxt/" + nombre;
-            File file = new File(ruta);
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+        String ruta = "src/practica2/archivosTxt/" + nombre;
+        File file = new File(ruta);
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
 
-            try{
-                String line;
-                while((line = br.readLine()) != null){
-                    lineas.add(line);
-                }
-                return lineas;
-            }catch(IOException e){
-                System.out.println("Ocurrio un error");
+        try{
+            String line;
+            while((line = br.readLine()) != null){
+                lineas.add(line);
             }
-        }catch(FileNotFoundException e){
-            System.out.println("Ese archivo no existe");
-            e.printStackTrace();
+            return lineas;
+        }catch(IOException e){
+            System.out.println("Ocurrio un error");
         }
         return lineas;
     }
