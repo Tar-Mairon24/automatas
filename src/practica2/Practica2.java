@@ -3,8 +3,10 @@ package practica2;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
-public class Main {
+public class Practica2 {
     public static void main(String[] args) throws FileNotFoundException {
         Scanner sc = new Scanner(System.in);
         int opcion = 0;
@@ -57,15 +59,16 @@ public class Main {
                     case 3 ->
                         System.out.println("Proximamente");
 					case 4 -> {
-						// System.out.println("En desarrollo");
+                        System.out.println("\n\nExpresion regular: (0| 1)(77)*(a-z)+\n");
 						ArrayList<String> cadenasValidas = new ArrayList<String>();
 						ArrayList<String> cadenasInvalidas = new ArrayList<String>();
 
 						texto = leer(nombre);
 
-						for (String string : texto) { // Evaluar cada cadena dentro del ArrayList si es valida se guarda
-														// en el ArrayList "cadenasValidas" en caso contrario en
-														// "cadenasInvalidas"
+                        // Evaluar cada cadena dentro del ArrayList si es valida se guarda
+                        // en el ArrayList "cadenasValidas" en caso contrario en
+                        // "cadenasInvalidas"
+						for (String string : texto) {
 							boolean valida = evaluarExpresion3(string);
 							if (valida) {
 								cadenasValidas.add(string);
@@ -73,19 +76,8 @@ public class Main {
 								cadenasInvalidas.add(string);
 							}
 						}
-						//Imprime contenidos de las ArrayList
-                        /*
-                        System.out.println("Cadenas validas");
-                        for(String string: cadenasValidas) {
-                        	System.out.println(string);
-                        }
-                        System.out.println();
-                        System.out.println("Cadenas invalidas");
-                        for(String string: cadenasInvalidas) {
-                        	System.out.println(string);
-                        }
-                        System.out.println();
-                        */
+                        imprimir(cadenasValidas, cadenasInvalidas);
+                        enterParaContinuar();
 					}
                     default -> System.out.println("Escriba una opcion valida");
                 }
@@ -126,7 +118,7 @@ public class Main {
         {e.printStackTrace();}
     }
     
-    /**
+    /*
      * Este metodo evalua si una cadena cumple con las condiciones de la expresion regular (0| 1)(77)*(a-z)+
      * @param cadena	La cadena a evaluar.
      * @return 			true si la cadena cumple las condiciones de la expresion regular, falso de lo contrario.
@@ -156,5 +148,32 @@ public class Main {
     		}
     		return true;
     	}
+    }
+
+    public static void imprimir (ArrayList<String> validas, ArrayList<String> invalidas){
+        System.out.format("+-----------------+-----------------+-----------------+-----------------+%n");
+        System.out.format("|      Valida     |     Cantidad    |     Invalida    |     Cantidad    |%n");
+        System.out.format("+-----------------+-----------------+-----------------+-----------------+%n");
+        String leftAlignment = "| %-15s | %-15s | %-15s | %-15s |%n";
+
+        int max = Math.max(validas.size(), invalidas.size()), min = Math.min(validas.size(), invalidas.size()), i;
+
+        System.out.format(leftAlignment, validas.getFirst(), validas.size(), invalidas.getFirst(), invalidas.size());
+        System.out.format("+-----------------+-----------------+-----------------+-----------------+%n");
+
+        for (i = 1; i < min; i++){
+            System.out.format(leftAlignment, validas.get(i), "", invalidas.get(i), "");
+            System.out.format("+-----------------+-----------------+-----------------+-----------------+%n");
+        }
+        if(validas.size() > invalidas.size()){
+            for(; i < max; i++) {
+                System.out.format(leftAlignment, validas.get(i), "", "", "");
+                System.out.format("+-----------------+-----------------+-----------------+-----------------+%n");
+            }
+        }else
+            for (; i < max; i++){
+                System.out.format(leftAlignment, "", "", invalidas.get(i), "");
+                System.out.format("+-----------------+-----------------+-----------------+-----------------+%n");
+            }
     }
 }

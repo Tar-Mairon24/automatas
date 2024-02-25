@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 
-public class Main {
+public class Practica1 {
 	public static void main(String[] args) throws IOException {
 		Scanner lector = new Scanner(System.in); 
 		int opcion;
