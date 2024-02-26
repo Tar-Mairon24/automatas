@@ -15,8 +15,8 @@ public class Practica2 {
                 -------------------------------------------------------------
                 Menu
                 1. Utilizar otro archivo
-                2. Coparar con la Expresion Regular: (a-z)+(0-9)(0-9)(aa|xy)*
-                3. Leer archivo en lenguaje 2
+                2. Comparar con la Expresion Regular: (a-z)+(0-9)(0-9)(aa|xy)*
+                3. Comparar con la Expresion Regular: _(f)+(1-8)+_
                 4. Comparar con la Expresion Regular: (0|1)(77)*(a-z)+
                 5. Terminar
                 """;
@@ -77,8 +77,37 @@ public class Practica2 {
                             System.out.println("\nEl archivo no existe\n");
                         }
                     }
-                    case 3 ->
-                        System.out.println("Proximamente");
+                    case 3 ->{
+                    	//System.out.println("Proximamente");
+                    	ArrayList<String> cadenasValidas = new ArrayList<>();
+						ArrayList<String> cadenasInvalidas = new ArrayList<>();
+						try {
+							texto = leer(nombre);
+							System.out.println("\n\nExpresion regular: _(f)+(1-8)+_\n");
+
+                            // Evaluar cada cadena dentro del ArrayList si es valida se guarda
+                            // en el ArrayList "cadenasValidas" en caso contrario en
+                            // "cadenasInvalidas"
+                            for (String string : texto) {
+                                StringTokenizer st = new StringTokenizer(string, ",");
+                                while (st.hasMoreTokens()){
+                                    String token = st.nextToken();
+                                    boolean valida = evaluarExpresion2(token);
+                                    if (valida)
+                                        cadenasValidas.add(token);
+                                    else
+                                        cadenasInvalidas.add(token);
+                                }
+                            }
+                            if(!cadenasValidas.isEmpty())
+                                imprimir(cadenasValidas, cadenasInvalidas);
+                            else{
+                                System.out.println("\n------------------\nNo hay ninguna coincidencia\n-------------------\n");
+                            }
+						} catch(FileNotFoundException e) {
+							System.out.println("\nEl archivo no exite\n");
+						}
+                    }
 					case 4 -> {
 						ArrayList<String> cadenasValidas = new ArrayList<>();
 						ArrayList<String> cadenasInvalidas = new ArrayList<>();
@@ -182,6 +211,23 @@ public class Practica2 {
     		}
     		return true;
     	}
+    }
+    
+    public static boolean evaluarExpresion2(String cadena) { //
+        if( !(cadena.charAt(0) == '_' || cadena.charAt(cadena.length()-1) == '_') || cadena.length() < 4) return false;
+        if(!(cadena.charAt(1) == 'f')) return false;
+        int pos1=2;
+        for(int pos=2; pos < cadena.length(); pos++){
+            if(!(cadena.charAt(pos) == 'f')) {
+                pos=cadena.length();}
+            else pos1++;
+        }
+        if(cadena.charAt(pos1) == '_') return false;
+        while(pos1 < cadena.length()-1){
+            if(cadena.charAt(pos1) > '8' || cadena.charAt(pos1) < '1') return false;
+            else pos1++;
+        }
+        return true;
     }
 
     public static void imprimir (ArrayList<String> validas, ArrayList<String> invalidas){
