@@ -1,21 +1,23 @@
 package practica2;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 public class Practica2 {
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args){
         Scanner sc = new Scanner(System.in);
         int opcion = 0;
         String nombre;
         String menu = """
+                
+                -------------------------------------------------------------
+                Menu
                 1. Utilizar otro archivo
-                2. Leer archivo en lenguaje 1
+                2. Coparar con la Expresion Regular: (a-z)+(0-9)(0-9)(aa|xy)*
                 3. Leer archivo en lenguaje 2
-                4. Leer archivo en lenguaje 3
+                4. Comparar con la Expresion Regular: (0|1)(77)*(a-z)+
                 5. Terminar
                 """;
 
@@ -26,32 +28,51 @@ public class Practica2 {
 
         ArrayList<String> texto;
 
-        System.out.print("Nombre del archivo a Utilizar (ej. Prueba.txt): ");
+        System.out.print("Nombre del archivo a utilizar (ej. Prueba): ");
         nombre = sc.next();
 
         while(opcion != 5){
-            System.out.println(menu);
-            System.out.print("Opcion del menu: ");
-            opcion = sc.nextInt();
+            try{
+                System.out.println(menu);
+                System.out.print("Opcion del menu: ");
+                opcion = sc.nextInt();
+            }catch (InputMismatchException e) {
+                System.out.println("\n------------------\nOpcion invalida\n-------------------\n");
+                //sc.nextLine();
+            }
             if(opcion != 5){
                 switch (opcion){
                     case 1 -> {
-                        System.out.print("\nNombre del archivo a Utilizar (ej. Prueba.txt): ");
+                        System.out.print("\nNombre del archivo a utilizar (ej. Prueba): ");
                         nombre = sc.next();
                     }
                     case 2 -> {
-                        //Se guarda el array list resultante y se muestran su contenido
-                        try {
+                        ArrayList<String> cadenasValidas = new ArrayList<>();
+                        ArrayList<String> cadenasInvalidas = new ArrayList<>();
+                        try{
                             texto = leer(nombre);
 
-                            System.out.println("\n-------------------\n");
+                            System.out.println("\n\nExpresion regular: (a-z)+(0-9)(0-9)(aa|xy)*\n");
 
-                            for(String string : texto){
-                                //En vez de imprimir las lineas, se analizaran para ver si cumplen con la ER una por una
-                                System.out.println(string);
+                            // Evaluar cada cadena dentro del ArrayList si es valida se guarda
+                            // en el ArrayList "cadenasValidas" en caso contrario en
+                            // "cadenasInvalidas"
+                            for (String string : texto) {
+                                StringTokenizer st = new StringTokenizer(string, ",");
+                                while (st.hasMoreTokens()){
+                                    String token = st.nextToken();
+                                    boolean valida = regexExpresion(token);
+                                    if (valida)
+                                        cadenasValidas.add(token);
+                                    else
+                                        cadenasInvalidas.add(token);
+                                }
                             }
-
-                            enterParaContinuar();
+                            if(!cadenasValidas.isEmpty())
+                                imprimir(cadenasValidas, cadenasInvalidas);
+                            else{
+                                System.out.println("\n------------------\nNo hay ninguna coincidencia\n-------------------\n");
+                            }
                         }catch (FileNotFoundException e){
                             System.out.println("\nEl archivo no existe\n");
                         }
@@ -59,38 +80,51 @@ public class Practica2 {
                     case 3 ->
                         System.out.println("Proximamente");
 					case 4 -> {
-                        System.out.println("\n\nExpresion regular: (0| 1)(77)*(a-z)+\n");
-						ArrayList<String> cadenasValidas = new ArrayList<String>();
-						ArrayList<String> cadenasInvalidas = new ArrayList<String>();
+						ArrayList<String> cadenasValidas = new ArrayList<>();
+						ArrayList<String> cadenasInvalidas = new ArrayList<>();
 
-						texto = leer(nombre);
+						try{
+                            texto = leer(nombre);
 
-                        // Evaluar cada cadena dentro del ArrayList si es valida se guarda
-                        // en el ArrayList "cadenasValidas" en caso contrario en
-                        // "cadenasInvalidas"
-						for (String string : texto) {
-							boolean valida = evaluarExpresion3(string);
-							if (valida) {
-								cadenasValidas.add(string);
-							} else {
-								cadenasInvalidas.add(string);
-							}
-						}
-                        imprimir(cadenasValidas, cadenasInvalidas);
-                        enterParaContinuar();
+                            System.out.println("\n\nExpresion regular: (0|1)(77)*(a-z)+\n");
+
+                            // Evaluar cada cadena dentro del ArrayList si es valida se guarda
+                            // en el ArrayList "cadenasValidas" en caso contrario en
+                            // "cadenasInvalidas"
+                            for (String string : texto) {
+                                StringTokenizer st = new StringTokenizer(string, ",");
+                                while (st.hasMoreTokens()){
+                                    String token = st.nextToken();
+                                    boolean valida = evaluarExpresion3(token);
+                                    if (valida)
+                                        cadenasValidas.add(token);
+                                    else
+                                        cadenasInvalidas.add(token);
+                                }
+                            }
+                            if(!cadenasValidas.isEmpty())
+                                imprimir(cadenasValidas, cadenasInvalidas);
+                            else{
+                                System.out.println("\n------------------\nNo hay ninguna coincidencia\n-------------------\n");
+                            }
+                        }catch (FileNotFoundException e){
+                            System.out.println("\nEl archivo no exite\n");
+                        }
 					}
                     default -> System.out.println("Escriba una opcion valida");
                 }
             }
         }
+        sc.close();
     }
 
     /*
     Metodo para leer, devuelve un arraylist con todas las lineas del archivo, para poder usarlas individualmente
+    @param nombre del archivo a leer
      */
     private static ArrayList<String> leer(String nombre) throws FileNotFoundException {
         ArrayList<String> lineas =  new ArrayList<>();
-        String ruta = "src/practica2/archivosTxt/" + nombre;
+        String ruta = "src/practica2/archivosTxt/" + nombre + ".txt";
         File file = new File(ruta);
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
 
@@ -106,16 +140,16 @@ public class Practica2 {
         return lineas;
     }
 
-    private static void enterParaContinuar(){
-        Scanner sc = new Scanner(System.in);
-        System.out.print("\n-------------------\\n Fin del archivo (Pulse enter para continuar)");
-        try
-        {
-            System.in.read();
-            sc.nextLine();
-        }
-        catch(Exception e)
-        {e.printStackTrace();}
+    /*
+    Funcion que checa si la cadena cumple con las condiciones de la expresion regular (a-z)+(0-9)(0-9)(aa|xy)*
+    @param cadena a evaluar
+    @return true si la cadena hace match con la er o false si no lo haca
+     */
+    public static boolean regexExpresion(String cadena){
+        String er = "^[a-z]+\\d{2}(aa|xy)*$";
+        Pattern pattern = Pattern.compile(er);
+        Matcher matcher = pattern.matcher(cadena);
+        return matcher.matches();
     }
     
     /*
@@ -124,8 +158,8 @@ public class Practica2 {
      * @return 			true si la cadena cumple las condiciones de la expresion regular, falso de lo contrario.
      */
     public static boolean evaluarExpresion3(String cadena) {
-    	if(!(cadena.charAt(0) == '0' || cadena.charAt(0) == '1') || cadena.length() <= 1) return false;		//Verifica que el primer caracter sea 0 o 1
-    	if(!(cadena.charAt(1) == '7')) { // Si el caracter en la posicion 1 no es 7 checar que todas las letras siguientes sean de la a-z 
+    	if(!(cadena.charAt(0) == '0' || cadena.charAt(0) == '1') || cadena.length() == 1) return false;		//Verifica que el primer caracter sea 0 o 1
+    	if(!(cadena.charAt(1) == '7')) { // Si el caracter en la posicion 1 no es 7 checar que todas las letras siguientes sean de la a-z
     		int i = 1;
     		while(i < cadena.length()) {
     			if(cadena.charAt(i) < 'a' || cadena.charAt(i) > 'z') return false;

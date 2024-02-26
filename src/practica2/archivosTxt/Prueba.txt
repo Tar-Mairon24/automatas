@@ -1,4 +1,0 @@
-Este es un archivo de prueba
-para ver si si lee las lineas
-correctamente
-eso es todo;
