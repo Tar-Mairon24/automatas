@@ -1,0 +1,57 @@
+| Cadena              | Componente Léxico                       |
+|---------------------------------------------------------------|
+| iadfh               | Identificador de Java                   |
+| kja                 | Identificador de Java                   |
+| z                   | Identificador de Java                   |
+| $skdj               | Identificador de Java                   |
+| 12ksjd              | No válido                               |
+| 2                   | No válido                               |
+| 3                   | No válido                               |
+| _ksdj_man_js        | Identificador de Java                   |
+| skdj$sk             | No válido                               |
+| 21@jsk              | No válido                               |
+| 32%jka              | No válido                               |
+| js                  | Identificador de Java                   |
+| z                   | Identificador de Java                   |
+| hola                | Identificador de Java                   |
+| jskd$sk             | No válido                               |
+| _skj                | Identificador de Java                   |
+| _js_jw              | Identificador de Java                   |
+| _wo                 | Identificador de Java                   |
+| ___                 | No válido                               |
+| _                   | No válido                               |
+| __                  | No válido                               |
+| 213                 | No válido                               |
+| 3213                | No válido                               |
+| ksjd12              | Identificador de Java                   |
+| _q_q_q_q            | Identificador de Java                   |
+| +                   | Operador Aritmetico Suma                |
+| -                   | Operador Aritmetico Resta               |
+| *                   | Operador Aritmetico Multiplicacion      |
+| **                  | Operador Aritmetico Exponente           |
+| /                   | Operador Aritmetico Division            |
+| //                  | Operador Aritmetico Division Entera     |
+| %                   | Operador Aritmetico Modulo              |
+| asdg                | Identificador de Java                   |
+| 13423               | No válido                               |
+| ÑML                 | No válido                               |
+| <<<                 | No válido                               |
+| <                   | Operador Relacional Menor que           |
+| >                   | Operador Relacional Mayor que           |
+| <=                  | Operador Relacional Menor o igual que   |
+| >=                  | Operador Relacional Mayor o igual que   |
+| !=                  | Operador Relacional Diferente que       |
+| ==                  | Operador Relacional Igual que           |
+| +                   | Operador Aritmetico Suma                |
+| -                   | Operador Aritmetico Resta               |
+| and                 | Operador Logico and                     |
+| or                  | Operador Logico or                      |
+| not                 | Operador Logico not                     |
+| /                   | Operador Aritmetico Division            |
+| AND                 | Identificador de Java                   |
+| -                   | Operador Aritmetico Resta               |
+| *                   | Operador Aritmetico Multiplicacion      |
+| **                  | Operador Aritmetico Exponente           |
+| //                  | Operador Aritmetico Division Entera     |
+| 1+2                 | No válido                               |
+-----------------------------------------------------------------
