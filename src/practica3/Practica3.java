@@ -3,31 +3,38 @@ package practica3;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class Practica3 {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        String nombre;
+        String nombre, token;
+        ArrayList<String> texto;
+        ManejoArchivo ma = new ManejoArchivo();
+        ExpresionRegular er = new ExpresionRegular();
+        StringTokenizer st;
 
-        System.out.println("Archivo a leer: ");
-
-    }
-
-    private static ArrayList<String> leer(String nombre) throws FileNotFoundException {
-        ArrayList<String> lineas =  new ArrayList<>();
-        String ruta = "src/practica3" + nombre + ".txt";
-        File file = new File(ruta);
-        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+        System.out.print("Archivo a leer(ej. Prueba.txt): ");
+        nombre = sc.nextLine();
 
         try{
-            String line;
-            while((line = br.readLine()) != null){
-                lineas.add(line);
+            texto = ma.leer(nombre);
+            for(String string: texto){
+                //Divide cada linea del archivo en palabras indivuduales utilizando el espacio como delimitador
+                st = new StringTokenizer(string);
+                while(st.hasMoreTokens()){
+                    token = st.nextToken();
+                    if(er.identificadoresJava(token))
+                        System.out.println(token + "\tIdentificador de java");
+                    //aqui pongan un if para que cheque palabras con sus expresiones regulares y igual las imprimen
+                }
             }
-            return lineas;
-        }catch(IOException e){
-            System.out.println("Ocurrio un error");
+
+        }catch (FileNotFoundException e){
+            System.out.println("No existe el archivo");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return lineas;
+
     }
 }
