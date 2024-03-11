@@ -34,6 +34,7 @@ public class Practica3 {
                     if (er.identificadoresJava(token) && clasificacion == null) clasificacion = "Identificador de Java";
                     if (clasificacion == null) clasificacion = clasificarOperadorAritmetico(token);
                     if (clasificacion == null) clasificacion = clasificarOperadorRelacional(token);
+					if (clasificacion == null) clasificacion = regresanum(token);
                     if (clasificacion == null) clasificacion = "No válido";
                     writer.write(String.format("| %-20s| %-40s|%n", token, clasificacion));
                 }
@@ -191,5 +192,55 @@ public class Practica3 {
 		default:
 			return null;
 		}
+	}
+
+	public static String regresanum(String cadena)
+	{
+		String x = evaluarExpresion(cadena);
+		if(x==null)
+			return null;
+		for(int num=0; num < x.length(); num++)
+		{
+			if(x.charAt(num) == '.')
+				return "Número Real";
+		}
+		return "Número Entero";
+	}
+
+	public static String evaluarExpresion(String cadena)
+	{ //(-)?(0-9)+(.(0-9)+(f|L)?)?
+		if(cadena.length() == 1)
+		{
+			if(cadena.charAt(0) >= '0' && cadena.charAt(0) <= '9')
+				return cadena;
+			else
+				return null;
+		}
+		else if(cadena.charAt(0) == '-' || (cadena.charAt(0) >= '0' && cadena.charAt(0) <= '9'))
+		{
+			int pos1=1;
+			while(cadena.charAt(pos1) >= '0' && cadena.charAt(pos1) <= '9')
+			{
+				pos1++;
+				if(pos1 == cadena.length())
+					return cadena;
+			}
+			if(!(cadena.charAt(pos1) == '.'))
+				return null;
+			pos1++;
+			if(pos1 == cadena.length())
+				return null;
+			while(cadena.charAt(pos1) >= '0' && cadena.charAt(pos1) <= '9')
+			{
+				pos1++;
+				if(pos1 == cadena.length())
+					return cadena;
+			}
+			if((cadena.charAt(pos1) != 'f' || cadena.charAt(pos1) != 'L') && pos1 != cadena.length()-1)
+				return null;
+			return cadena;
+		}
+		else
+			return null;
 	}
 }

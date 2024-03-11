@@ -5,8 +5,8 @@
 | z                   | Identificador de Java                   |
 | $skdj               | Identificador de Java                   |
 | 12ksjd              | No válido                               |
-| 2                   | No válido                               |
-| 3                   | No válido                               |
+| 2                   | Número Entero                           |
+| 3                   | Número Entero                           |
 | _ksdj_man_js        | Identificador de Java                   |
 | skdj$sk             | No válido                               |
 | 21@jsk              | No válido                               |
@@ -21,9 +21,14 @@
 | ___                 | No válido                               |
 | _                   | No válido                               |
 | __                  | No válido                               |
-| 213                 | No válido                               |
-| 3213                | No válido                               |
+| 213                 | Número Entero                           |
 | ksjd12              | Identificador de Java                   |
+| -21                 | Número Entero                           |
+| 1.3445f             | Número Real                             |
+| 34f                 | No válido                               |
+| -1.34f              | Número Real                             |
+| 5                   | Número Entero                           |
+| -2.                 | No válido                               |
 | _q_q_q_q            | Identificador de Java                   |
 | +                   | Operador Aritmetico Suma                |
 | -                   | Operador Aritmetico Resta               |
@@ -33,7 +38,7 @@
 | //                  | Operador Aritmetico Division Entera     |
 | %                   | Operador Aritmetico Modulo              |
 | asdg                | Identificador de Java                   |
-| 13423               | No válido                               |
+| 13423               | Número Entero                           |
 | ÑML                 | No válido                               |
 | <<<                 | No válido                               |
 | <                   | Operador Relacional Menor que           |
