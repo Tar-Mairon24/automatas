@@ -1,62 +1,16 @@
 | Cadena              | Componente Léxico                       |
 |---------------------------------------------------------------|
-| iadfh               | Identificador de Java                   |
-| kja                 | Identificador de Java                   |
-| z                   | Identificador de Java                   |
-| $skdj               | Identificador de Java                   |
-| 12ksjd              | No válido                               |
-| 2                   | Número Entero                           |
-| 3                   | Número Entero                           |
-| _ksdj_man_js        | Identificador de Java                   |
-| skdj$sk             | No válido                               |
-| 21@jsk              | No válido                               |
-| 32%jka              | No válido                               |
-| js                  | Identificador de Java                   |
-| z                   | Identificador de Java                   |
 | hola                | Identificador de Java                   |
-| jskd$sk             | No válido                               |
-| _skj                | Identificador de Java                   |
-| _js_jw              | Identificador de Java                   |
-| _wo                 | Identificador de Java                   |
-| ___                 | No válido                               |
-| _                   | No válido                               |
-| __                  | No válido                               |
-| 213                 | Número Entero                           |
-| ksjd12              | Identificador de Java                   |
-| -21                 | Número Entero                           |
-| 1.3445f             | Número Real                             |
-| 34f                 | No válido                               |
-| -1.34f              | Número Real                             |
-| 5                   | Número Entero                           |
-| -2.                 | No válido                               |
-| _q_q_q_q            | Identificador de Java                   |
-| +                   | Operador Aritmetico Suma                |
-| -                   | Operador Aritmetico Resta               |
-| *                   | Operador Aritmetico Multiplicacion      |
-| **                  | Operador Aritmetico Exponente           |
-| /                   | Operador Aritmetico Division            |
-| //                  | Operador Aritmetico Division Entera     |
-| %                   | Operador Aritmetico Modulo              |
-| asdg                | Identificador de Java                   |
-| 13423               | Número Entero                           |
-| ÑML                 | No válido                               |
-| <<<                 | No válido                               |
-| <                   | Operador Relacional Menor que           |
-| >                   | Operador Relacional Mayor que           |
-| <=                  | Operador Relacional Menor o igual que   |
-| >=                  | Operador Relacional Mayor o igual que   |
-| !=                  | Operador Relacional Diferente que       |
-| ==                  | Operador Relacional Igual que           |
-| +                   | Operador Aritmetico Suma                |
-| -                   | Operador Aritmetico Resta               |
-| and                 | Operador Logico and                     |
-| or                  | Operador Logico or                      |
-| not                 | Operador Logico not                     |
-| /                   | Operador Aritmetico Division            |
-| AND                 | Identificador de Java                   |
-| -                   | Operador Aritmetico Resta               |
-| *                   | Operador Aritmetico Multiplicacion      |
-| **                  | Operador Aritmetico Exponente           |
-| //                  | Operador Aritmetico Division Entera     |
-| 1+2                 | No válido                               |
+| _____               | Identificador de Java                   |
+| $$$$                | Identificador de Java                   |
+| shks2               | Identificador de Java                   |
+| 1324                | Número Entero                           |
+| shd_nksad_$$jsd23   | Identificador de Java                   |
+| z                   | Identificador de Java                   |
+| x                   | Identificador de Java                   |
+| 21                  | Número Entero                           |
+| identificador       | Identificador de Java                   |
+| $$$$                | Identificador de Java                   |
+| SHOIJ               | Identificador de Java                   |
+| Djo_sDFhs_32        | Identificador de Java                   |
 -----------------------------------------------------------------
