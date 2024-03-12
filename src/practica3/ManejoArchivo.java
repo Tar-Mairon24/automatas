@@ -48,8 +48,4 @@ public class ManejoArchivo {
         br.close();
         return lineas;
     }
-
-    public void imprimirArchivo(){
-
-    }
 }

@@ -1,16 +1,53 @@
 | Cadena              | Componente Léxico                       |
 |---------------------------------------------------------------|
-| hola                | Identificador de Java                   |
-| _____               | Identificador de Java                   |
-| $$$$                | Identificador de Java                   |
-| shks2               | Identificador de Java                   |
-| 1324                | Número Entero                           |
-| shd_nksad_$$jsd23   | Identificador de Java                   |
+| iadfh               | Identificador de Java                   |
+| kja                 | Identificador de Java                   |
 | z                   | Identificador de Java                   |
-| x                   | Identificador de Java                   |
-| 21                  | Número Entero                           |
-| identificador       | Identificador de Java                   |
-| $$$$                | Identificador de Java                   |
-| SHOIJ               | Identificador de Java                   |
-| Djo_sDFhs_32        | Identificador de Java                   |
+| $skdj               | Identificador de Java                   |
+| 2                   | Número Entero                           |
+| 3                   | Número Entero                           |
+| _ksdj_man_js        | Identificador de Java                   |
+| skdj$sk             | Identificador de Java                   |
+| js                  | Identificador de Java                   |
+| z                   | Identificador de Java                   |
+| hola                | Identificador de Java                   |
+| jskd$sk             | Identificador de Java                   |
+| _skj                | Identificador de Java                   |
+| _js_jw              | Identificador de Java                   |
+| _wo                 | Identificador de Java                   |
+| ___                 | Identificador de Java                   |
+| __                  | Identificador de Java                   |
+| 213                 | Número Entero                           |
+| ksjd12              | Identificador de Java                   |
+| -21                 | Número Entero                           |
+| 1.3445f             | Número Real                             |
+| -1.34f              | Número Real                             |
+| 5                   | Número Entero                           |
+| _q_q_q_q            | Identificador de Java                   |
+| +                   | Operador Aritmetico Suma                |
+| -                   | Operador Aritmetico Resta               |
+| *                   | Operador Aritmetico Multiplicacion      |
+| **                  | Operador Aritmetico Exponente           |
+| /                   | Operador Aritmetico Division            |
+| //                  | Operador Aritmetico Division Entera     |
+| %                   | Operador Aritmetico Modulo              |
+| asdg                | Identificador de Java                   |
+| 13423               | Número Entero                           |
+| <                   | Operador Relacional Menor que           |
+| >                   | Operador Relacional Mayor que           |
+| <=                  | Operador Relacional Menor o igual que   |
+| >=                  | Operador Relacional Mayor o igual que   |
+| !=                  | Operador Relacional Diferente que       |
+| ==                  | Operador Relacional Igual que           |
+| +                   | Operador Aritmetico Suma                |
+| -                   | Operador Aritmetico Resta               |
+| and                 | Operador Logico and                     |
+| or                  | Operador Logico or                      |
+| not                 | Operador Logico not                     |
+| /                   | Operador Aritmetico Division            |
+| AND                 | Identificador de Java                   |
+| -                   | Operador Aritmetico Resta               |
+| *                   | Operador Aritmetico Multiplicacion      |
+| **                  | Operador Aritmetico Exponente           |
+| //                  | Operador Aritmetico Division Entera     |
 -----------------------------------------------------------------

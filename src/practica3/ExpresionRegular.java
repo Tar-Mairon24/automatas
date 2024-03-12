@@ -9,6 +9,11 @@ public class ExpresionRegular {
 
     }
 
+    /*
+    Metodo de Mario
+    Recibe una String o cadena y con la tabla de tranciciones checa si la cadena es valida o no, si la cadena llega a
+    un estado final entonces devuelve true, si llega a un estado que no es final devuelve false
+     */
     public boolean identificadoresJava(String cadena) {
         //alfabeto = UNICODE
         //Q = {q0, q1,q2,q3, q4,q5}
@@ -20,16 +25,17 @@ public class ExpresionRegular {
             {4, 4, 4, 4, 4, 5},
             {5, 5, 5, 5, 5, 5}
         };
+        //S = {q0}
         int actual = 0;
         for(char c: cadena.toCharArray()){
             actual = estadosTrancision[actual][pertenece(c)];
         }
-        //S = {q0}
         //F = {q2, q3, q4}
         //Se compara el estado actual al que se llego al ultimo y si es uno de los finales(2, 3, 4) se devuelve true
         return actual == 2 || actual == 3 || actual == 4;
     }
 
+    //Metodo que recibe un caracter y checa en que grupo de caracteres entra dependiendo de su columna en la tabla de trancisiones
     private int pertenece(char c){
         if(c >= 'A' && c <= 'Z') return 0;
         else if(c >= 'a' && c <= 'z') return 1;
@@ -172,6 +178,9 @@ public class ExpresionRegular {
         };
     }
 
+    /*
+    Metodo de hermes
+     */
     public String regresanum(String cadena)
     {
         String x = evaluarExpresion(cadena);
