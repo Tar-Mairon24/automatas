@@ -15,7 +15,7 @@ public class Practica3 {
         StringTokenizer st;
 
         System.out.print("Archivo a leer (ej. Prueba.txt): ");
-        nombre = sc.nextLine();
+        nombre = sc.nextLine(); 
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/practica3/salida.txt"))) {
             texto = ma.leer(nombre);
