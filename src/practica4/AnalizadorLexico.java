@@ -19,10 +19,7 @@ public class AnalizadorLexico {
         token y su numero de linea
      */
     public void analizador(Linea linea){
-        //lo primero es quitarle los espacios a la linea para su analisis
-        linea.setLinea(linea.getLinea().replace("\\s+", ""));
 
-        
     }
 
 
