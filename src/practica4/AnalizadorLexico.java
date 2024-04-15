@@ -2,6 +2,8 @@ package practica4;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AnalizadorLexico {
     private final List<String> lexemas = new ArrayList<>();
@@ -12,13 +14,47 @@ public class AnalizadorLexico {
     		System.out.println(token.toString());
     	}
     }
+    
     public List<Token> getTablaTokens() {
         return tablaTokens;
     }
+    // Función para verificar si una cadena es un número entero positivo
+    public static boolean esEntero(String cadena) {
+        Pattern patron = Pattern.compile("^\\d+$");
+        Matcher matcher = patron.matcher(cadena);
+        return matcher.matches();
+    }
 
+    // Función para verificar si una cadena es un número decimal positivo o negativo
+    public static boolean esDecimal(String cadena) {
+        Pattern patron = Pattern.compile("^-?\\d+\\.\\d+$");
+        Matcher matcher = patron.matcher(cadena);
+        return matcher.matches();
+    }
+
+    // Función para verificar si una cadena es una constante de tipo string
+    public static boolean esString(String cadena) {
+        // La expresión regular para una constante string es cualquier secuencia de caracteres entre comillas
+        Pattern patron = Pattern.compile("^\".*\"$");
+        Matcher matcher = patron.matcher(cadena);
+        return matcher.matches();
+    }
+    
 	public void analizar(List<Token> lista) {
 		for (Token lexema : lista) {
-			 if (lexema.getLexema().charAt(lexema.getLexema().length() - 1) == '#'
+			if(esEntero(lexema.getLexema())) {
+				lexema.setToken(TokenType.CONSTANTES_ENTERO);
+				tablaTokens.add(lexema);
+				continue;
+			} else if(esDecimal(lexema.getLexema())) {
+				lexema.setToken(TokenType.CONSTANTES_REAL);
+				tablaTokens.add(lexema);
+				continue;
+			} else if(esString(lexema.getLexema())) {
+				lexema.setToken(TokenType.CONSTANTES_CADENA);
+				tablaTokens.add(lexema);
+				continue;
+			} else if (lexema.getLexema().charAt(lexema.getLexema().length() - 1) == '#'
 					&& lexema.getLexema().length() > 1) {
 				lexema.setToken(TokenType.IDENTIFICADORES_TIPO_CADENA);
 				tablaTokens.add(lexema);
@@ -28,8 +64,8 @@ public class AnalizadorLexico {
 				lexema.setToken(TokenType.IDENTIFICADORES_TIPO_REAL);
 				tablaTokens.add(lexema);
 				continue;
-			} else if (lexema.getLexema().charAt(lexema.getLexema().length() - 1) == '&'
-					&& lexema.getLexema().length() > 1) {
+			} else if (lexema.getLexema().charAt(lexema.getLexema().length() - 1) == '&' 
+					&& lexema.getLexema().length() > 1 && !lexema.getLexema().equals("&&")) {
 				lexema.setToken(TokenType.IDENTIFICADORES_TIPO_ENTERO);
 				tablaTokens.add(lexema);
 				continue;
@@ -236,9 +272,12 @@ public class AnalizadorLexico {
 					break;
 				}
 				default -> {
+					/*
 					lexema.setToken(TokenType.IDENTIFICADORES_ID_GENERAL);
 					tablaTokens.add(lexema);
 					break;
+					*/
+					System.err.println("Error encontrado en la linea: " + lexema.getNumeroLinea() + " Token: " + lexema.getLexema() + " no valido");
 				}
 				}
 			}
