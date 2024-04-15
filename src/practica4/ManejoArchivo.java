@@ -4,26 +4,10 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class ManejoArchivo {
-    private String ruta;
+    private final String ruta;
     private ArrayList<Linea> lineas;
     public ManejoArchivo(){
-        ruta = "src/practica4/prueba.txt";
-    }
-
-    public void setRuta(String ruta) {
-        this.ruta = ruta;
-    }
-
-    public void setLineas(ArrayList<Linea> lineas) {
-        this.lineas = lineas;
-    }
-
-    public ArrayList<Linea> getLineas() {
-        return lineas;
-    }
-
-    public String getRuta() {
-        return ruta;
+        ruta = "src/practica4/programa.txt";
     }
 
     /*
