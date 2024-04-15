@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class ManejoArchivo {
     private String ruta;
-    private ArrayList<Linea> lineas;
+
     public ManejoArchivo(){
         ruta = "src/practica4/";
     }
@@ -17,7 +17,7 @@ public class ManejoArchivo {
     */
     public ArrayList<Linea> leer(String nombre) throws IOException {
         ruta += nombre;
-        lineas = new ArrayList<>();
+        ArrayList<Linea> lineas = new ArrayList<>();
         File file = new File(ruta);
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
             Linea linea;

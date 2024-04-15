@@ -6,8 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AnalizadorLexico {
-    private final List<String> lexemas = new ArrayList<>();
-    private List<Token> tablaTokens = new ArrayList<Token>();
+    private final List<Token> tablaTokens = new ArrayList<>();
     
     public void imprimirTablaTokens() {
     	for(Token token : tablaTokens) {
@@ -18,6 +17,7 @@ public class AnalizadorLexico {
     public List<Token> getTablaTokens() {
         return tablaTokens;
     }
+
     // Función para verificar si una cadena es un número entero positivo
     public static boolean esEntero(String cadena) {
         Pattern patron = Pattern.compile("^\\d+$");
@@ -45,240 +45,188 @@ public class AnalizadorLexico {
 			if(esEntero(lexema.getLexema())) {
 				lexema.setToken(TokenType.CONSTANTES_ENTERO);
 				tablaTokens.add(lexema);
-				continue;
 			} else if(esDecimal(lexema.getLexema())) {
 				lexema.setToken(TokenType.CONSTANTES_REAL);
 				tablaTokens.add(lexema);
-				continue;
 			} else if(esString(lexema.getLexema())) {
 				lexema.setToken(TokenType.CONSTANTES_CADENA);
 				tablaTokens.add(lexema);
-				continue;
 			} else if (lexema.getLexema().charAt(lexema.getLexema().length() - 1) == '#'
 					&& lexema.getLexema().length() > 1) {
 				lexema.setToken(TokenType.IDENTIFICADORES_TIPO_CADENA);
 				tablaTokens.add(lexema);
-				continue;
 			} else if (lexema.getLexema().charAt(lexema.getLexema().length() - 1) == '%'
 					&& lexema.getLexema().length() > 1) {
 				lexema.setToken(TokenType.IDENTIFICADORES_TIPO_REAL);
 				tablaTokens.add(lexema);
-				continue;
 			} else if (lexema.getLexema().charAt(lexema.getLexema().length() - 1) == '&' 
 					&& lexema.getLexema().length() > 1 && !lexema.getLexema().equals("&&")) {
 				lexema.setToken(TokenType.IDENTIFICADORES_TIPO_ENTERO);
 				tablaTokens.add(lexema);
-				continue;
 			} else if (lexema.getLexema().charAt(lexema.getLexema().length() - 1) == '$'
 					&& lexema.getLexema().length() > 1) {
 				lexema.setToken(TokenType.IDENTIFICADORES_TIPO_LOGICO);
 				tablaTokens.add(lexema);
-				continue;
 			} else if (lexema.getLexema().charAt(lexema.getLexema().length() - 1) == '?'
 					&& lexema.getLexema().length() > 1) {
 				lexema.setToken(TokenType.IDENTIFICADORES_ID_GENERAL);
 				tablaTokens.add(lexema);
-				continue;
 			} else {
 				switch (lexema.getLexema()) {
 				case "program" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_PROGRAMA);
+					lexema.setToken(TokenType.PALABRAS_RESERVADAS_PROGRAM);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "begin" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_INICIO);
+					lexema.setToken(TokenType.PALABRAS_RESERVADAS_BEGIN	);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "end" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_FIN);
+					lexema.setToken(TokenType.PALABRAS_RESERVADAS_END);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "read" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_LEER);
+					lexema.setToken(TokenType.PALABRAS_RESERVADAS_WRITE);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "write" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_ESCRIBIR);
+					lexema.setToken(TokenType.PALABRAS_RESERVADAS_READ);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "if" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_SI);
+					lexema.setToken(TokenType.PALABRAS_RESERVADAS_IF);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "else" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_SI_NO);
+					lexema.setToken(TokenType.PALABRAS_RESERVADAS_ELSE);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "while" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_MIENTRAS);
+					lexema.setToken(TokenType.PALABRAS_RESERVADAS_WHILE);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "repeat" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_REPETIR);
+					lexema.setToken(TokenType.PALABRAS_RESERVADAS_REPEAT);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "until" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_HASTA);
+					lexema.setToken(TokenType.PALABRAS_RESERVADAS_UNTIL);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "int" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_ENTERO);
+					lexema.setToken(TokenType.PALABRAS_RESERVADAS_INT);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "real" -> {
 					lexema.setToken(TokenType.PALABRAS_RESERVADAS_REAL);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "string" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_CADENA);
+					lexema.setToken(TokenType.PALABRAS_RESERVADAS_STRING);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "bool" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_BOOLEANO);
+					lexema.setToken(TokenType.PALABRAS_RESERVADAS_BOOL);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "var" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_VARIABLE);
+					lexema.setToken(TokenType.PALABRAS_RESERVADAS_VAR);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "then" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_ENTONCES);
+					lexema.setToken(TokenType.PALABRAS_RESERVADAS_THEN);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "do" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_HACER);
+					lexema.setToken(TokenType.PALABRAS_RESERVADAS_DO);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "*" -> {
 					lexema.setToken(TokenType.OPERADORES_MULTIPLICACION);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "/" -> {
 					lexema.setToken(TokenType.OPERADORES_DIVISION);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "+" -> {
 					lexema.setToken(TokenType.OPERADORES_SUMA);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "-" -> {
 					lexema.setToken(TokenType.OPERADORES_RESTA);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case ":=" -> {
 					lexema.setToken(TokenType.OPERADORES_ASIGNACION);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "<" -> {
 					lexema.setToken(TokenType.OPERADORES_MENOR_QUE);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case ">" -> {
 					lexema.setToken(TokenType.OPERADORES_MAYOR_QUE);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "<=" -> {
 					lexema.setToken(TokenType.OPERADORES_MENOR_IGUAL_QUE);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case ">=" -> {
 					lexema.setToken(TokenType.OPERADORES_MAYOR_IGUAL_QUE);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "==" -> {
 					lexema.setToken(TokenType.OPERADORES_COMPARACION);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "!=" -> {
 					lexema.setToken(TokenType.OPERADORES_DIFERENTE);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "||" -> {
 					lexema.setToken(TokenType.OPERADORES_O);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "&&" -> {
 					lexema.setToken(TokenType.OPERADORES_Y);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "!" -> {
 					lexema.setToken(TokenType.OPERADORES_NO);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "(" -> {
 					lexema.setToken(TokenType.CARACTERES_PARENTESIS_IZQUIERDO);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case ")" -> {
 					lexema.setToken(TokenType.CARACTERES_PARENTESIS_DERECHO);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "," -> {
 					lexema.setToken(TokenType.CARACTERES_COMA);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case ";" -> {
 					lexema.setToken(TokenType.CARACTERES_PUNTO_COMA);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case ":" -> {
 					lexema.setToken(TokenType.CARACTERES_DOS_PUNTOS);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "true" -> {
 					lexema.setToken(TokenType.CONSTANTES_VERDADERO);
 					tablaTokens.add(lexema);
-					break;
 				}
 				case "false" -> {
 					lexema.setToken(TokenType.CONSTANTES_FALSO);
 					tablaTokens.add(lexema);
-					break;
 				}
-				default -> {
-					/*
-					lexema.setToken(TokenType.IDENTIFICADORES_ID_GENERAL);
-					tablaTokens.add(lexema);
-					break;
-					*/
+				default ->
 					System.err.println("Error encontrado en la linea: " + lexema.getNumeroLinea() + " Token: " + lexema.getLexema() + " no valido");
-				}
 				}
 			}
 		}
