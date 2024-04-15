@@ -12,10 +12,8 @@ public class practica4 {
         String nombre;
         ArrayList<Linea> lineas;
         ManejoArchivo ma = new ManejoArchivo();
-        AnalizadorLexico analizador;
-        List<String> lexemas;
-        int nuemroLinea = 0;
-
+        AnalizadorLexico analizador = new AnalizadorLexico();
+        List<Token> lexemas;
 
         System.out.print("Archivo a leer (ej. Prueba.txt): ");
         nombre = sc.nextLine();
@@ -23,13 +21,10 @@ public class practica4 {
         try{
             lineas = ma.leer(nombre);
             for(Linea linea : lineas) {
-                analizador = new AnalizadorLexico(linea);
-                lexemas = analizador.analizador();
-                for(String lexema : lexemas){
-                    System.out.println(lexema);
-                }
-                lexemas.clear();
+            	lexemas = analizador.analizador(linea);
+                analizador.analizar(lexemas);
             }
+            analizador.imprimirTablaTokens();
         } catch (FileNotFoundException e) {
             System.out.println("No existe el archivo");
         } catch (IOException e) {
