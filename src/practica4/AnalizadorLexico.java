@@ -5,6 +5,37 @@ import java.util.List;
 
 public class AnalizadorLexico {
     private final List<String> lexemas = new ArrayList<>();
+    private List<Token> tablaTokens = new ArrayList<Token>();
+
+    public List<Token> getTablaTokens() {
+        return tablaTokens;
+    }
+
+    private void analizar(Linea linea){
+        Token token = null;
+        for(String lexema : lexemas){
+            if(lexema.charAt(lexema.length()-1) == '#' && lexema.length() > 1)
+                token = new Token(lexema, TokenType.IDENTIFICADORES_TIPO_CADENA, linea.getNumeroLinea());
+            else if(lexema.charAt(lexema.length()-1) == '%' && lexema.length() > 1)
+                token = new Token(lexema, TokenType.IDENTIFICADORES_TIPO_REAL, linea.getNumeroLinea());
+            else if(lexema.charAt(lexema.length()-1) == '&' && lexema.length() > 1)
+                token = new Token(lexema, TokenType.IDENTIFICADORES_TIPO_ENTERO, linea.getNumeroLinea());
+            else if(lexema.charAt(lexema.length()-1) == '$' && lexema.length() > 1)
+                token = new Token(lexema, TokenType.IDENTIFICADORES_TIPO_LOGICO, linea.getNumeroLinea());
+            else if(lexema.charAt(lexema.length()-1) == '?' && lexema.length() > 1)
+                token = new Token(lexema, TokenType.IDENTIFICADORES_TIPO_REAL, linea.getNumeroLinea());
+            else{
+                switch (lexema){
+                    case "program" ->{
+                        token = new Token(lexema, TokenType.PALABRAS_RESERVADAS_PROGRAMA, linea.getNumeroLinea());
+                    }case "begin" ->{
+                        token = new Token(lexema, TokenType.PALABRAS_RESERVADAS_INICIO, linea.getNumeroLinea());
+                    }
+                }
+            }
+        }
+        tablaTokens.add(token);
+    }
 
     /*
     Metodo que analiza cada una de las lineas y guarda los resultados en un objeto token, los cuales se van almacenando en
