@@ -33,24 +33,49 @@ public class ManejoArchivo {
     */
     public ArrayList<Linea> leer(String nombre) throws IOException {
         ruta += nombre;
-        lineas =  new ArrayList<>();
+        lineas = new ArrayList<>();
         File file = new File(ruta);
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
         Linea linea;
-        int numeroLinea = 0;
-        try{
+        int numeroLinea = 1;
+        try {
             String line;
-            while((line = br.readLine()) != null){
+            boolean comentarioAbierto = false; // Variable para ver si estamos dentro de un comentario
+            while ((line = br.readLine()) != null) {
+                // Verificar si la línea es un comentario
+                if (esComentario(line, comentarioAbierto)) {
+                	numeroLinea++;
+                    continue; // Saltar esta linea y pasar a la siguiente
+                }
                 linea = new Linea(line, numeroLinea);
                 numeroLinea++;
                 lineas.add(linea);
             }
             br.close();
             return lineas;
-        }catch(IOException e){
-            System.out.println("Ocurrio un error");
+        } catch (IOException e) {
+            System.out.println("Ocurrió un error");
+        } finally {
+            if (br != null) {
+                br.close();
+            }
         }
-        br.close();
         return lineas;
     }
+
+    // Método para verificar si una línea es un comentario no vacío
+    private boolean esComentario(String line, boolean comentarioAbierto) {
+        line = line.trim();
+        if (line.startsWith("//")) {
+            if (comentarioAbierto && line.endsWith("//")) {
+                return false;
+            } else {
+                return true;
+            }
+        } else if (line.endsWith("//")) {
+            return true;
+        }
+        return false;
+    }
+
 }
