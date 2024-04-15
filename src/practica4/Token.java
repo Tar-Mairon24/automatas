@@ -109,11 +109,9 @@ enum TokenType {
     public int getEsIdentificador() {
         return esIdentificador;
     }
-    
+
     @Override
     public String toString() {
         return valorTablaTokens + ", " + esIdentificador;
     }
 }
-
-
