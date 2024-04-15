@@ -1,0 +1,14 @@
+
+    repeat(verdad$ != true){
+        if(hola& == 32 && numero_decimal1 >= 29.23){
+            verdad$ := false;
+        }
+        numero_decimal1 + 10;
+    }
+end program;
+hola
+jhk
+skhfiow
+rdoy
+kdjr krjlw kj2f93 #kjrjf kdjf3i$ kdsjfgl$ . 3k 4 # / 4 5 . s
+3+3

@@ -7,7 +7,7 @@ public class ManejoArchivo {
     private String ruta;
     private ArrayList<Linea> lineas;
     public ManejoArchivo(){
-        ruta = "src/practica4/";
+        ruta = "src/practica4/prueba.txt";
     }
 
     public void setRuta(String ruta) {
@@ -31,8 +31,7 @@ public class ManejoArchivo {
    Estos parametros pueden ser accesados mediante sus metodos get de la clase
    @param nombre del archivo a leer
     */
-    public ArrayList<Linea> leer(String nombre) throws IOException {
-        ruta += nombre;
+    public ArrayList<Linea> leer() throws IOException {
         lineas =  new ArrayList<>();
         File file = new File(ruta);
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
