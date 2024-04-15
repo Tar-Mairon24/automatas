@@ -14,6 +14,8 @@ public class practica4 {
         ManejoArchivo ma = new ManejoArchivo();
         AnalizadorLexico analizador = new AnalizadorLexico();
         List<String> lexemas;
+        int nuemroLinea = 0;
+
 
         System.out.print("Archivo a leer (ej. Prueba.txt): ");
         nombre = sc.nextLine();

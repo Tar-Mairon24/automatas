@@ -11,25 +11,25 @@ public class AnalizadorLexico {
         return tablaTokens;
     }
 
-    private void analizar(Linea linea){
+    private void analizar(int numeroLinea){
         Token token = null;
         for(String lexema : lexemas){
             if(lexema.charAt(lexema.length()-1) == '#' && lexema.length() > 1)
-                token = new Token(lexema, TokenType.IDENTIFICADORES_TIPO_CADENA, linea.getNumeroLinea());
+                token = new Token(lexema, TokenType.IDENTIFICADORES_TIPO_CADENA, numeroLinea);
             else if(lexema.charAt(lexema.length()-1) == '%' && lexema.length() > 1)
-                token = new Token(lexema, TokenType.IDENTIFICADORES_TIPO_REAL, linea.getNumeroLinea());
+                token = new Token(lexema, TokenType.IDENTIFICADORES_TIPO_REAL, numeroLinea);
             else if(lexema.charAt(lexema.length()-1) == '&' && lexema.length() > 1)
-                token = new Token(lexema, TokenType.IDENTIFICADORES_TIPO_ENTERO, linea.getNumeroLinea());
+                token = new Token(lexema, TokenType.IDENTIFICADORES_TIPO_ENTERO, numeroLinea);
             else if(lexema.charAt(lexema.length()-1) == '$' && lexema.length() > 1)
-                token = new Token(lexema, TokenType.IDENTIFICADORES_TIPO_LOGICO, linea.getNumeroLinea());
+                token = new Token(lexema, TokenType.IDENTIFICADORES_TIPO_LOGICO, numeroLinea);
             else if(lexema.charAt(lexema.length()-1) == '?' && lexema.length() > 1)
-                token = new Token(lexema, TokenType.IDENTIFICADORES_TIPO_REAL, linea.getNumeroLinea());
+                token = new Token(lexema, TokenType.IDENTIFICADORES_TIPO_REAL, numeroLinea);
             else{
                 switch (lexema){
                     case "program" ->{
-                        token = new Token(lexema, TokenType.PALABRAS_RESERVADAS_PROGRAMA, linea.getNumeroLinea());
+                        token = new Token(lexema, TokenType.PALABRAS_RESERVADAS_PROGRAM, numeroLinea);
                     }case "begin" ->{
-                        token = new Token(lexema, TokenType.PALABRAS_RESERVADAS_INICIO, linea.getNumeroLinea());
+                        token = new Token(lexema, TokenType.PALABRAS_RESERVADAS_BEGIN, numeroLinea);
                     }
                 }
             }
