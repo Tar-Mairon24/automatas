@@ -12,7 +12,7 @@ public class practica4 {
         String nombre;
         ArrayList<Linea> lineas;
         ManejoArchivo ma = new ManejoArchivo();
-        AnalizadorLexico analizador = new AnalizadorLexico();
+        AnalizadorLexico analizador;
         List<String> lexemas;
         int nuemroLinea = 0;
 
@@ -23,7 +23,8 @@ public class practica4 {
         try{
             lineas = ma.leer(nombre);
             for(Linea linea : lineas) {
-                lexemas = analizador.analizador(linea.getLinea());
+                analizador = new AnalizadorLexico(linea);
+                lexemas = analizador.analizador();
                 for(String lexema : lexemas){
                     System.out.println(lexema);
                 }

@@ -6,12 +6,19 @@ import java.util.List;
 public class AnalizadorLexico {
     private final List<String> lexemas = new ArrayList<>();
     private List<Token> tablaTokens = new ArrayList<Token>();
+    private String cadena;
+    private int numeroLinea;
+
+    public AnalizadorLexico(Linea linea){
+         cadena = linea.getLinea();
+         numeroLinea = linea.getNumeroLinea();
+    }
 
     public List<Token> getTablaTokens() {
         return tablaTokens;
     }
 
-    private void analizar(int numeroLinea){
+    private void analizar(){
         Token token = null;
         for(String lexema : lexemas){
             if(lexema.charAt(lexema.length()-1) == '#' && lexema.length() > 1)
@@ -43,7 +50,7 @@ public class AnalizadorLexico {
     @param es el objeto linea donde se encuentra la linea del archivo junto con su numero de linea
     @return devuelve una lista en el cual se guardan los lexemas para su comparacion posterior
      */
-    public List<String> analizador(String cadena) {
+    public List<String> analizador() {
         if(!cadena.isEmpty()){
             StringBuilder lexema = new StringBuilder();
             int[][] tablaLexica = {
