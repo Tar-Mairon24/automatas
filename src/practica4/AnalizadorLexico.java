@@ -1,5 +1,6 @@
 package practica4;
 
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -9,16 +10,13 @@ import java.io.IOException;
 
 public class AnalizadorLexico {
     private final List<Token> tablaTokens = new ArrayList<>();
+	private int contador = 1;
 
 	public void imprimirTablaTokens(FileWriter writer) throws IOException {
-		if (tablaTokens != null) {
-			for (Token token : tablaTokens) {
-				writer.write(token.toString() + "\n");
-			}
-		} else {
-			writer.write("La tabla de tokens está vacía.\n");
-		}
-	}
+        for (Token token : tablaTokens) {
+            writer.write(token.toString() + "\n");
+        }
+    }
     
     public List<Token> getTablaTokens() {
         return tablaTokens;
@@ -45,8 +43,14 @@ public class AnalizadorLexico {
         Matcher matcher = patron.matcher(cadena);
         return matcher.matches();
     }
+	public static boolean esIdentificador(String cadena) {
+		// La expresión regular para una constante string es cualquier secuencia de caracteres entre comillas
+		Pattern patron = Pattern.compile("^[a-zA-Z]([a-zA-Z]|[0-9]|_)*([#$%&?])$");
+		Matcher matcher = patron.matcher(cadena);
+		return matcher.matches();
+	}
     
-	public void analizar(List<Token> lista) {
+	public void analizar(List<Token> lista, Writer writer) throws IOException {
 		for (Token lexema : lista) {
 			if(esEntero(lexema.getLexema())) {
 				lexema.setToken(TokenType.CONSTANTES_ENTERO);
@@ -57,182 +61,182 @@ public class AnalizadorLexico {
 			} else if(esString(lexema.getLexema())) {
 				lexema.setToken(TokenType.CONSTANTES_CADENA);
 				tablaTokens.add(lexema);
-			} else if (lexema.getLexema().charAt(lexema.getLexema().length() - 1) == '#'
-					&& lexema.getLexema().length() > 1) {
-				lexema.setToken(TokenType.IDENTIFICADORES_TIPO_CADENA);
-				tablaTokens.add(lexema);
-			} else if (lexema.getLexema().charAt(lexema.getLexema().length() - 1) == '%'
-					&& lexema.getLexema().length() > 1) {
-				lexema.setToken(TokenType.IDENTIFICADORES_TIPO_REAL);
-				tablaTokens.add(lexema);
-			} else if (lexema.getLexema().charAt(lexema.getLexema().length() - 1) == '&' 
-					&& lexema.getLexema().length() > 1 && !lexema.getLexema().equals("&&")) {
-				lexema.setToken(TokenType.IDENTIFICADORES_TIPO_ENTERO);
-				tablaTokens.add(lexema);
-			} else if (lexema.getLexema().charAt(lexema.getLexema().length() - 1) == '$'
-					&& lexema.getLexema().length() > 1) {
-				lexema.setToken(TokenType.IDENTIFICADORES_TIPO_LOGICO);
-				tablaTokens.add(lexema);
-			} else if (lexema.getLexema().charAt(lexema.getLexema().length() - 1) == '?'
-					&& lexema.getLexema().length() > 1) {
-				lexema.setToken(TokenType.IDENTIFICADORES_ID_GENERAL);
-				tablaTokens.add(lexema);
-			} else {
+			} else if (esIdentificador(lexema.getLexema())){
+				if (lexema.getLexema().charAt(lexema.getLexema().length() - 1) == '#') {
+					lexema.setToken(TokenType.IDENTIFICADORES_TIPO_CADENA);
+					tablaTokens.add(lexema);
+				} else if (lexema.getLexema().charAt(lexema.getLexema().length() - 1) == '%') {
+					lexema.setToken(TokenType.IDENTIFICADORES_TIPO_REAL);
+					tablaTokens.add(lexema);
+				} else if (lexema.getLexema().charAt(lexema.getLexema().length() - 1) == '&') {
+					lexema.setToken(TokenType.IDENTIFICADORES_TIPO_ENTERO);
+					tablaTokens.add(lexema);
+				} else if (lexema.getLexema().charAt(lexema.getLexema().length() - 1) == '$') {
+					lexema.setToken(TokenType.IDENTIFICADORES_TIPO_LOGICO);
+					tablaTokens.add(lexema);
+				} else if (lexema.getLexema().charAt(lexema.getLexema().length() - 1) == '?') {
+					lexema.setToken(TokenType.IDENTIFICADORES_ID_GENERAL);
+					tablaTokens.add(lexema);
+				}
+			}else {
 				switch (lexema.getLexema()) {
-				case "program" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_PROGRAM);
-					tablaTokens.add(lexema);
-				}
-				case "begin" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_BEGIN	);
-					tablaTokens.add(lexema);
-				}
-				case "end" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_END);
-					tablaTokens.add(lexema);
-				}
-				case "read" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_WRITE);
-					tablaTokens.add(lexema);
-				}
-				case "write" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_READ);
-					tablaTokens.add(lexema);
-				}
-				case "if" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_IF);
-					tablaTokens.add(lexema);
-				}
-				case "else" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_ELSE);
-					tablaTokens.add(lexema);
-				}
-				case "while" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_WHILE);
-					tablaTokens.add(lexema);
-				}
-				case "repeat" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_REPEAT);
-					tablaTokens.add(lexema);
-				}
-				case "until" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_UNTIL);
-					tablaTokens.add(lexema);
-				}
-				case "int" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_INT);
-					tablaTokens.add(lexema);
-				}
-				case "real" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_REAL);
-					tablaTokens.add(lexema);
-				}
-				case "string" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_STRING);
-					tablaTokens.add(lexema);
-				}
-				case "bool" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_BOOL);
-					tablaTokens.add(lexema);
-				}
-				case "var" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_VAR);
-					tablaTokens.add(lexema);
-				}
-				case "then" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_THEN);
-					tablaTokens.add(lexema);
-				}
-				case "do" -> {
-					lexema.setToken(TokenType.PALABRAS_RESERVADAS_DO);
-					tablaTokens.add(lexema);
-				}
-				case "*" -> {
-					lexema.setToken(TokenType.OPERADORES_MULTIPLICACION);
-					tablaTokens.add(lexema);
-				}
-				case "/" -> {
-					lexema.setToken(TokenType.OPERADORES_DIVISION);
-					tablaTokens.add(lexema);
-				}
-				case "+" -> {
-					lexema.setToken(TokenType.OPERADORES_SUMA);
-					tablaTokens.add(lexema);
-				}
-				case "-" -> {
-					lexema.setToken(TokenType.OPERADORES_RESTA);
-					tablaTokens.add(lexema);
-				}
-				case ":=" -> {
-					lexema.setToken(TokenType.OPERADORES_ASIGNACION);
-					tablaTokens.add(lexema);
-				}
-				case "<" -> {
-					lexema.setToken(TokenType.OPERADORES_MENOR_QUE);
-					tablaTokens.add(lexema);
-				}
-				case ">" -> {
-					lexema.setToken(TokenType.OPERADORES_MAYOR_QUE);
-					tablaTokens.add(lexema);
-				}
-				case "<=" -> {
-					lexema.setToken(TokenType.OPERADORES_MENOR_IGUAL_QUE);
-					tablaTokens.add(lexema);
-				}
-				case ">=" -> {
-					lexema.setToken(TokenType.OPERADORES_MAYOR_IGUAL_QUE);
-					tablaTokens.add(lexema);
-				}
-				case "==" -> {
-					lexema.setToken(TokenType.OPERADORES_COMPARACION);
-					tablaTokens.add(lexema);
-				}
-				case "!=" -> {
-					lexema.setToken(TokenType.OPERADORES_DIFERENTE);
-					tablaTokens.add(lexema);
-				}
-				case "||" -> {
-					lexema.setToken(TokenType.OPERADORES_O);
-					tablaTokens.add(lexema);
-				}
-				case "&&" -> {
-					lexema.setToken(TokenType.OPERADORES_Y);
-					tablaTokens.add(lexema);
-				}
-				case "!" -> {
-					lexema.setToken(TokenType.OPERADORES_NO);
-					tablaTokens.add(lexema);
-				}
-				case "(" -> {
-					lexema.setToken(TokenType.CARACTERES_PARENTESIS_IZQUIERDO);
-					tablaTokens.add(lexema);
-				}
-				case ")" -> {
-					lexema.setToken(TokenType.CARACTERES_PARENTESIS_DERECHO);
-					tablaTokens.add(lexema);
-				}
-				case "," -> {
-					lexema.setToken(TokenType.CARACTERES_COMA);
-					tablaTokens.add(lexema);
-				}
-				case ";" -> {
-					lexema.setToken(TokenType.CARACTERES_PUNTO_COMA);
-					tablaTokens.add(lexema);
-				}
-				case ":" -> {
-					lexema.setToken(TokenType.CARACTERES_DOS_PUNTOS);
-					tablaTokens.add(lexema);
-				}
-				case "true" -> {
-					lexema.setToken(TokenType.CONSTANTES_VERDADERO);
-					tablaTokens.add(lexema);
-				}
-				case "false" -> {
-					lexema.setToken(TokenType.CONSTANTES_FALSO);
-					tablaTokens.add(lexema);
-				}
-				default ->
-					System.err.println("Error encontrado en la linea: " + lexema.getNumeroLinea() + " Token: " + lexema.getLexema() + " no valido");
+					case "program" -> {
+						lexema.setToken(TokenType.PALABRAS_RESERVADAS_PROGRAM);
+						tablaTokens.add(lexema);
+					}
+					case "begin" -> {
+						lexema.setToken(TokenType.PALABRAS_RESERVADAS_BEGIN	);
+						tablaTokens.add(lexema);
+					}
+					case "end" -> {
+						lexema.setToken(TokenType.PALABRAS_RESERVADAS_END);
+						tablaTokens.add(lexema);
+					}
+					case "read" -> {
+						lexema.setToken(TokenType.PALABRAS_RESERVADAS_WRITE);
+						tablaTokens.add(lexema);
+					}
+					case "write" -> {
+						lexema.setToken(TokenType.PALABRAS_RESERVADAS_READ);
+						tablaTokens.add(lexema);
+					}
+					case "if" -> {
+						lexema.setToken(TokenType.PALABRAS_RESERVADAS_IF);
+						tablaTokens.add(lexema);
+					}
+					case "else" -> {
+						lexema.setToken(TokenType.PALABRAS_RESERVADAS_ELSE);
+						tablaTokens.add(lexema);
+					}
+					case "while" -> {
+						lexema.setToken(TokenType.PALABRAS_RESERVADAS_WHILE);
+						tablaTokens.add(lexema);
+					}
+					case "repeat" -> {
+						lexema.setToken(TokenType.PALABRAS_RESERVADAS_REPEAT);
+						tablaTokens.add(lexema);
+					}
+					case "until" -> {
+						lexema.setToken(TokenType.PALABRAS_RESERVADAS_UNTIL);
+						tablaTokens.add(lexema);
+					}
+					case "int" -> {
+						lexema.setToken(TokenType.PALABRAS_RESERVADAS_INT);
+						tablaTokens.add(lexema);
+					}
+					case "real" -> {
+						lexema.setToken(TokenType.PALABRAS_RESERVADAS_REAL);
+						tablaTokens.add(lexema);
+					}
+					case "string" -> {
+						lexema.setToken(TokenType.PALABRAS_RESERVADAS_STRING);
+						tablaTokens.add(lexema);
+					}
+					case "bool" -> {
+						lexema.setToken(TokenType.PALABRAS_RESERVADAS_BOOL);
+						tablaTokens.add(lexema);
+					}
+					case "var" -> {
+						lexema.setToken(TokenType.PALABRAS_RESERVADAS_VAR);
+						tablaTokens.add(lexema);
+					}
+					case "then" -> {
+						lexema.setToken(TokenType.PALABRAS_RESERVADAS_THEN);
+						tablaTokens.add(lexema);
+					}
+					case "do" -> {
+						lexema.setToken(TokenType.PALABRAS_RESERVADAS_DO);
+						tablaTokens.add(lexema);
+					}
+					case "*" -> {
+						lexema.setToken(TokenType.OPERADORES_MULTIPLICACION);
+						tablaTokens.add(lexema);
+					}
+					case "/" -> {
+						lexema.setToken(TokenType.OPERADORES_DIVISION);
+						tablaTokens.add(lexema);
+					}
+					case "+" -> {
+						lexema.setToken(TokenType.OPERADORES_SUMA);
+						tablaTokens.add(lexema);
+					}
+					case "-" -> {
+						lexema.setToken(TokenType.OPERADORES_RESTA);
+						tablaTokens.add(lexema);
+					}
+					case ":=" -> {
+						lexema.setToken(TokenType.OPERADORES_ASIGNACION);
+						tablaTokens.add(lexema);
+					}
+					case "<" -> {
+						lexema.setToken(TokenType.OPERADORES_MENOR_QUE);
+						tablaTokens.add(lexema);
+					}
+					case ">" -> {
+						lexema.setToken(TokenType.OPERADORES_MAYOR_QUE);
+						tablaTokens.add(lexema);
+					}
+					case "<=" -> {
+						lexema.setToken(TokenType.OPERADORES_MENOR_IGUAL_QUE);
+						tablaTokens.add(lexema);
+					}
+					case ">=" -> {
+						lexema.setToken(TokenType.OPERADORES_MAYOR_IGUAL_QUE);
+						tablaTokens.add(lexema);
+					}
+					case "==" -> {
+						lexema.setToken(TokenType.OPERADORES_COMPARACION);
+						tablaTokens.add(lexema);
+					}
+					case "!=" -> {
+						lexema.setToken(TokenType.OPERADORES_DIFERENTE);
+						tablaTokens.add(lexema);
+					}
+					case "||" -> {
+						lexema.setToken(TokenType.OPERADORES_O);
+						tablaTokens.add(lexema);
+					}
+					case "&&" -> {
+						lexema.setToken(TokenType.OPERADORES_Y);
+						tablaTokens.add(lexema);
+					}
+					case "!" -> {
+						lexema.setToken(TokenType.OPERADORES_NO);
+						tablaTokens.add(lexema);
+					}
+					case "(" -> {
+						lexema.setToken(TokenType.CARACTERES_PARENTESIS_IZQUIERDO);
+						tablaTokens.add(lexema);
+					}
+					case ")" -> {
+						lexema.setToken(TokenType.CARACTERES_PARENTESIS_DERECHO);
+						tablaTokens.add(lexema);
+					}
+					case "," -> {
+						lexema.setToken(TokenType.CARACTERES_COMA);
+						tablaTokens.add(lexema);
+					}
+					case ";" -> {
+						lexema.setToken(TokenType.CARACTERES_PUNTO_COMA);
+						tablaTokens.add(lexema);
+					}
+					case ":" -> {
+						lexema.setToken(TokenType.CARACTERES_DOS_PUNTOS);
+						tablaTokens.add(lexema);
+					}
+					case "true" -> {
+						lexema.setToken(TokenType.CONSTANTES_VERDADERO);
+						tablaTokens.add(lexema);
+					}
+					case "false" -> {
+						lexema.setToken(TokenType.CONSTANTES_FALSO);
+						tablaTokens.add(lexema);
+					}
+					default ->{
+						writer.write(contador + " ," + lexema.getLexema() + " ," + lexema.getNumeroLinea() + "\n");
+						contador++;
+						System.err.println("Error encontrado en la linea: " + lexema.getNumeroLinea() + " Token: " + lexema.getLexema() + " no valido");
+					}
 				}
 			}
 		}

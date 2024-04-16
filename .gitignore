@@ -4,6 +4,7 @@ out/
 !**/src/test/**/out/
 .idea
 Practicas.iml
+automatas.iml
 
 ### Eclipse ###
 .apt_generated

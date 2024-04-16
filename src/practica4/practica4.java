@@ -22,20 +22,24 @@ public class practica4 {
 
         try {
             lineas = ma.leer(nombre);
-            File outputFile = new File("src/practica4/resultado.txt"); // Nombre del archivo de salida
-            FileWriter writer = new FileWriter(outputFile);
+            File tablatokens = new File("src/practica4/TablaTokens.txt"); // Nombre del archivo de la tabla de tokens
+            FileWriter writerTokens = new FileWriter(tablatokens);
+            File tablaErrores = new File("src/practica4/TablaErrores.txt"); // Nombre del archivo de la tabla de errores
+            FileWriter writerErrores = new FileWriter(tablaErrores);
 
             for (Linea linea : lineas) {
                 lexemas = analizador.analizador(linea);
-                analizador.analizar(lexemas);
+                analizador.analizar(lexemas, writerErrores);
             }
 
             // Escribir los resultados en el archivo de salida
-            analizador.imprimirTablaTokens(writer);
+            analizador.imprimirTablaTokens(writerTokens);
 
             // Cerrar el escritor
-            writer.close();
-            System.out.println("Resultados guardados en 'resultado.txt'");
+            writerTokens.close();
+            writerErrores.close();
+            System.out.println("Tabla de tokens guardada en 'TablaTokens.txt'");
+            System.out.println("Tabla de errores guardada en 'TablaErrores.txt");
         } catch (IOException e) {
             System.out.println("Error al escribir en el archivo de salida");
         }
