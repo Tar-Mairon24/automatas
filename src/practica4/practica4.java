@@ -1,6 +1,8 @@
 package practica4;
 
 import java.io.FileNotFoundException;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,17 +20,24 @@ public class practica4 {
         System.out.print("Archivo a leer (ej. Prueba.txt): ");
         nombre = sc.nextLine();
 
-        try{
+        try {
             lineas = ma.leer(nombre);
-            for(Linea linea : lineas) {
-            	lexemas = analizador.analizador(linea);
+            File outputFile = new File("src/practica4/resultado.txt"); // Nombre del archivo de salida
+            FileWriter writer = new FileWriter(outputFile);
+
+            for (Linea linea : lineas) {
+                lexemas = analizador.analizador(linea);
                 analizador.analizar(lexemas);
             }
-            analizador.imprimirTablaTokens();
-        } catch (FileNotFoundException e) {
-            System.out.println("No existe el archivo");
+
+            // Escribir los resultados en el archivo de salida
+            analizador.imprimirTablaTokens(writer);
+
+            // Cerrar el escritor
+            writer.close();
+            System.out.println("Resultados guardados en 'resultado.txt'");
         } catch (IOException e) {
-            throw new RuntimeException(e);
-    }
+            System.out.println("Error al escribir en el archivo de salida");
+        }
     }
 }

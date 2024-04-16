@@ -4,15 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class AnalizadorLexico {
     private final List<Token> tablaTokens = new ArrayList<>();
-    
-    public void imprimirTablaTokens() {
-    	for(Token token : tablaTokens) {
-    		System.out.println(token.toString());
-    	}
-    }
+
+	public void imprimirTablaTokens(FileWriter writer) throws IOException {
+		if (tablaTokens != null) {
+			for (Token token : tablaTokens) {
+				writer.write(token.toString() + "\n");
+			}
+		} else {
+			writer.write("La tabla de tokens está vacía.\n");
+		}
+	}
     
     public List<Token> getTablaTokens() {
         return tablaTokens;
