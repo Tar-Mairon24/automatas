@@ -1,0 +1,27 @@
+begin
+    read     adj@
+strin Hola# "enviar a ~kajdhuwo@klsadjf.com" false int
+int x%
+
+    numero$ true false begin begn
+        verdadero_falso% lskj9392_23?
+        variablemala "string#$%^~~~~"
+
+vkJHlkj@ falso      true false verdadero
+string holaString# "hola"
+program programa?
+var x#
+  do
+    if
+         error
+    real string realstring boolean
+    else
+        bool false
+    while then the ajsdkj$
+    repeat                                          aqui$
+
+    until
+    write hola%
+
+end
+

@@ -1,46 +1,28 @@
-int jsdh_js2& := 21, hola&;
-real numero_decimal1;
-bool verdad$ :=     true;
-string cadena3 := "hola mundo";
+program prueba?;
+variables
+string cadena#,
 
-// Comentario //
-begin program programa?;
-    jsdh_js2& - 2;
-    hola& + 32;
-    numero_decimal1 / 21.32;
-    numero_decimal1*-23.32;
-    repeat(verdad$ != true){
-        if(hola& == 32 && numero_decimal1 >= 29.23){
-            verdad$ := false;
-        }
-        numero_decimal1 + 10;
-    }
-program
+ var%,v_% : real;
+ numero&, nu2& : int ;
+logico$,  log_1_$ : bool ;
 begin
+x% = ( numero&/1)* 367;
+//esto es un comentario //
+
+If (log_1_$ <= numero&& ) then
+begin
+v_% := 10.34;
+( log_1_& && logico&)
+(var% || !nu2&);
 end
-read
-write
-if
 else
-while
-repeat
-until
-int
-real
-string
-bool
-var
-then
-do
+begin
+read( n2&);
+end
+repeat until
+repetir
+write (logico$) ;
+while  ( ) do
+while  ( ) do
 
-end program;
-hola
-jhk
-skhfiow
-rdoy
-kdjr krjlw kj2f93 #kjrjf kdjf3i$ kdsjfgl$ . 3k 4 # / 4 5 . s
-3+3
-beginprogram
-3929kajdl_92#
-2ksjd$
-
+end.

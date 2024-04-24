@@ -317,7 +317,13 @@ public class AnalizadorLexico {
 					lexema.setLength(0);
 					actual = 0;
 				}
-				if(actual == 28 && c[posicion] == ' '){
+				if(actual == 28 && c[posicion] == '.'){
+					if(posicion+1 == linea.getLinea().length())
+						posicion = -2;
+					actual = 0;
+					posicion++;
+				}
+				if(actual == 28 && (c[posicion] == ' ')){
 					if(lexema.isEmpty()) {
 						actual = 0;
 						posicion++;
