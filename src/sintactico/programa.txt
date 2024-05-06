@@ -1,6 +1,4 @@
 program prueba?;
 var
     int : integer&;
-    real : decimal%, punto%, punto2%;
-    string : cadena#;
-    bool : boolean$, bool$, checar_booleano$;
+begin;
