@@ -133,10 +133,6 @@ public class AnalizadorSintactico {
         return true;
     }
 
-    private boolean asignacion() {
-        return true;
-    }
-
     private boolean tipo(){
         if (token == -11 || token == -12 || token == -13 || token == -14)
             return true;
@@ -169,5 +165,110 @@ public class AnalizadorSintactico {
         }
         else
             return false;
+    }
+    
+    private boolean operador_logico(){
+        if (token == -31 || token == -32 || token == -33 || token == -34 || token == -35 || token == -36 || token == -41 || token == -42 || token == -43)
+            return true;
+        else {
+        		System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                        tokens.get(puntero).getLexema() + " no es un operador logico valido");
+            return false;
+        }
+    }
+
+    private boolean operador_aritmetico(){
+        if (token == -21 || token == -22 || token == -24 || token == -25)
+            return true;
+        else {
+        		System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                        tokens.get(puntero).getLexema() + " no es un operador aritmetico valido");
+            return false;
+        }
+    }
+    
+    private boolean constante(){
+        if (token == -61 || token == -62 || token == -63 || token == -64 || token == -65)
+            return true;
+        else {
+                System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                        tokens.get(puntero).getLexema() + " no es una constante valida");
+            return false;
+        }
+    }
+    
+    private boolean asignacion(){
+    	if(identificador()) {
+    		avanzar();
+    		if(token == -26) {
+    			avanzar();
+    			if(expresion()) {
+    				avanzar();
+    				if(token == -75) {
+    					avanzar();
+    					return true;
+    				} else {
+    					System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba un ';'");
+    				}
+    			}
+    		} else {
+    			System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba un ':='");
+    		}
+    	}
+    	return false;
+    }
+    
+    private boolean expresion() {
+    	if(termino()) {
+    		avanzar();
+    		if(operador_logico()) {
+    			avanzar();
+    			if(termino()) {
+    				avanzar();
+    				return true;
+    			}
+    		} else {
+    			avanzar();
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    private boolean termino() {
+    	if(factor()) {
+    		avanzar();
+    		if(operador_aritmetico()) {
+    			avanzar();
+    			return termino();
+    		} else {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    private boolean factor() {
+    	if(constante() || identificador()) {
+    		avanzar();
+    		return true;
+    	} else if(token == -73) {
+    		avanzar();
+    		if(expresion()) {
+    			avanzar();
+    			if(token == -74) {
+    				avanzar();
+    				return true;
+    			} else {
+    				System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba el caracter ')'");
+    			}
+    		}
+    	} else if(token == -43) {
+    		avanzar();
+    		return factor();
+    	} else {
+    		System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba el caracter '(' o '!'");
+    	}
+    	return false;
     }
 }
