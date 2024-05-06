@@ -1,6 +1,5 @@
-package practica4;
+package lexico;
 
-import java.io.FileNotFoundException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,7 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class practica4 {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Scanner sc = new Scanner(System.in);
         String nombre;
         ArrayList<Linea> lineas;
@@ -22,24 +21,24 @@ public class practica4 {
 
         try {
             lineas = ma.leer(nombre);
-            File tablatokens = new File("src/practica4/TablaTokens.txt"); // Nombre del archivo de la tabla de tokens
+            File tablatokens = new File("src/lexico/TablaTokens.txt"); // Nombre del archivo de la tabla de tokens
             FileWriter writerTokens = new FileWriter(tablatokens);
-            File tablaErrores = new File("src/practica4/TablaErrores.txt"); // Nombre del archivo de la tabla de errores
-            FileWriter writerErrores = new FileWriter(tablaErrores);
 
             for (Linea linea : lineas) {
                 lexemas = analizador.analizador(linea);
-                analizador.analizar(lexemas, writerErrores);
+                analizador.analizar(lexemas);
             }
 
-            // Escribir los resultados en el archivo de salida
-            analizador.imprimirTablaTokens(writerTokens);
-
+            if(analizador.isErrorLexico()) {
+                analizador.imprimirTablaTokens(writerTokens);
+                System.out.println("Tabla de tokens guardada en 'TablaTokens.txt'");
+            }
+            else {
+                System.out.println("No se puede compilar el programa por errores lexicos");
+                System.out.println("Tabla de errores guardada en 'TablaErrores.txt");
+            }
             // Cerrar el escritor
             writerTokens.close();
-            writerErrores.close();
-            System.out.println("Tabla de tokens guardada en 'TablaTokens.txt'");
-            System.out.println("Tabla de errores guardada en 'TablaErrores.txt");
         } catch (IOException e) {
             System.out.println("Error al escribir en el archivo de salida");
         }

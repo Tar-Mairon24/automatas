@@ -1,4 +1,4 @@
-package practica4;
+package lexico;
 
 public class Linea {
     private String linea;

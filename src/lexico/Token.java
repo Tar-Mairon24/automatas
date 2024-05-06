@@ -1,43 +1,40 @@
-package practica4;
+package lexico;
 
 public class Token {
-    private String lexema;
-    private TokenType token;
-    private int numeroLinea;
+    private final String lexema;
+    private final int numeroLinea;
+    private int valorTablaTokens;
+    private int esIdentificador;
 
     public Token(String lexema, TokenType token, int numeroLinea){
         this.lexema = lexema;
-        this.token = token;
-        this.numeroLinea = numeroLinea;
-    }
-
-    public void setNumeroLinea(int numeroLinea) {
         this.numeroLinea = numeroLinea;
     }
 
     public void setToken(TokenType token) {
-        this.token = token;
-    }
-
-    public void setLexema(String lexema) {
-        this.lexema = lexema;
+        valorTablaTokens = token.getValorTablaTokens();
+        esIdentificador = token.getEsIdentificador();
     }
 
     public int getNumeroLinea() {
         return numeroLinea;
     }
 
-    public TokenType getToken() {
-        return token;
-    }
-
     public String getLexema() {
         return lexema;
     }
 
+    public int getEsIdentificador() {
+        return esIdentificador;
+    }
+
+    public int getValorTablaTokens() {
+        return valorTablaTokens;
+    }
+
     @Override
     public String toString(){
-        return lexema + ", " + token.toString() + ", " + numeroLinea;
+        return lexema + " " + valorTablaTokens + " " + esIdentificador + " " + numeroLinea;
     }
 }
 
@@ -110,8 +107,4 @@ enum TokenType {
         return esIdentificador;
     }
 
-    @Override
-    public String toString() {
-        return valorTablaTokens + ", " + esIdentificador;
-    }
 }

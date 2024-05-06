@@ -1,6 +1,5 @@
-package practica4;
+package lexico;
 
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -11,14 +10,19 @@ import java.io.IOException;
 public class AnalizadorLexico {
     private final List<Token> tablaTokens = new ArrayList<>();
 	private int contador = 1;
+	private boolean errorLexico = false;
 
 	public void imprimirTablaTokens(FileWriter writer) throws IOException {
         for (Token token : tablaTokens) {
             writer.write(token.toString() + "\n");
         }
     }
-    
-    public List<Token> getTablaTokens() {
+
+	public boolean isErrorLexico() {
+		return !errorLexico;
+	}
+
+	public List<Token> getTablaTokens() {
         return tablaTokens;
     }
 
@@ -50,7 +54,7 @@ public class AnalizadorLexico {
 		return matcher.matches();
 	}
     
-	public void analizar(List<Token> lista, Writer writer) throws IOException {
+	public void analizar(List<Token> lista) throws IOException {
 		for (Token lexema : lista) {
 			if(esEntero(lexema.getLexema())) {
 				lexema.setToken(TokenType.CONSTANTES_ENTERO);
@@ -233,8 +237,10 @@ public class AnalizadorLexico {
 						tablaTokens.add(lexema);
 					}
 					default ->{
-						writer.write(contador + " ," + lexema.getLexema() + " ," + lexema.getNumeroLinea() + "\n");
+						errorLexico = true;
 						contador++;
+						ManejoArchivo ma = new ManejoArchivo();
+						ma.imprimirTablaErrores(contador, lexema.getLexema(), lexema.getNumeroLinea());
 						System.err.println("Error encontrado en la linea: " + lexema.getNumeroLinea() + " Token: " + lexema.getLexema() + " no valido");
 					}
 				}

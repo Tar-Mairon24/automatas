@@ -23,6 +23,7 @@ repeat until
 repetir
 write (logico$) ;
 while  ( ) do
-while  ( ) do
 
 end.
+
+

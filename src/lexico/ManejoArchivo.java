@@ -1,13 +1,13 @@
-package practica4;
+package lexico;
 
 import java.io.*;
 import java.util.ArrayList;
 
 public class ManejoArchivo {
-    private String ruta;
+    private final File tablaErrores = new File("src/lexico/TablaErrores.txt"); // Nombre del archivo de la tabla de errores
+    private final FileWriter writerErrores = new FileWriter(tablaErrores);
 
-    public ManejoArchivo(){
-        ruta = "src/practica4/";
+    public ManejoArchivo() throws IOException {
     }
     /*
        /*
@@ -15,8 +15,7 @@ public class ManejoArchivo {
    Estos parametros pueden ser accesados mediante sus metodos get de la clase
    @param nombre del archivo a leer
     */
-    public ArrayList<Linea> leer(String nombre) throws IOException {
-        ruta += nombre;
+    public ArrayList<Linea> leer(String ruta) throws IOException {
         ArrayList<Linea> lineas = new ArrayList<>();
         File file = new File(ruta);
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
@@ -50,4 +49,25 @@ public class ManejoArchivo {
         } else return line.endsWith("//");
     }
 
+    public void  imprimirTablaTokens(ArrayList<Token> Tokens) {
+
+    }
+
+    public void imprimirTablaErrores(int contador, String lexema, int numeroLinea) throws IOException {
+        try {
+            writerErrores.write(contador + ", " + lexema + ", " + numeroLinea);
+            writerErrores.close();
+        }
+        catch (IOException e){
+            System.out.println("No se pudo imprimir la tabla de errores");
+        }
+    }
+
+    public void cerrarTablaErrores(){
+        try{
+            writerErrores.close();
+        }catch(IOException e){
+            System.out.printf(String.valueOf(e));
+        }
+    }
 }
