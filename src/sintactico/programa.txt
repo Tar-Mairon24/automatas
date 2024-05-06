@@ -1,4 +1,5 @@
 program prueba?;
 var
-    int : integer&;
-begin;
+    int : integer&, a%;
+begin
+end

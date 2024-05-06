@@ -10,10 +10,13 @@ public class AnalizadorSintactico {
     private int puntero;
     private final List<Token> tokens;
     private boolean ultimoToken = false;
+    private int token, tokenSiguiente;
 
     public AnalizadorSintactico(List<Token> tokens) {
         this.tokens = tokens;
         puntero = 0;
+        token = tokens.get(puntero).getValorTablaTokens();
+        tokenSiguiente = tokens.get(puntero + 1).getValorTablaTokens();
     }
 
     public boolean analizar() {
@@ -23,22 +26,22 @@ public class AnalizadorSintactico {
     public void avanzar() {
         if (puntero < tokens.size() - 1) {
             puntero++;
+            token = tokens.get(puntero).getValorTablaTokens();
         }
         else
             ultimoToken = true;
     }
 
     private boolean programa() {
-        if (tokens.get(puntero).getValorTablaTokens() == -1) {
+        if (token == -1) {
             avanzar();
-            if (tokens.get(puntero).getValorTablaTokens() == -55) {
+            if (token == -55) {
                 avanzar();
-                if (tokens.get(puntero).getValorTablaTokens() == -75) {
+                if (token == -75) {
                     avanzar();
-                    if(tokens.get(puntero).getValorTablaTokens() == -15) {
+                    if(token == -15) {
                         avanzar();
                         if (declarativa()) {
-                            avanzar();
                             if (codigo()) {
                                 avanzar();
                                 return true;
@@ -59,20 +62,19 @@ public class AnalizadorSintactico {
                 System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba la palabra reservada 'program'");
                 return false;
         }
-        return ultimoToken && (tokens.get(puntero).getValorTablaTokens() != -3 || tokens.get(puntero).getValorTablaTokens() != -75) && puntero == 2;
+        return (tokens.get(puntero).getValorTablaTokens() != -3 || tokens.get(puntero).getValorTablaTokens() != -75) && puntero == 2;
     }
 
     private boolean declarativa() {
         if(tipo()) {
             avanzar();
-            if (tokens.get(puntero).getValorTablaTokens() == -77) {
+            if (token == -77) {
                 avanzar();
                 if(identificadores()) {
-                    if(tokens.get(puntero).getValorTablaTokens() == -75) {
+                    if(token == -75) {
                         avanzar();
-                        if(tipo()){
+                        if(token == -11 || token == -12 || token == -13 || token == -14)
                             return declarativa();
-                        }
                         else
                             return true;
                         }
@@ -90,10 +92,10 @@ public class AnalizadorSintactico {
         }
 
     private boolean codigo(){
-        if(tokens.get(puntero).getValorTablaTokens() == -2) {
+        if(token == -2) {
             avanzar();
-            if (tokens.get(puntero).getValorTablaTokens() != -3){
-                return switch (tokens.get(puntero).getValorTablaTokens()) {
+            if (token != -3){
+                return switch (token) {
                     case -4 -> read();
                     case -5 -> write();
                     case -6 -> if_else();
@@ -136,8 +138,7 @@ public class AnalizadorSintactico {
     }
 
     private boolean tipo(){
-        if (tokens.get(puntero).getValorTablaTokens() == -11 || tokens.get(puntero).getValorTablaTokens() == -12 ||
-                tokens.get(puntero).getValorTablaTokens() == -13 || tokens.get(puntero).getValorTablaTokens() == -14)
+        if (token == -11 || token == -12 || token == -13 || token == -14)
             return true;
         else {
             System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
@@ -147,8 +148,7 @@ public class AnalizadorSintactico {
     }
 
     private boolean identificador() {
-        if(tokens.get(puntero).getValorTablaTokens() == -51 || tokens.get(puntero).getValorTablaTokens() == -52
-            || tokens.get(puntero).getValorTablaTokens() == -53 || tokens.get(puntero).getValorTablaTokens() == -54)
+        if(token == -51 || token == -52 || token == -53 || token == -54)
             return true;
         else {
                 System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
@@ -161,11 +161,11 @@ public class AnalizadorSintactico {
     private  boolean identificadores() {
         if(identificador()) {
             avanzar();
-            if(tokens.get(puntero).getValorTablaTokens() == -76) {
+            if(token == -76) {
                 avanzar();
                 return identificadores();
             }
-            else return tokens.get(puntero).getValorTablaTokens() != -76;
+            else return true;
         }
         else
             return false;
