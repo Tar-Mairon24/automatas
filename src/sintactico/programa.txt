@@ -1,6 +1,11 @@
 program prueba?;
 var
     int : integer&, a%;
+    int : integer&, a%;
+    int : integer&, a%;
 begin
+    hola% := 2 * 4 + 5 + (4 * 2);
+    hola% := 2 * 4 + 5 + (4 * 2);
+    hola% := 2 * 4 + 5 + (4 * 2);
     hola% := 2 * 4 + 5 + (4 * 2);
 end
