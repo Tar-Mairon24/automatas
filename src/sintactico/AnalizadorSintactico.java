@@ -203,7 +203,7 @@ public class AnalizadorSintactico {
     		if(token == -26) {
     			avanzar();
     			if(expresion()) {
-    				avanzar();
+    				//avanzar();
     				if(token == -75) {
     					avanzar();
     					return true;
@@ -220,15 +220,15 @@ public class AnalizadorSintactico {
     
     private boolean expresion() {
     	if(termino()) {
-    		avanzar();
+    		//avanzar();
     		if(operador_logico()) {
     			avanzar();
     			if(termino()) {
-    				avanzar();
+    				//avanzar();
     				return true;
     			}
     		} else {
-    			avanzar();
+    			//avanzar();
     			return true;
     		}
     	}
@@ -237,11 +237,12 @@ public class AnalizadorSintactico {
     
     private boolean termino() {
     	if(factor()) {
-    		avanzar();
+    		//avanzar();
     		if(operador_aritmetico()) {
     			avanzar();
     			return termino();
     		} else {
+    			//avanzar();
     			return true;
     		}
     	}
@@ -255,7 +256,7 @@ public class AnalizadorSintactico {
     	} else if(token == -73) {
     		avanzar();
     		if(expresion()) {
-    			avanzar();
+    			//avanzar();
     			if(token == -74) {
     				avanzar();
     				return true;

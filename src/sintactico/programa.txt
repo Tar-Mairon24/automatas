@@ -2,4 +2,5 @@ program prueba?;
 var
     int : integer&, a%;
 begin
+    hola% := 2 * 4 + 5 + (4 * 2);
 end
