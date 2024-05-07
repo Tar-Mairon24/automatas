@@ -114,22 +114,170 @@ public class AnalizadorSintactico {
     }
 
     private boolean read() {
-        return true;
+        avanzar();
+        if (token == -73) {
+            avanzar();
+            if(identificador()){
+                avanzar();
+                if(token == -74){
+                    avanzar();
+                    if(token == -75){
+                        return true;
+                    }
+                    else{
+                        System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                                "Se esperaba el caractér ';' ");
+                        return false;
+                    }
+                }
+                else{
+                    System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                            "Se esperaba el caractér ')' ");
+                    return false;
+                }
+            }
+        }
+        else{
+            System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                    "Se esperaba el caractér '(' ");
+            return false;
+        }
+        return false;
     }
 
     private boolean write() {
-        return true;
+        avanzar();
+        if (token == -73) {
+            avanzar();
+            if(identificador()){
+                avanzar();
+                if(token == -74){
+                    avanzar();
+                    if(token == -75){
+                        return true;
+                    }
+                    else{
+                        System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                                "Se esperaba el caractér ';' ");
+                        return false;
+                    }
+                }
+                else{
+                    System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                            "Se esperaba el caractér ')' ");
+                    return false;
+                }
+            }
+        }
+        else{
+            System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                    "Se esperaba el caractér '(' ");
+            return false;
+        }
+        return false;
     }
 
     private boolean if_else() {
-        return true;
+            avanzar();
+            if (token == -73) {
+                avanzar();
+                if(expresion()){
+                   avanzar();
+                   if(token == -74){
+                       avanzar();
+                       if(token == -16) {
+                           avanzar();
+                           if(codigo()){
+                               avanzar();
+                               if(token == -7){
+                                   return codigo();
+                               }
+                               else return true;
+                           }
+                       }
+                       else{
+                           System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                                   "Se esperaba la palabra 'then' ");
+                           return false;
+                       }
+                   }
+                   else{
+                       System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                               "Se esperaba el caractér ')' ");
+                       return false;
+                   }
+                }
+            }
+            else{
+                System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                        "Se esperaba el caractér '(' ");
+                return false;
+            }
+        return false;
     }
 
     private boolean while_() {
-        return true;
+        avanzar();
+        if (token == -73) {
+            avanzar();
+            if(expresion()){
+                avanzar();
+                if(token == -74) {
+                    avanzar();
+                    if(token == -17){
+                        avanzar();
+                        return codigo();
+                    }
+                    else{
+                        System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                                "Se esperaba la palabra 'do' ");
+                        return false;
+                    }
+                }
+                else{
+                    System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                            "Se esperaba el caractér ')' ");
+                    return false;
+                }
+            }
+        }
+        System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                "Se esperaba el caractér '(' ");
+        return false;
     }
 
     private boolean repeat_until() {
+        avanzar();
+        if(codigo()){
+            avanzar();
+            if(token == -10){
+                avanzar();
+                if(token == -73){
+                    avanzar();
+                    if(expresion()){
+                        avanzar();
+                        if(token == -74){
+                            return true;
+                        }
+                        else{
+                            System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                                    "Se esperaba el caractér ')' ");
+                            return false;
+                        }
+                    }
+                }
+                else{
+                    System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                            "Se esperaba el caractér '(' ");
+                    return false;
+                }
+            }
+            else{
+                System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                        "Se esperaba la palabra 'until' ");
+                return false;
+            }
+        }
         return true;
     }
 
