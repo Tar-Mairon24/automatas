@@ -278,7 +278,7 @@ public class AnalizadorSintactico {
                 return false;
             }
         }
-        return true;
+        return false;
     }
 
     private boolean tipo(){
