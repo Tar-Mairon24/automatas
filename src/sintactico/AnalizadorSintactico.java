@@ -43,7 +43,6 @@ public class AnalizadorSintactico {
                         avanzar();
                         if (declarativa()) {
                             if (codigo()) {
-                                avanzar();
                                 return true;
                             }
                         }
@@ -91,191 +90,233 @@ public class AnalizadorSintactico {
         return false;
         }
 
-    private boolean codigo(){
-        if(token == -2) {
-            avanzar();
-            if (token != -3){
-                return switch (token) {
-                    case -4 -> read();
-                    case -5 -> write();
-                    case -6 -> if_else();
-                    case -8 -> while_();
-                    case -9 -> repeat_until();
-                    case -51, -52, -53, -54 -> asignacion();
-                    default -> codigo();
-                };
-            }
-            else
-                return true;
-        } else {
-            System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba la palabra reservada 'begin'");
-            return false;
-        }
-    }
+		private boolean codigo() {
+			if (token == -2) {
+				avanzar();
+				if (estructuras()) {
+					if (token == -3) {
+						return true;
+					} else {
+						System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea()
+								+ ": Se esperaba la palabra reservada 'end'");
+						return false;
+					}
+				}
+			} else {
+				System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea()
+						+ ": Se esperaba la palabra reservada 'begin'");
+				return false;
+			}
+			return false;
+		}
+    
+		private boolean estructuras() {
+			if (token == -4) {
+				if (read()) {
+					return estructuras();
+				}
+			} else if (token == -5) {
+				if (write()) {
+					return estructuras();
+				}
+			} else if (token == -6) {
+				if (if_else()) {
+					return estructuras();
+				} 
+			} else if (token == -8) {
+				if (while_()) {
+					return estructuras();
+				}
+			} else if (token == -9) {
+				if (repeat_until()) {
+					return estructuras();
+				}
+			} else if (token == -51 || token == -52 || token == -53 || token == -54) {
+				if (asignacion()) {
+					return estructuras();
+				}
+			} else if (token == -3) {
+				return true;
+			}
+			System.err.println("Error en la linea "  + tokens.get(puntero).getNumeroLinea() + ": '" + tokens.get(puntero).getLexema() + "' Se esperaba una estructura");
+			return false;
+		}
 
-    private boolean read() {
-        avanzar();
-        if (token == -73) {
-            avanzar();
-            if(identificador()){
-                avanzar();
-                if(token == -74){
-                    avanzar();
-                    if(token == -75){
-                        return true;
-                    }
-                    else{
-                        System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-                                "Se esperaba el caractér ';' ");
-                        return false;
-                    }
-                }
-                else{
-                    System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-                            "Se esperaba el caractér ')' ");
-                    return false;
-                }
-            }
-        }
-        else{
-            System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-                    "Se esperaba el caractér '(' ");
-            return false;
-        }
-        return false;
-    }
+	private boolean read() {
+		if (token == -4) {
+			avanzar();
+			if (token == -73) {
+				avanzar();
+				if (identificador()) {
+					avanzar();
+					if (token == -74) {
+						avanzar();
+						if (token == -75) {
+							avanzar();
+							return true;
+						} else {
+							System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": "
+									+ "Se esperaba el caractér ';' ");
+							return false;
+						}
+					} else {
+						System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": "
+								+ "Se esperaba el caractér ')' ");
+						return false;
+					}
+				}
+			} else {
+				System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": "
+						+ "Se esperaba el caractér '(' ");
+				return false;
+			}
+		}
+		return false;
+	}
 
-    private boolean write() {
-        avanzar();
-        if (token == -73) {
-            avanzar();
-            if(identificador()){
-                avanzar();
-                if(token == -74){
-                    avanzar();
-                    if(token == -75){
-                        return true;
-                    }
-                    else{
-                        System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-                                "Se esperaba el caractér ';' ");
-                        return false;
-                    }
-                }
-                else{
-                    System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-                            "Se esperaba el caractér ')' ");
-                    return false;
-                }
-            }
-        }
-        else{
-            System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-                    "Se esperaba el caractér '(' ");
-            return false;
-        }
-        return false;
-    }
+	private boolean write() {
+		if (token == -5) {
+			avanzar();
+			if (token == -73) {
+				avanzar();
+				if (identificador()) {
+					avanzar();
+					if (token == -74) {
+						avanzar();
+						if (token == -75) {
+							avanzar();
+							return true;
+						} else {
+							System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": "
+									+ "Se esperaba el caractér ';' ");
+							return false;
+						}
+					} else {
+						System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": "
+								+ "Se esperaba el caractér ')' ");
+						return false;
+					}
+				}
+			} else {
+				System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": "
+						+ "Se esperaba el caractér '(' ");
+				return false;
+			}
+		}
+		return false;
+	}
 
-    private boolean if_else() {
-            avanzar();
-            if (token == -73) {
-                avanzar();
-                if(expresion()){
-                   avanzar();
-                   if(token == -74){
-                       avanzar();
-                       if(token == -16) {
-                           avanzar();
-                           if(codigo()){
-                               avanzar();
-                               if(token == -7){
-                                   return codigo();
-                               }
-                               else return true;
-                           }
-                       }
-                       else{
-                           System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-                                   "Se esperaba la palabra 'then' ");
-                           return false;
-                       }
-                   }
-                   else{
-                       System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-                               "Se esperaba el caractér ')' ");
-                       return false;
-                   }
-                }
-            }
-            else{
-                System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-                        "Se esperaba el caractér '(' ");
-                return false;
-            }
-        return false;
-    }
+	private boolean if_else() {
+		if (token == -6) {
+			avanzar();
+			if (token == -73) {
+				avanzar();
+				if (expresion()) {
+					if (token == -74) {
+						avanzar();
+						if (token == -16) {
+							avanzar();
+							if (codigo()) {
+								avanzar();
+								if (token == -7) {
+									avanzar();
+									if(codigo()) {
+										avanzar();
+										return true;
+									} else return false;
+								} else
+									return true;
+							}
+						} else {
+							System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": "
+									+ "Se esperaba la palabra 'then' ");
+							return false;
+						}
+					} else {
+						System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": "
+								+ "Se esperaba el caractér ')' ");
+						return false;
+					}
+				}
+			} else {
+				System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": "
+						+ "Se esperaba el caractér '(' ");
+				return false;
+			}
+		}
+		return false;
+	}
 
     private boolean while_() {
-        avanzar();
-        if (token == -73) {
-            avanzar();
-            if(expresion()){
+        if(token == -8) {
+        	avanzar();
+        	if (token == -73) {
                 avanzar();
-                if(token == -74) {
-                    avanzar();
-                    if(token == -17){
+                if(expresion()){
+                    if(token == -74) {
                         avanzar();
-                        return codigo();
+                        if(token == -17){
+                            avanzar();
+                            if(codigo()) {
+                            	avanzar();
+                            	return true;
+                            }
+                        }
+                        else{
+                            System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                                    "Se esperaba la palabra 'do' ");
+                            return false;
+                        }
                     }
                     else{
                         System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-                                "Se esperaba la palabra 'do' ");
+                                "Se esperaba el caractér ')' ");
                         return false;
                     }
                 }
-                else{
-                    System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-                            "Se esperaba el caractér ')' ");
-                    return false;
-                }
             }
+            System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                    "Se esperaba el caractér '(' ");
+            return false;
         }
-        System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-                "Se esperaba el caractér '(' ");
         return false;
     }
 
     private boolean repeat_until() {
-        avanzar();
-        if(codigo()){
-            avanzar();
-            if(token == -10){
+        if(token == -9) {
+        	avanzar();
+        	if(codigo()){
                 avanzar();
-                if(token == -73){
+                if(token == -10){
                     avanzar();
-                    if(expresion()){
+                    if(token == -73){
                         avanzar();
-                        if(token == -74){
-                            return true;
+                        if(expresion()){
+                            if(token == -74){
+                            	avanzar();
+                            	if(token == -75) {
+                            		avanzar();
+                            		return true;
+                            	}
+                            }
+                            else{
+                                System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                                        "Se esperaba el caractér ')' ");
+                                return false;
+                            }
                         }
-                        else{
-                            System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-                                    "Se esperaba el caractér ')' ");
-                            return false;
-                        }
+                    }
+                    else{
+                        System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
+                                "Se esperaba el caractér '(' ");
+                        return false;
                     }
                 }
                 else{
                     System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-                            "Se esperaba el caractér '(' ");
+                            "Se esperaba la palabra 'until' ");
                     return false;
                 }
-            }
-            else{
-                System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-                        "Se esperaba la palabra 'until' ");
-                return false;
             }
         }
         return false;
