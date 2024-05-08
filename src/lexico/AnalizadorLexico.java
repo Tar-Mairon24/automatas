@@ -97,11 +97,11 @@ public class AnalizadorLexico {
 						tablaTokens.add(lexema);
 					}
 					case "read" -> {
-						lexema.setToken(TokenType.PALABRAS_RESERVADAS_WRITE);
+						lexema.setToken(TokenType.PALABRAS_RESERVADAS_READ);
 						tablaTokens.add(lexema);
 					}
 					case "write" -> {
-						lexema.setToken(TokenType.PALABRAS_RESERVADAS_READ);
+						lexema.setToken(TokenType.PALABRAS_RESERVADAS_WRITE);
 						tablaTokens.add(lexema);
 					}
 					case "if" -> {
