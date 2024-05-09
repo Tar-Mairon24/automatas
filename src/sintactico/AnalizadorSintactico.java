@@ -1,18 +1,14 @@
 package sintactico;
 
-import lexico.Token;
-
-import java.util.List;
-
-
+import java.util.ArrayList;
 
 public class AnalizadorSintactico {
     private int puntero;
-    private final List<Token> tokens;
+    private final ArrayList<Token> tokens;
     private boolean ultimoToken = false;
     private int token, tokenSiguiente;
 
-    public AnalizadorSintactico(List<Token> tokens) {
+    public AnalizadorSintactico(ArrayList<Token> tokens) {
         this.tokens = tokens;
         puntero = 0;
         token = tokens.get(puntero).getValorTablaTokens();

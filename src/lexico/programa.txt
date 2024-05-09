@@ -1,29 +1,39 @@
 program prueba?;
-variables
-string cadena#,
+var
+    int : uno&, dos&;
+    real : tres%;
+    string : cuatro#;
+    bool : cinco$;
 
- var%,v_% : real;
- numero&, nu2& : int ;
-logico$,  log_1_$ : bool ;
 begin
-x% = ( numero&/1)* 367;
-//esto es un comentario //
+    uno& := 10 + (39 * dos&);
+    cinco$ := (uno& <= 10);
 
-If (log_1_$ <= numero&& ) then
-begin
-v_% := 10.34;
-( log_1_& && logico&)
-(var% || !nu2&);
+    if(uno& > 10) then
+    begin
+        write(dos&);
+    end
+    else
+    begin
+        write(dos&);
+        cinco$ := (10 * (89 - 100)) >= (dos&);
+    end
+
+    dos& := 1;
+
+    while(dos& > 5) do
+    begin
+        dos& := dos& + 1;
+        write(dos&);
+    end
+
+    cinco$ := false;
+
+    repeat
+    begin
+        dos& := dos& + 2;
+        write(dos&);
+        read(tres%);
+    end
+    until(cinco& == verdadero&);
 end
-else
-begin
-read( n2&);
-end
-repeat until
-repetir
-write (logico$) ;
-while  ( ) do
-
-end.
-
-
