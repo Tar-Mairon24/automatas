@@ -329,14 +329,12 @@ public class AnalizadorSintactico {
     }
 
     private boolean identificador() {
-        if(token == -51 || token == -52 || token == -53 || token == -54)
-            return true;
+        return token == -51 || token == -52 || token == -53 || token == -54;
 //        else {
 //                System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
 //                        tokens.get(puntero).getLexema() + " no es un identificador valido");
 //            return false;
 //        }
-        return false;
     }
 
     private  boolean identificadores() {
@@ -395,9 +393,7 @@ public class AnalizadorSintactico {
     	if(termino()) {
     		if(operador_logico()) {
     			avanzar();
-    			if(termino()) {
-    				return true;
-    			}
+                return termino();
     		} else {
     			return true;
     		}

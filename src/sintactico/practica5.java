@@ -12,7 +12,7 @@ public class practica5 {
         ArrayList<Token> tokens = new ArrayList<>();
 
         // Definimos la ruta al archivo que contiene los tokens
-        String ruta = "src/sintactico/TablaTokens.txt";
+        String ruta = "src/lexico/TablaTokens.txt";
 
         // Creamos un objeto File con la ruta especificada
         File file = new File(ruta);
