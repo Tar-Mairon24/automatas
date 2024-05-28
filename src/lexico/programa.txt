@@ -1,18 +1,13 @@
 program prog?;
 var
-int : uno&, dos&, tres&;
-real : tres%, cuatro% ;
-string : cuatro#;
-bool : cinco$;
+int : uno&;
 
 begin
 
-    while(uno# < dos&) do
-        begin
-            uno# := uno# + 1;
-        end
+cinco$ := ( uno& <= 10 ) && (false == cinco$);
+if (cinco$ > 3) then
+    begin
+        cinco$ := ( uno& <= 10 ) && (false == cinco$);
+    end
 
 end
-
-
-

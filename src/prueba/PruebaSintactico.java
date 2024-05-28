@@ -24,7 +24,7 @@ public class PruebaSintactico {
             puntero++;
             token = tokens.get(puntero).getValorTablaTokens();
         }
-        if (puntero == tokens.size() - 1) {
+        if (puntero == tokens.size() - 1 && token != -3) {
             token = -99999;
         }
     }
@@ -421,7 +421,7 @@ public class PruebaSintactico {
             return true;
         } else if (token == -73) {
             avanzar();
-            if (termino()) {
+            if (expresion()) {
                 if (token == -74) {
                     avanzar();
                     return true;
