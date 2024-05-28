@@ -1,39 +1,20 @@
-program prueba?;
+program prog?;
 var
-    int : uno&, dos&;
-    real : tres%;
-    string : cuatro#;
-    bool : cinco$;
+int : uno&, dos&, tres&;
+real : tres%, cuatro% ;
+string : cuatro#;
+bool : cinco$;
 
 begin
-    uno& := 10 + (39 * dos&);
-    cinco$ := (uno& <= 10);
 
-    if(uno& > 10) then
-    begin
-        write(dos&);
-    end
-    else
-    begin
-        write(dos&);
-        cinco$ := (10 * (89 - 100)) >= (dos&);
-    end
+uno& := 10 + ( 39 * dos& ) ;
+cinco$ := ( uno& <= 10 ) && (false == cinco$);
+cinco$ := (10  * (89 - 100) ) >= ( dos& ) ;
+dos& := 1;
+dos& := dos& * (19-87.52)/ 52;
+write (dos&); cinco$ := false;
+cinco& == true;
+read ( tres% );
+write(dos&);
 
-    dos& := 1;
-
-    while(dos& > 5) do
-    begin
-        dos& := dos& + 1;
-        write(dos&);
-    end
-
-    cinco$ := false;
-
-    repeat
-    begin
-        dos& := dos& + 2;
-        write(dos&);
-        read(tres%);
-    end
-    until(cinco& == verdadero&);
 end

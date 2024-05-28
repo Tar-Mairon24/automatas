@@ -1,34 +1,22 @@
-program prueba?;
+program prog?;
 var
-    int : uno&, dos&;
-    real : tres%;
-    string : cuatro#, palabra#, palabra2#;
-    bool : cinco$;
+int : uno&, dos&, tres&;
+real : tres%, cuatro% ;
+string : cuatro#;
+bool : cinco$;
 
 begin
-    uno& := 10 + (39 * dos&);
-    cinco$ := (uno& <= 10);
-    palabra# := "hola";
-    palabra2# := "mundo";
-    write(uno&);
 
-    if (uno& == 10) then
-        begin
-
-        end
-    while (uno&) do
+if (uno&  0) then
     begin
-            uno& := uno& + 1;
-        end
-    repeat
-        begin
-            uno& := uno& + 1;
-        end
-    until (uno& == 10);
-
+        if (dos& > 0) then
+            begin
+                tres% := 1;
+            end
+    end
+else
+    begin
+        tres% := 2;
+    end
 end
-
-if (uno& == 10) then
-    begin
-
 

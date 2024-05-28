@@ -1,5 +1,5 @@
 program -1 -1 1
-prueba? -55 -2 1
+prueba.Prueba? -55 -2 1
 ; -75 -1 1
 var -15 -1 2
 int -11 -1 3

@@ -5,14 +5,12 @@ import java.util.ArrayList;
 public class AnalizadorSintactico {
     private int puntero;
     private final ArrayList<Token> tokens;
-    private boolean ultimoToken = false;
-    private int token, tokenSiguiente;
+    private int token, ultimoToken;
 
     public AnalizadorSintactico(ArrayList<Token> tokens) {
         this.tokens = tokens;
         puntero = 0;
         token = tokens.get(puntero).getValorTablaTokens();
-        tokenSiguiente = tokens.get(puntero + 1).getValorTablaTokens();
     }
 
     public boolean analizar() {
@@ -24,8 +22,6 @@ public class AnalizadorSintactico {
             puntero++;
             token = tokens.get(puntero).getValorTablaTokens();
         }
-        else
-            ultimoToken = true;
     }
 
     private boolean programa() {
@@ -134,8 +130,7 @@ public class AnalizadorSintactico {
 			} else if (token == -3) {
 				return true;
 			}
-			System.err.println("Error en la linea "  + tokens.get(puntero).getNumeroLinea() + ": '" + tokens.get(puntero).getLexema() + "' Se esperaba una estructura");
-			return false;
+			return true;
 		}
 
 	private boolean read() {
