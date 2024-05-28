@@ -1,47 +1,13 @@
-program nombre?;
+program prog?;
 var
-// Sección de declaración de variables
-// Puede contener cualquier cantidad o ninguna de variables
-// de cualquier tipo definido
-// por ejemplo
-int : uno&, dos& ;
-real : tres% ;
-string : cuatro#;
 bool : cinco$ ;
-// bloque principal del programa
+
 begin
-// cuerpo del programa, puede contener ninguna o cualquier cantidad
-// de sentencias en expresiones o estructuras de control en cualquier orden
-// para las sentencias de asignación se puede utilizar cualquier
-// combinación de operadores aritméticos, lógicos o relacionales
-// ejemplos
-uno& := 10 + ( 39 * dos& ) ;
-cinco$ := ( uno& <= 10 );
-// estructuras de control pueden ser simples o anidadas
-// en la condición para cualquier estructura puede ser
-// cualquier expresión valida
-// en el condicional puede ser estructura simple o compuesta
-if ( uno& > 10 ) then
-begin
-write (dos&);
-end
-else
-begin
-write ( dos&);
-cinco$ := ( 10 * (89 - 100) ) >= ( dos& ) ;
-end
-dos& := 1;
-while ( dos& > 5 ) do
-begin
-dos& := dos& + 1;
-write ( dos&) ;
-end
-cinco$ := false;
-repeat
-begin
-dos& := dos& + 2;
-write (dos&);
-read ( tres% );
-end
-until ( cinco& == verdadero& );
+
+if (cinco$) then
+    begin
+        write( cinco$);
+    end
+
+
 end
