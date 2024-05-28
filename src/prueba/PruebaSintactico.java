@@ -388,7 +388,7 @@ public class PruebaSintactico {
                 avanzar();
                 return termino();
             } else {
-                if (constante() || identificador() || token == -75)
+                if (constante() || identificador() || token == -75 || token == -74)
                     return true;
                 System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba un operador logico");
                 return false;
