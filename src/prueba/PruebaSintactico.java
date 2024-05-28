@@ -16,7 +16,7 @@ public class PruebaSintactico {
     }
 
     public boolean analizar() {
-        return expresion();
+        return expresionLogica();
     }
 
     public void avanzar() {
@@ -26,12 +26,18 @@ public class PruebaSintactico {
         }
     }
 
-    private boolean expresion() {
+    private boolean expresionLogica() {
         if(termino()) {
             if(operador_logico()) {
                 avanzar();
+                return termino();
             }
-            return termino();
+            else {
+                if(constante() || identificador())
+                    return true;
+                System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba un operador logico");
+                return false;
+            }
         }
         return false;
     }
@@ -42,6 +48,12 @@ public class PruebaSintactico {
                 avanzar();
                 return termino();
             } else {
+                if(token == -73 || token == -43) {
+                    System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba un operador");
+                    return false;
+                }
+                if(constante() || identificador())
+                    return true;
                 return true;
             }
         }
@@ -54,7 +66,7 @@ public class PruebaSintactico {
             return true;
         } else if(token == -73) {
             avanzar();
-            if(expresion()) {
+            if(termino()) {
                 if(token == -74) {
                     avanzar();
                     return true;
@@ -70,6 +82,7 @@ public class PruebaSintactico {
         }
         return false;
     }
+
 
     private boolean operador_logico(){
         return (token == -31 || token == -32 || token == -33 || token == -34 || token == -35 || token == -36 || token == -41 || token == -42 || token == -43);

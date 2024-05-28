@@ -22,6 +22,9 @@ public class AnalizadorSintactico {
             puntero++;
             token = tokens.get(puntero).getValorTablaTokens();
         }
+		if(puntero == tokens.size() - 1) {
+			token = -99999;
+		}
     }
 
     private boolean programa() {
@@ -385,49 +388,59 @@ public class AnalizadorSintactico {
     }
     
     private boolean expresion() {
-    	if(termino()) {
-    		if(operador_logico()) {
-    			avanzar();
-                return termino();
-    		} else {
-    			return true;
-    		}
-    	}
-    	return false;
+		if(termino()) {
+			if(operador_logico()) {
+				avanzar();
+				return termino();
+			}
+			else {
+				if(constante() || identificador() || token == -75)
+					return true;
+				System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba un operador logico");
+				return false;
+			}
+		}
+		return false;
     }
     
     private boolean termino() {
-    	if(factor()) {
-    		if(operador_aritmetico()) {
-    			avanzar();
-    			return termino();
-    		} else {
-    			return true;
-    		}
-    	}
-    	return false;
+		if(factor()) {
+			if(operador_aritmetico()) {
+				avanzar();
+				return termino();
+			} else {
+				if(token == -73 || token == -43) {
+					System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba un operador");
+					return false;
+				}
+				if(constante() || identificador())
+					return true;
+				return true;
+			}
+		}
+		return false;
     }
     
     private boolean factor() {
-    	if(constante() || identificador()) {
-    		avanzar();
-    		return true;
-    	} else if(token == -73) {
-    		avanzar();
-    		if(expresion()) {
-    			if(token == -74) {
-    				avanzar();
-    				return true;
-    			} else {
-    				System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba el caracter ')'");
-    			}
-    		}
-    	} else if(token == -43) {
-    		avanzar();
-    		return factor();
-    	} else {
-    		System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba un identificador, constante o los caracteres '(' o '!'");
-    	}
-    	return false;
+		if(constante() || identificador()) {
+			avanzar();
+			return true;
+		} else if(token == -73) {
+			avanzar();
+			if(termino()) {
+				if(token == -74) {
+					avanzar();
+					return true;
+				} else {
+					System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba el caracter ')'");
+				}
+			}
+		} else if(token == -43) {
+			avanzar();
+			return factor();
+		} else {
+			System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba un identificador, constante o los caracteres '(' o '!'");
+		}
+		return false;
     }
 }

@@ -7,16 +7,12 @@ bool : cinco$;
 
 begin
 
-if (uno&  0) then
-    begin
-        if (dos& > 0) then
-            begin
-                tres% := 1;
-            end
-    end
-else
-    begin
-        tres% := 2;
-    end
+    while(uno# < dos&) do
+        begin
+            uno# := uno# + 1;
+        end
+
 end
+
+
 
