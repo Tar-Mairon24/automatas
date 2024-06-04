@@ -1,13 +1,25 @@
-program prog?;
+program pruebacondicional? ;
 var
-bool : cinco$ ;
+real :  suma%, promedio% ;
+int :  a_1&, dos& , tres&, cuatro& ;
+string : cadena#, texto#;
+bool :  valor$, b$ ;
 
 begin
 
-if (cinco$) then
-    begin
-        write( cinco$);
-    end
+while (a_1& < 10) do
+begin
+    a_1& := a_1& + 1;
+    suma% := suma% + a_1&;
+    if (a_1& == 10) then
+        begin
+            cadena# := suma% / 10;
+            write(cadena#);
+        end
+    else
+        begin
 
+        end
+end
 
 end

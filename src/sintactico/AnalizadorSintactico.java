@@ -222,7 +222,7 @@ public class AnalizadorSintactico {
 			avanzar();
 			if (token == -73) {
 				avanzar();
-				if (identificador()) {
+				if (identificador() || constante()) {
 					avanzar();
 					if (token == -74) {
 						avanzar();

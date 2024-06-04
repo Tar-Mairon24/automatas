@@ -295,7 +295,7 @@ public class AnalizadorLexico {
 			int actual = 0, anterior, i = 0, posicion = 0;
 			char[] c = linea.getLinea().toCharArray();
 			do{
-				if(posicion == -1)
+				if(posicion == -1 || posicion == linea.getLinea().length())
 					break;
 				anterior = actual;
 				actual = tablaLexica[actual][pertenece(c[posicion])];

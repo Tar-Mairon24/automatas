@@ -17,7 +17,7 @@ public class practica4 {
         List<Token> lexemas;
 
         try {
-            lineas = ma.leer("src/lexico/programa.txt");
+            lineas = ma.leer("src/lexico/prueba.txt");
             File tablatokens = new File("src/lexico/TablaTokens.txt"); // Nombre del archivo de la tabla de tokens
             FileWriter writerTokens = new FileWriter(tablatokens);
 
