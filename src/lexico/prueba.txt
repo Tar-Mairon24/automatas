@@ -5,11 +5,10 @@ int : a_1&, dos&, tres&;
 
 bool : valor$, b$ ;
 
-
 begin
 
 dos& := 38.6;
-a_1& := (10 + tres& )/ promedio%;   
+a_1& := (10 % tres& ) / promedio%;   
 read(valor$);
 
 if((dos& >= tres& )  && ( b$ == true)) then
@@ -21,7 +20,7 @@ begin
     read (a_1&);
 end
 
-read( dos&);
+read(dos&);
 
 repeat
 begin
@@ -34,9 +33,5 @@ begin
     read(dos&);
 end
 until( dos& > 100);
-
-
-
-
 
 end

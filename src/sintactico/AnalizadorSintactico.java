@@ -475,7 +475,7 @@ public class AnalizadorSintactico {
 	}
 
 	private boolean operador_aritmetico() {
-		return (token == -21 || token == -22 || token == -24 || token == -25);
+		return (token == -21 || token == -22 || token == -24 || token == -25 || token == -27);
 	}
 
 	private boolean constante() {
