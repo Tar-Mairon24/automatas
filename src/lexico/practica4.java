@@ -16,8 +16,13 @@ public class practica4 {
         AnalizadorLexico analizador = new AnalizadorLexico();
         List<Token> lexemas;
 
+        String ruta = "src/lexico/";
+        System.out.println("Ingrese el nombre del archivo a leer(ejemplo: prueba.txt): ");
+        nombre = sc.nextLine();
+        ruta = ruta + nombre;
+
         try {
-            lineas = ma.leer("src/lexico/prueba.txt");
+            lineas = ma.leer(ruta);
             File tablatokens = new File("src/lexico/TablaTokens.txt"); // Nombre del archivo de la tabla de tokens
             FileWriter writerTokens = new FileWriter(tablatokens);
 
