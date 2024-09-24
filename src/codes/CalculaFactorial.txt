@@ -1,0 +1,18 @@
+program CalculaFactorial?;
+var
+int: n&, resultado&;
+
+begin
+
+read(n&);
+
+while (n& > 0) do
+begin
+    resultado& := resultado& * n&;
+    n& := n& - 1;
+end
+
+write("El factorial es: ");
+write(resultado&);
+                        
+end

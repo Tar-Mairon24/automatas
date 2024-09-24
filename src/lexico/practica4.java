@@ -16,7 +16,7 @@ public class practica4 {
         AnalizadorLexico analizador = new AnalizadorLexico();
         List<Token> lexemas;
 
-        String ruta = "src/lexico/";
+        String ruta = "src/codes/";
         System.out.println("Ingrese el nombre del archivo a leer(ejemplo: prueba.txt): ");
         nombre = sc.nextLine();
         ruta = ruta + nombre;

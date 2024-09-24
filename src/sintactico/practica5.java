@@ -2,6 +2,9 @@ package sintactico;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class practica5 {
     public static void main(String[] args) {
@@ -25,11 +28,23 @@ public class practica5 {
 
             // Leemos el archivo línea por línea
             while ((line = br.readLine()) != null) {
-                // Dividimos cada línea en partes usando un espacio como delimitador
-                String[] parts = line.split(" ");
+                // Usamos una expresión regular para dividir la línea en partes, respetando las comillas
+                Pattern pattern = Pattern.compile("\"([^\"]*)\"|(\\S+)");
+                Matcher matcher = pattern.matcher(line);
+                
+                List<String> parts = new ArrayList<>();
+                while (matcher.find()) {
+                    if (matcher.group(1) != null) {
+                        // Parte entre comillas
+                        parts.add(matcher.group(1));
+                    } else {
+                        // Parte sin comillas
+                        parts.add(matcher.group(2));
+                    }
+                }
 
                 // Creamos un nuevo objeto Token con las partes y lo añadimos a la lista de tokens
-                token = new Token(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
+                token = new Token(parts.get(0), Integer.parseInt(parts.get(1)), Integer.parseInt(parts.get(2)), Integer.parseInt(parts.get(3)));
                 tokens.add(token);
             }
         } catch (IOException e) {

@@ -1,0 +1,16 @@
+program Grados?;
+var
+
+real: centi%, faren%;
+
+begin
+
+read(centi%);
+
+faren% := centi% * 9 / 5 + 32;
+
+write("Son: ");
+write(faren%);
+write(" grados fahrenheit");
+    
+end

@@ -1,4 +1,0 @@
-program Primo?
-var
-
-int: n%
