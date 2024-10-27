@@ -1,44 +1,7 @@
-package lexico;
+package utils;
 
-public class Token {
-    private final String lexema;
-    private final int numeroLinea;
-    private int valorTablaTokens;
-    private int esIdentificador;
 
-    public Token(String lexema, TokenType token, int numeroLinea){
-        this.lexema = lexema;
-        this.numeroLinea = numeroLinea;
-    }
-
-    public void setToken(TokenType token) {
-        valorTablaTokens = token.getValorTablaTokens();
-        esIdentificador = token.getEsIdentificador();
-    }
-
-    public int getNumeroLinea() {
-        return numeroLinea;
-    }
-
-    public String getLexema() {
-        return lexema;
-    }
-
-    public int getEsIdentificador() {
-        return esIdentificador;
-    }
-
-    public int getValorTablaTokens() {
-        return valorTablaTokens;
-    }
-
-    @Override
-    public String toString(){
-        return lexema + " " + valorTablaTokens + " " + esIdentificador + " " + numeroLinea;
-    }
-}
-
-enum TokenType {
+public enum TokenType {
     // Palabras Reservadas
     PALABRAS_RESERVADAS_PROGRAM(-1, -1),
     PALABRAS_RESERVADAS_BEGIN(-2, -1),

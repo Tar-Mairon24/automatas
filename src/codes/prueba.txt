@@ -1,6 +1,6 @@
 program pruebagral?;
 var
-real : suma%, promedio%, a_1&, valor$;
+real : suma, promedio%, a_1&, valor$;
 int : a_1&, dos&, tres&;
 
 bool : valor$, b$ ;

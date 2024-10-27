@@ -2,6 +2,8 @@ package sintactico;
 
 import java.util.ArrayList;
 
+import utils.Token;
+
 public class AnalizadorSintactico {
 	private int puntero;
 	private final ArrayList<Token> tokens;

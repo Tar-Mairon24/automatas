@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import utils.Token;
+
 public class practica5 {
     public static void main(String[] args) {
         // Inicializamos el analizador sintáctico

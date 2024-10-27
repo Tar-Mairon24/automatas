@@ -4,13 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import utils.Token;
+import utils.TokenType;
+
 import java.io.FileWriter;
 import java.io.IOException;
 
 public class AnalizadorLexico {
-    private final List<Token> tablaTokens = new ArrayList<>();
+    private final ArrayList<Token> tablaTokens = new ArrayList<>();
 	private int contador = 1;
 	private boolean errorLexico = false;
+
+	public ArrayList<Token> getTokens() {
+		return tablaTokens;
+	}
 
 	public void imprimirTablaTokens(FileWriter writer) throws IOException {
         for (Token token : tablaTokens) {
@@ -18,7 +26,7 @@ public class AnalizadorLexico {
         }
     }
 
-	public boolean isErrorLexico() {
+	public boolean notErrorLexico() {
 		return !errorLexico;
 	}
 
@@ -258,8 +266,8 @@ public class AnalizadorLexico {
     @param es el objeto linea donde se encuentra la linea del archivo junto con su numero de linea
     @return devuelve una lista en el cual se guardan los lexemas para su comparacion posterior
      */
-	public List<Token> analizador(Linea linea) {
-		List<Token> tokens = new ArrayList<>();
+	public ArrayList<Token> analizador(Linea linea) {
+		ArrayList<Token> tokens = new ArrayList<>();
 		StringBuilder lexema = new StringBuilder();
 		if(!linea.getLinea().isEmpty()){
 			//StringBuilder lexema = new StringBuilder();

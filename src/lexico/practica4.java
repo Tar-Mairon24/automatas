@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import utils.Token;
+
 public class practica4 {
     public static void main(String[] args) throws IOException {
         Scanner sc = new Scanner(System.in);
@@ -31,7 +33,7 @@ public class practica4 {
                 analizador.analizar(lexemas);
             }
 
-            if(analizador.isErrorLexico()) {
+            if(analizador.notErrorLexico()) {
                 analizador.imprimirTablaTokens(writerTokens);
                 System.out.println("Tabla de tokens guardada en 'TablaTokens.txt'");
             }
@@ -44,5 +46,7 @@ public class practica4 {
         } catch (IOException e) {
             System.out.println("Error al escribir en el archivo de salida");
         }
+
+        sc.close();
     }
 }
