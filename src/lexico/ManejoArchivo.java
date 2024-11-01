@@ -37,6 +37,9 @@ public class ManejoArchivo {
             }
             br.close();
             return lineas;
+        } catch(FileNotFoundException e){
+            System.out.println("No se encontró el archivo");
+
         } catch (IOException e) {
             System.out.println("Ocurrió un error");
         }

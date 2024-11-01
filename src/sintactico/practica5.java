@@ -56,14 +56,6 @@ public class practica5 {
 
         // Creamos un nuevo analizador sintáctico con la lista de tokens
         analizadorSintactico = new AnalizadorSintactico(tokens);
-
-        // Analizamos los tokens e imprimimos un mensaje dependiendo del resultado
-        if(analizadorSintactico.analizar()) {
-            System.out.println("El programa se ha compilado correctamente");
-        }
-        else {
-            System.out.println("No se puede compilar el programa por errores sintacticos");
-        }
     }
 }
 

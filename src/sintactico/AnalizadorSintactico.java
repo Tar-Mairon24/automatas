@@ -1,591 +1,589 @@
 package sintactico;
 
 import java.util.ArrayList;
-
 import utils.Token;
 
 public class AnalizadorSintactico {
-	private int puntero;
-	private final ArrayList<Token> tokens;
-	private int token;
-	private boolean error = false;
+    private final ArrayList<Token> tokens;
+    private int indice;
+    private Token proximoToken;
 
-	public AnalizadorSintactico(ArrayList<Token> tokens) {
-		this.tokens = tokens;
-		puntero = 0;
-		token = tokens.get(puntero).getValorTablaTokens();
-	}
 
-	public boolean analizar() {
-		return programa();
-	}
+    public AnalizadorSintactico(ArrayList<Token> tokens) {
+        this.tokens = tokens;
+        this.indice = 0;
+        this.proximoToken = null;
+        analizar();
+    }
 
-	public void avanzar() {
-		if (puntero < tokens.size() - 1) {
-			puntero++;
-			token = tokens.get(puntero).getValorTablaTokens();
-		}
-		if (puntero == tokens.size() - 1 && token != -3) {
-			token = -99999;
-			System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba la palabra 'end'");
-			error = true;
-		}
-	}
+    public void analizar() {
+        try {
+            encabezado();
+            declaraciones(false);
+            estructuraPrograma();
+            error("No se esperaba la palabra clave 'end' en la línea " + tokens.get(indice).getNumeroLinea());
+        } catch (Exception e) {
+            if (e instanceof IndexOutOfBoundsException || e instanceof NullPointerException)
+                error("Se esperaba end para finalizar el programa en la linea "
+                        + tokens.get(indice - 1).getNumeroLinea() + 1);
+            error("Ocurrio un error catastrofico! " + e.getMessage());
+        }
+    }
 
-	private boolean programa() {
-		if (token == -1) {
-			avanzar();
-			if (token == -55) {
-				avanzar();
-				if (token == -75) {
-					avanzar();
-					if (token == -15) {
-						avanzar();
-						if (declarativa()) {
-							if (codigo()) {
-								return true;
-							}
-						}
-					} else
-						return true;
-				} else {
-					if(!error){
-						System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba un ';'");
-						error = true;
-					}
-					return false;
-				}
-			} else {
-				if(!error){
-					System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba la palabra reservada 'var'");
-					error = true;
-				}
-				return false;
-			}
-		} else {
-			if(!error){
-				System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba la palabra reservada 'program'");
-				error = true;
-			}
-			return false;
-		}
-		return (tokens.get(puntero).getValorTablaTokens() != -3 || tokens.get(puntero).getValorTablaTokens() != -75) && puntero == 2;
-	}
+    private boolean hayTokensRestantes() {
+        return indice < tokens.size();
+    }
 
-	private boolean declarativa() {
-		if (tipo()) {
-			avanzar();
-			if (token == -77) {
-				avanzar();
-				if (identificadores()) {
-					if (token == -75) {
-						avanzar();
-						if (token == -11 || token == -12 || token == -13 || token == -14)
-							return declarativa();
-						else
-							return true;
-					} else {
-						if(!error){
-							System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba un ';'");
-							error = true;
-						}
-						return false;
-					}
-				} else {
-					if(!error){
-						System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba un identificador valido");
-						error = true;
-					}
-					return false;
-				}
-			} else {
-				if(!error){
-					System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba un ':'");
-					error = true;
-				}
-				return false;
-			}
-		} else {
-			if(!error){
-				System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba un tipo valido");
-				error = true;
-			}
-			return false;
-		}
-	}
+    private void avanza() {
+        if (indice < tokens.size()) {
+            indice++;
+            if (indice < tokens.size() - 1)
+                proximoToken = tokens.get(indice + 1);
+            else
+                proximoToken = null;
+        } else {
+            proximoToken = null; // Ya no hay más tokens para analizar
+        }
+    }
 
-	private boolean codigo() {
-		if (token == -2) {
-			avanzar();
-			if (estructuras()) {
-				if (token == -3) {
-					return true;
-				} else {
-					if(!error){
-						System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea()
-								+ ": Se esperaba la palabra reservada 'end'");
-						error = true;
-					}
-					return false;
-				}
-			}
-		} else {
-			if(!error){
-				System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea()
-						+ ": Se esperaba la palabra reservada 'begin'");
-				error = true;
-			}
-			return false;
-		}
-		return false;
-	}
+    private void error(String mensaje) {
+        System.out.println((char) 27 + "[31m" + "ERROR SINTACTICO! " + mensaje);
+        System.exit(1);
+    }
 
-	private boolean estructuras() {
-		if (token == -4) {
-			if (read()) {
-				return estructuras();
-			}
-		} else if (token == -5) {
-			if (write()) {
-				return estructuras();
-			}
-		} else if (token == -6) {
-			if (if_else()) {
-				return estructuras();
-			}
-		} else if (token == -8) {
-			if (while_()) {
-				return estructuras();
-			}
-		} else if (token == -9) {
-			if (repeat_until()) {
-				return estructuras();
-			}
-		} else if (token == -3) {
-			return true;
-		} else {
-			if (asignacion()) {
-				return estructuras();
-			}
-		}
-		return true;
-	}
+    private void aceptar() {
+        System.out.println((char) 27 + "[32m" + "El análisis sintáctico ha finalizado sin errores.");
+        System.out.printf("El programa es correcto\n");
+    }
 
-	private boolean read() {
-		if (token == -4) {
-			avanzar();
-			if (token == -73) {
-				avanzar();
-				if (identificador()) {
-					avanzar();
-					if (token == -74) {
-						avanzar();
-						if (token == -75) {
-							avanzar();
-							return true;
-						} else {
-							if(!error){
-								System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": "
-										+ "Se esperaba el caractér ';' ");
-								error = true;
-							}
-							return false;
-						}
-					} else {
-						if(!error){
-							System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": "
-									+ "Se esperaba el caractér ')' ");
-							error = true;
-						}
-						return false;
-					}
-				} else {
-					if(!error){
-						System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": "
-								+ "Se esperaba un identificador valido");
-						error = true;
-					}
-					return false;
-				}
-			} else {
-				if(!error){
-					System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": "
-							+ "Se esperaba el caractér '(' ");
-					error = true;
-				}
-				return false;
-			}
-		}
-		return false;
-	}
+    private void encabezado() {
+        // Verificamos si el próximo token es la palabra clave 'program'
+        Token tokenActual = tokens.get(indice);
+        if (tokenActual.getValorTablaTokens() != -1) {
+            error("Se esperaba la palabra clave 'program'");
+        }
+        avanza(); // Avanzamos al próximo token
 
-	private boolean write() {
-		if (token == -5) {
-			avanzar();
-			if (token == -73) {
-				avanzar();
-				if (identificador() || constante()) {
-					avanzar();
-					if (token == -74) {
-						avanzar();
-						if (token == -75) {
-							avanzar();
-							return true;
-						} else {
-							if(!error){
-								System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": "
-										+ "Se esperaba el caractér ';' ");
-								error = true;
-							}
-							return false;
-						}
-					} else {
-						if(!error){
-							System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": "
-									+ "Se esperaba el caractér ')' ");
-							error = true;
-						}
-						return false;
-					}
-				} else {
-					if(!error){
-						System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": "
-								+ "Se esperaba un identificador valido");
-						error = true;
-					}
-					return false;
-				}
-			} else {
-				if(!error){
-					System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": "
-							+ "Se esperaba el caractér '(' ");
-					error = true;
-				}
-				return false;
-			}
-		}
-		return false;
-	}
+        // Verificamos si hay un identificador después de la palabra clave 'program'
+        if (!hayTokensRestantes()) {
+            error("Se esperaba un identificador después de la palabra clave 'program'");
+        }
+        tokenActual = tokens.get(indice);
+        if (tokenActual.getValorTablaTokens() != -55) {
+            error("Se esperaba un identificador de tipo general (?)");
+        }
+        avanza(); // Avanzamos al próximo token
 
-	private boolean if_else() {
-		if (token == -6) {
-			avanzar();
-			if (token == -73) {
-				avanzar();
-				if (expresion()) {
-					if (token == -74) {
-						avanzar();
-						if (token == -16) {
-							avanzar();
-							if (codigo()) {
-								avanzar();
-								if (token == -7) {
-									avanzar();
-									if (codigo()) {
-										if(token == -3 && puntero < tokens.size() - 1){
-											avanzar();
-											return true;
-										}
-										else{
-											if(!error){
-												System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-														"Se esperaba la palabra 'end' ");
-												error = true;
-											}
-											return false;
-										}
-									} else
-										return false;
-								} else
-									return true;
-							}
-						} else {
-							if(!error){
-								System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": "
-										+ "Se esperaba la palabra 'then' ");
-								error = true;
-							}
-							return false;
-						}
-					} else {
-						if(!error){
-							System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": "
-									+ "Se esperaba el caractér ')' ");
-							error = true;
-						}
-						return false;
-					}
-				}
-			} else {
-				if(!error){
-					System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": "
-							+ "Se esperaba el caractér '(' ");
-					error = true;
-				}
-				return false;
-			}
-		}
-		return false;
-	}
+        tokenActual = tokens.get(indice);
+        if (tokenActual.getValorTablaTokens() != -75) {
+            error("Se esperaba un punto y coma ';' después del identificador ");
+        }
+        avanza(); // Avanzamos al próximo token
+    }
 
-	private boolean while_() {
-		if (token == -8) {
-			avanzar();
-			if (token == -73) {
-				avanzar();
-				if (expresion()) {
-					if (token == -74) {
-						avanzar();
-						if (token == -17) {
-							avanzar();
-							if (codigo()) {
-								if(token == -3 && puntero < tokens.size() - 1){
-									avanzar();
-									return true;
-								}
-								else{
-									if(!error){
-										System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-												"Se esperaba la palabra 'end' ");
-										error = true;
-									}
-									return false;
-								}
-							}
-						} else {
-							if(!error){
-								System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-										"Se esperaba la palabra 'do' ");
-								error = true;
-							}
-							return false;
-						}
-					} else {
-						if(!error){
-							System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-									"Se esperaba el caractér ')' ");
-							error = true;
-						}
-						return false;
-					}
-				}
-			}else {
-				if(!error){
-					System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-							"Se esperaba el caractér '(' ");
-					error = true;
-				}
-				return false;
-			}
-		}
-		return false;
-	}
+    private void declaraciones(boolean varEncontrada) {
+        if (!hayTokensRestantes() || tokens.get(indice).getValorTablaTokens() == -2) {
+            return;
+        }
+        Token tokenActual = tokens.get(indice);
 
-	private boolean repeat_until() {
-		if (token == -9) {
-			avanzar();
-			if (codigo()) {
-				avanzar();
-				if (token == -10) {
-					avanzar();
-					if (token == -73) {
-						avanzar();
-						if (expresion()) {
-							if (token == -74) {
-								avanzar();
-								if (token == -75) {
-									avanzar();
-									return true;
-								} else {
-									if(!error){
-										System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-												"Se esperaba un ';'");
-										error = true;
-									}
-									return false;
-								}
-							} else {
-								if(!error) {
-									System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-											"Se esperaba el caractér ')' ");
-									error = true;
-								}
-								return false;
-							}
-						}
-					} else {
-						if(!error){
-							System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-									"Se esperaba el caractér '(' ");
-							error = true;
-						}
-						return false;
-					}
-				} else {
-					if(!error){
-						System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-								"Se esperaba la palabra 'until' ");
-						error = true;
-					}
-					return false;
-				}
-			}
-		}
-		return false;
-	}
+        if (tokenActual.getValorTablaTokens() == -15) {
+            if (!varEncontrada) {
+                avanza();
+                varEncontrada = true;
+            } else {
+                error("La palabra clave 'var' ya fue declarada anteriormente en la línea " + tokenActual.getNumeroLinea());
+            }
+        } else {
+            if (!varEncontrada) {
+                error("Se esperaba la palabra clave 'var' en la línea " + tokenActual.getNumeroLinea());
+            } else {
+                if (!tipoDato(tokenActual.getValorTablaTokens()))
+                    error("Se esperaba un tipo de dato valido o la palabra ´begin', en la linea: " + tokenActual.getNumeroLinea());
+                avanza();
+                tokenActual = tokens.get(indice);
+                if (tokenActual.getValorTablaTokens() != -77)
+                    error("Se esperaba ':' después del tipo de dato en la línea " + tokenActual.getNumeroLinea());
+                avanza();
+                declaracionVariable();
+            }
+        }
 
-	private boolean tipo() {
-		if (token == -11 || token == -12 || token == -13 || token == -14)
-			return true;
-		else {
-			if(!error){
-				System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-						tokens.get(puntero).getLexema() + " no es un tipo valido");
-				error = true;
-			}
-			return false;
-		}
-	}
+        declaraciones(varEncontrada);
+    }
 
-	private boolean identificador() {
-		return token == -51 || token == -52 || token == -53 || token == -54;
-//        else {
-//                System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-//                        tokens.get(puntero).getLexema() + " no es un identificador valido");
-//            return false;
-//        }
-	}
+    private void declaracionVariable() {
+        // Manejo de las declaraciones de variables
+        Token tokenActual = tokens.get(indice);
 
-	private boolean identificadores() {
-		if (identificador()) {
-			avanzar();
-			if (token == -76) {
-				avanzar();
-				return identificadores();
-			} else return true;
-		} else {
-			if(!error){
-				System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba un identificador valido");
-				error = true;
-			}
-			return false;
-		}
-	}
+        // Verificar y consumir identificadores
+        tokenActual = tokens.get(indice);
+        if (identificador(tokenActual.getValorTablaTokens())) {
+            avanza();
+            tokenActual = tokens.get(indice);
+            if (tokenActual.getValorTablaTokens() == -76) {
+                avanza();
+            } else if (tokenActual.getValorTablaTokens() == -75) {
+                avanza();
+                return;
+            } else {
+                error("Se esperaba ',' o ';' después del identificador en la línea " + tokenActual.getNumeroLinea());
+            }
+        } else {
+            error("Se esperaba un identificador válido en la línea " + tokenActual.getNumeroLinea());
+        }
+        declaracionVariable();
+    }
 
-	private boolean operador_logico() {
-		return (token == -31 || token == -32 || token == -33 || token == -34 || token == -35 || token == -36 || token == -41 || token == -42 || token == -43);
-	}
+    private void estructuraPrograma() {
+        // Se verifica que comienze con un begin
+        Token tokenActual = tokens.get(indice);
+        if (tokenActual.getValorTablaTokens() != -2)
+            error("Se esperaba la palabra clave 'begin' en la línea " + tokenActual.getNumeroLinea());
+        avanza();
+        /* Originalmente era un while pero lo cambie por el metodo recursivo */
+        estructuraSentencias();
+        tokenActual = tokens.get(indice);
+        // Se verifica que termine con un end
+        if (indice == tokens.size() - 1 && tokenActual.getValorTablaTokens() != -3)
+            error("Se esperaba la palabra clave 'end' en la línea " + tokenActual.getNumeroLinea());
+        // Si termina con un end se termina el programa sin errores
+        if (tokenActual.getValorTablaTokens() == -3 && indice == tokens.size() - 1) {
+            aceptar();
+            System.exit(0);
+        }
+    }
 
-	private boolean operador_aritmetico() {
-		return (token == -21 || token == -22 || token == -24 || token == -25 || token == -27);
-	}
+    // este metodo sirve para el bloque de operaciones dentro del begin como por
+    // ejmplo:
+    // uno& := 10 + ( 39 * dos& ) ;
+    // cinco$ := ( uno& <= 10 );
+    private void asignacion() {
+        Token tokenActual = tokens.get(indice);
+        if (identificador(tokenActual.getValorTablaTokens())) {
+            avanza();
+            tokenActual = tokens.get(indice);
+            if (tokenActual.getValorTablaTokens() == -26) { // Token de asignación :=
+                avanza();
+                if (expresion()) {
+                    tokenActual = tokens.get(indice);
+                    if (tokenActual.getValorTablaTokens() == -75) { // Token de ;
+                        avanza();
+                    } else {
+                        error("Se esperaba ';' después de la expresión. Lexema: " + tokenActual.getLexema()
+                                + ", Línea: " + tokenActual.getNumeroLinea());
+                    }
+                } else {
+                    error("Error en la expresión. Lexema: " + tokenActual.getLexema() + ", Línea: "
+                            + tokenActual.getNumeroLinea());
+                }
+            } else {
+                error("Se esperaba ':=' después del identificador. Lexema: " + tokenActual.getLexema() + ", Línea: "
+                        + tokenActual.getNumeroLinea());
+            }
+        } else {
+            error("Se esperaba un identificador válido. Lexema: " + tokenActual.getLexema() + ", Línea: "
+                    + tokenActual.getNumeroLinea());
+        }
+    }
 
-	private boolean constante() {
-		return (token == -61 || token == -62 || token == -63 || token == -64 || token == -65);
-	}
+    // este metodo valida que cualquier expresion(aritmetoca, logica, relacionales)
+    // sea valida
+    private boolean expresion() {
+        if (termino()) {
+            while (opRelacionales(tokens.get(indice).getValorTablaTokens()) || opAritmeticos(tokens.get(indice).getValorTablaTokens())
+                    || opLogicos(tokens.get(indice).getValorTablaTokens())) { // Verificar cualquier operador relacional
+                avanza();
+                if (!termino()) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 
-	private boolean asignacion() {
-		if (identificador()) {
-			avanzar();
-			if (token == -26) {
-				avanzar();
-				if (expresion()) {
-					if (token == -75) {
-						avanzar();
-						return true;
-					} else {
-						if(!error){
-							System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba un ';'");
-							error = true;
-						}
-						return false;
-					}
-				}
-			} else {
-				if(!error){
-					System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba un ':='");
-					error = true;
-				}
-				return false;
-			}
-		} else {
-			if(!error){
-				System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": " +
-						tokens.get(puntero).getLexema() + " no es un identificador valido");
-				error = true;
-			}
-			return false;
-		}
-		return false;
-	}
+    private boolean termino() {
+        Token tokenActual; // Obtener el token actual
+        if (factor()) {
+            tokenActual = tokens.get(indice);
+            while (opRelacionales(tokenActual.getValorTablaTokens()) || opAritmeticos(tokenActual.getValorTablaTokens())
+                    || opLogicos(tokenActual.getValorTablaTokens())) {
+                avanza();
+                if (!factor()) {
+                    return false;
+                }
+                tokenActual = tokens.get(indice);
+            }
+            return true;
+        }
+        return false;
+    }
 
-	private boolean expresion() {
-		if (termino()) {
-			if (operador_logico()) {
-				avanzar();
-				return termino();
-			} else {
-				if (constante() || identificador() || token == -75 || token == -74)
-					return true;
-				if(!error){
-					System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba un operador logico");
-					error = true;
-				}
-				return false;
-			}
-		}
-		return false;
-	}
+    private boolean factor() {
+        Token tokenActual = tokens.get(indice);
+        if (operandos(tokenActual.getValorTablaTokens())) { // Número o identificador
+            avanza();
+            return true;
+        } else if (tokenActual.getValorTablaTokens() == -73) { // Paréntesis (
+            avanza();
+            if (expresion()) {
+                tokenActual = tokens.get(indice);
+                if (tokenActual.getValorTablaTokens() == -74) { // Paréntesis )
+                    avanza();
+                    return true;
+                } else {
+                    error("Se esperaba ')' después de la expresión. Lexema: " + tokenActual.getLexema() + ", Línea: "
+                            + tokenActual.getNumeroLinea());
+                    return false;
+                }
+            } else {
+                error("Error en la expresión dentro del paréntesis. Lexema: " + tokenActual.getLexema() + ", Línea: "
+                        + tokenActual.getNumeroLinea());
+                return false;
+            }
+        } else if (tokenActual.getValorTablaTokens() == -43) {
+            avanza();
+            tokenActual = tokens.get(indice);
+            if (identificador(tokenActual.getValorTablaTokens())) {
+                avanza();
+                return true;
+            } else {
+                error("Se esperaba un identificador '." + ", Línea: " + tokenActual.getNumeroLinea());
+                return false;
+            }
+        } else {
+            error("Se esperaba un factor válido. Lexema: " + tokenActual.getLexema() + ", Línea: "
+                    + tokenActual.getNumeroLinea());
+            return false;
+        }
+    }
 
-	private boolean termino() {
-		if (factor()) {
-			if (operador_aritmetico()) {
-				avanzar();
-				return termino();
-			} else {
-				if (token == -73 || token == -43) {
-					if(!error){
-						System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba un operador aritmetico");
-						error = true;
-					}
-					return false;
-				}
-				if (constante() || identificador())
-					return true;
-				return true;
-			}
-		}
-		return false;
-	}
+    private void ifEstructura() {
+        avanza();
+        Token tokenActual = tokens.get(indice);
+        if (tokenActual.getValorTablaTokens() != -73)
+            error("Se esperaba '(' en la línea " + tokenActual.getNumeroLinea());
+        condicion();
+        tokenActual = tokens.get(indice);
+        if (tokenActual.getValorTablaTokens() != -74)
+            error("Se esperaba ')' en la línea " + tokenActual.getNumeroLinea());
+        avanza();
+        tokenActual = tokens.get(indice);
+        if (tokenActual.getValorTablaTokens() != -16)
+            error("Se esperaba la palabra clave 'then' en la línea " + tokenActual.getNumeroLinea());
+        avanza();
+        tokenActual = tokens.get(indice);
+        if (tokenActual.getValorTablaTokens() != -2)
+            error("Se esperaba la palabra clave 'begin' en la línea " + tokenActual.getNumeroLinea());
+        avanza();
+        estructuraSentencias();
+        avanza();
+        tokenActual = tokens.get(indice);
+        if (tokenActual.getValorTablaTokens() == -7)
+            elseEstructura();
+    }
 
-	private boolean factor() {
-		if (constante() || identificador()) {
-			avanzar();
-			return true;
-		} else if (token == -73) {
-			avanzar();
-			if (expresion()) {
-				if (token == -74) {
-					avanzar();
-					return true;
-				} else {
-					if(!error){
-						System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba un ')'");
-						error = true;
-					}
-					return false;
-				}
-			}
-		} else if (token == -43) {
-			avanzar();
-			return factor();
-		} else {
-			if(!error){
-				System.err.println("Error en la linea " + tokens.get(puntero).getNumeroLinea() + ": Se esperaba un operador");
-				error = true;
-			}
-			return false;
-		}
-		return false;
-	}
-}
+    private void comprobarSentencias(Token tokenActual) {
+        switch (tokenActual.getValorTablaTokens()) {
+            case -4 -> lectura(); // Esto verifica la estructura de un read
+            case -5 -> writeEstructura(); // Esto verifica la estructura de un write
+            case -6 -> ifEstructura();
+            case -7 -> error("Se esperaba un 'if' en la línea " + tokenActual.getNumeroLinea()); // Esto verifica la estructura
+            // de un else
+            case -8, -9 -> repetitivas(); // Esto verifica la estructura de un while
+            case -51, -52, -53, -54 -> asignacion(); // Esto verifica la estructura de una asignacion
+            default -> error("Se esperaba una sentencia válida en la línea " + tokenActual.getNumeroLinea());
+        }
+    }
+
+    private void condicion() {
+        avanza();
+        Token tokenActual = tokens.get(indice);
+        if (tokenActual.getValorTablaTokens() == -43 && identificador(proximoToken.getValorTablaTokens())) {
+            avanza();
+            tokenActual = tokens.get(indice);
+        } else if (tokenActual.getValorTablaTokens() == -43 && !identificador(proximoToken.getValorTablaTokens())) {
+            error("Se esperaba un identificador en la línea " + tokenActual.getNumeroLinea());
+        }
+        if (identificador(tokenActual.getValorTablaTokens()) || isConstante(tokenActual.getValorTablaTokens())) {
+            avanza();
+            tokenActual = tokens.get(indice);
+            if (isOperando(tokenActual.getValorTablaTokens()))
+                aritmetica();
+            if (isLogical(tokenActual.getValorTablaTokens()))
+                logica();
+        } else if (tokenActual.getValorTablaTokens() == -73) {
+            condicion();
+            avanza();
+            tokenActual = tokens.get(indice);
+            if (tokenActual.getValorTablaTokens() == -74)
+                return;
+            if (tokenActual.getValorTablaTokens() == -73) {
+                condicion();
+                avanza();
+                tokenActual = tokens.get(indice);
+            }
+        } else {
+            error("Se esperaba un identificador o una constante en la línea " + tokenActual.getNumeroLinea());
+        }
+        if (tokenActual.getValorTablaTokens() == -74)
+            avanza();
+    }
+
+    private void aritmetica() {
+        Token tokenActual;
+        avanza();
+        tokenActual = tokens.get(indice);
+        if (!identificador(tokenActual.getValorTablaTokens()) && !isConstante(tokenActual.getValorTablaTokens()))
+            error("Se esperaba un identificador o una constante en la línea " + tokenActual.getNumeroLinea());
+        avanza();
+        tokenActual = tokens.get(indice);
+        if (isOperando(tokenActual.getValorTablaTokens())) {
+            aritmetica();
+            return;
+        }
+        if (tokenActual.getValorTablaTokens() != -35)
+            error("Se esperaba un '==' en la línea " + tokenActual.getNumeroLinea());
+        avanza();
+        tokenActual = tokens.get(indice);
+        if (!identificador(tokenActual.getValorTablaTokens()) && !isConstante(tokenActual.getValorTablaTokens()))
+            error("Se esperaba un identificador o una constante en la línea " + tokenActual.getNumeroLinea());
+        avanza();
+        tokenActual = tokens.get(indice);
+        if (isOperando(tokenActual.getValorTablaTokens()))
+            aritmetica();
+        if (isLogical(tokenActual.getValorTablaTokens()))
+            logica();
+    }
+
+    public void logica() {
+        Token tokenActual;
+        avanza();
+        tokenActual = tokens.get(indice);
+        if (tokenActual.getValorTablaTokens() == -43) {
+            avanza();
+            tokenActual = tokens.get(indice);
+            if (!identificador(tokenActual.getValorTablaTokens()))
+                error("Se esperaba un identificador en la línea " + tokenActual.getNumeroLinea());
+        }
+        if (tokenActual.getValorTablaTokens() == -73) {
+            condicion();
+            avanza();
+            return;
+        }
+        if (!identificador(tokenActual.getValorTablaTokens()) && !isConstante(tokenActual.getValorTablaTokens()))
+            error("Se esperaba un identificador o una constante en la línea " + tokenActual.getNumeroLinea());
+        avanza();
+        tokenActual = tokens.get(indice);
+        if (isLogical(tokenActual.getValorTablaTokens()))
+            logica();
+        if (isOperando(tokenActual.getValorTablaTokens()))
+            aritmetica();
+    }
+
+    private void elseEstructura() {
+        Token tokenActual = tokens.get(indice);
+        if (tokenActual.getValorTablaTokens() != -7)
+            error("Se esperaba la palabra clave 'else' en la línea " + tokenActual.getNumeroLinea());
+        avanza();
+        tokenActual = tokens.get(indice);
+        if (tokenActual.getValorTablaTokens() != -2)
+            error("Se esperaba la palabra clave 'begin' en la línea " + tokenActual.getNumeroLinea());
+        avanza();
+        estructuraSentencias();
+        tokenActual = tokens.get(indice);
+        if (tokenActual.getValorTablaTokens() != -3)
+            error("Se esperaba la palabra clave 'end' en la línea " + tokenActual.getNumeroLinea());
+        avanza();
+    }
+
+    ////////// Estructuras repetitivas
+
+    private void repetitivas() {
+        Token tokenActual = tokens.get(indice);
+        switch (tokenActual.getValorTablaTokens()) {
+            case -8:
+                whileEstructura();
+                break;
+            case -9:
+                repeatEstructura();
+                break;
+            default:
+                error("Se esperaba una estructura repetitiva en la linea " + tokenActual.getNumeroLinea());
+        }
+    }
+
+    public void whileEstructura() {
+        avanza();
+        Token tokenActual = tokens.get(indice);
+        if (tokenActual.getValorTablaTokens() == -73) {
+            condicion();
+            avanza();
+            tokenActual = tokens.get(indice);
+            if (tokenActual.getValorTablaTokens() == -17) {
+                avanza();
+                tokenActual = tokens.get(indice);
+                if (tokenActual.getValorTablaTokens() == -2) {
+                    avanza();
+                    estructuraSentencias();
+                    tokenActual = tokens.get(indice);
+                    if (tokenActual.getValorTablaTokens() == -3) {
+                        avanza();
+                        // Aqui se regresa a la condicion
+                    } else
+                        error("Se esperaba la palabra clave 'end' en la linea " + tokenActual.getNumeroLinea());
+                } else {
+                    error("Se esperaba la palabra clave 'begin' en la linea " + tokenActual.getNumeroLinea());
+                }
+            } else {
+                error("Se esperaba la palabra clave 'do' en la linea " + tokenActual.getNumeroLinea());
+            }
+
+        }
+    }
+
+    public void repeatEstructura() {
+        avanza();
+        Token tokenActual = tokens.get(indice);
+        if (tokenActual.getValorTablaTokens() == -2) {
+            avanza();
+            estructuraSentencias();
+            tokenActual = tokens.get(indice);
+            if (tokenActual.getValorTablaTokens() == -3) {
+                avanza();
+                tokenActual = tokens.get(indice);
+                if (tokenActual.getValorTablaTokens() == -10) {
+                    avanza();
+                    tokenActual = tokens.get(indice);
+                    if (tokenActual.getValorTablaTokens() == -73) {
+                        condicion();
+                        tokenActual = tokens.get(indice);
+                        if (tokenActual.getValorTablaTokens() == -74) {
+                            avanza();
+                            tokenActual = tokens.get(indice);
+                            if (tokenActual.getValorTablaTokens() == -75) {
+                                avanza();
+                            } else {
+                                error("Se esperaba la palabra clave ';' en la linea " + tokenActual.getNumeroLinea());
+                            }
+                        } else {
+                            error("Se esperaba la palabra clave ')' en la linea " + tokenActual.getNumeroLinea());
+                        }
+                    } else {
+                        error("Se esperaba la palabra clave '(' en la linea " + tokenActual.getNumeroLinea());
+                    }
+                } else {
+                    error("Se esperaba la palabra clave 'until' en la linea " + tokenActual.getNumeroLinea());
+                }
+            } else {
+                error("Se esperaba la palabra clave 'end' en la linea " + tokenActual.getNumeroLinea());
+            }
+        } else {
+            error("Se esperaba la palabra clave 'begin' en la linea " + tokenActual.getNumeroLinea());
+        }
+    }
+
+    @SuppressWarnings("unlikely-arg-type")
+    private void lectura() {
+        Token tokenActual = tokens.get(indice);
+        if (tokenActual.getValorTablaTokens() == -4) {
+            avanza();
+            tokenActual = tokens.get(indice);
+            if (tokenActual.getValorTablaTokens() == -73) {
+                avanza();
+                tokenActual = tokens.get(indice);
+                if (isPrintable(tokenActual.getValorTablaTokens())) {
+                    avanza();
+                    tokenActual = tokens.get(indice);
+                    if (tokenActual.getValorTablaTokens() == -74) {
+                        avanza();
+                        tokenActual = tokens.get(indice);
+                        if (tokenActual.getValorTablaTokens() == -75) {
+                            avanza();
+                            // Aqui se regresa a la condicion
+                        } else {
+                            error("Se esperaba la palabra ';' en la linea " + tokenActual.getNumeroLinea());
+                        }
+                    } else {
+                        error("Se esperaba la palabra ')' en la linea " + tokenActual.getNumeroLinea());
+                    }
+                }
+            } else {
+                error("Se esperaba la palabra '(' en la linea " + tokenActual.getNumeroLinea());
+            }
+        } else {
+            error("Se esperaba la palabra 'read' en la linea " + tokenActual.getNumeroLinea());
+        }
+    }
+
+    private boolean isOperando(int token) {
+        return token <= -21 && token >= -25;
+    }
+
+    private boolean isLogical(int token) {
+        return token <= -31 && token >= -42;
+    }
+
+    private void writeEstructura() {
+        avanza();
+        Token tokenActual = tokens.get(indice);
+        if (tokenActual.getValorTablaTokens() != -73)
+            error("Se esperaba '(' en la línea " + tokenActual.getNumeroLinea());
+        avanza();
+        tokenActual = tokens.get(indice);
+        if (!isPrintable(tokenActual.getValorTablaTokens()))
+            error("Se esperaba un identificador o un literal en la línea " + tokenActual.getNumeroLinea());
+        avanza();
+        tokenActual = tokens.get(indice);
+        if (tokenActual.getValorTablaTokens() != -74)
+            error("Se esperaba ')' en la línea " + tokenActual.getNumeroLinea());
+        avanza();
+        tokenActual = tokens.get(indice);
+        if (tokenActual.getValorTablaTokens() != -75)
+            error("Se esperaba ';' en la línea " + tokenActual.getNumeroLinea());
+        avanza();
+    }
+
+    private void estructuraSentencias() {
+        Token tokenActual = tokens.get(indice);
+        comprobarSentencias(tokenActual);
+        tokenActual = tokens.get(indice);
+        if (tokenActual.getValorTablaTokens() == -3)
+            return;
+        else
+            estructuraSentencias();
+    }
+
+    private boolean isPrintable(int token) {
+        return identificador(token) || isConstante(token);
+    }
+
+    private boolean isConstante(int token) {
+        return token >= -65 && token <= -61;
+    }
+
+    private boolean tipoDato(int token) {
+        return token == -11 || token == -12 || token == -13 || token == -14;
+    }
+
+    private boolean identificador(int token) {
+        return token <= -51 && token >= -54;
+    }
+
+    private boolean operandos(int token) {
+        return identificador(token) || token == -61 || token == -62 || token == -63 || token == -64 || token == -65;
+    }
+
+    private boolean opAritmeticos(int token) {
+        return token == -21 || token == -22 || token == -23 || token == -24 || token == -25 || token == -27;
+    }
+
+    private boolean opRelacionales(int token) {
+        return token == -31 || token == -32 || token == -33 || token == -34 || token == -35 || token == -36;
+    }
+
+    private boolean opLogicos(int token) {
+        return token == -41 || token == -42;
+    }
+}//fin d ela clase

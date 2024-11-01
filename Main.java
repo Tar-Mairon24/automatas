@@ -50,15 +50,10 @@ public class Main {
         }
 
         lexemas = lexico.getTokens();
-        AnalizadorSintactico analizadorSintactico = new AnalizadorSintactico(lexemas);
+        AnalizadorSintactico analizadorSintactico;
 
         if(lexico.notErrorLexico()){
-            if(analizadorSintactico.analizar() ) {
-                System.out.println("El programa se ha compilado correctamente");
-            }
-            else {
-                System.err.println("No se puede compilar el programa por errores sintacticos");
-            }
+            analizadorSintactico = new AnalizadorSintactico(lexemas);
         }
 
         sc.close();

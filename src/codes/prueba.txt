@@ -1,6 +1,6 @@
 program pruebagral?;
 var
-real : suma, promedio%, a_1&, valor$;
+real : suma%, promedio%, a_1&, valor$;
 int : a_1&, dos&, tres&;
 
 bool : valor$, b$ ;
@@ -11,7 +11,7 @@ dos& := 38.6;
 a_1& := (10 % tres& ) / promedio%;   
 read(valor$);
 
-if((dos& >= tres& )  && ( b$ == true)) then
+if(dos& >= tres&  && b$ == true) then
 begin
     write ( "mayor");
 end
@@ -26,7 +26,7 @@ repeat
 begin
     tres& := dos& * 45 / 23 ;
     write (tres&);
-    if(( dos& >= tres&)  && ( b$ == true)) then
+    if( dos& >= tres&  &&  b$ == true) then
     begin
         write ( "mayor");
     end
