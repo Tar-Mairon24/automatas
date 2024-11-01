@@ -67,4 +67,3 @@ else
     write(noPrimo#);
     end
 
-end

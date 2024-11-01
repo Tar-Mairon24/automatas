@@ -7,13 +7,13 @@ public class AnalizadorSintactico {
     private final ArrayList<Token> tokens;
     private int indice;
     private Token proximoToken;
-
+    private boolean errorSintactico;
 
     public AnalizadorSintactico(ArrayList<Token> tokens) {
         this.tokens = tokens;
         this.indice = 0;
         this.proximoToken = null;
-        analizar();
+        this.errorSintactico = false;
     }
 
     public void analizar() {
@@ -48,6 +48,7 @@ public class AnalizadorSintactico {
 
     private void error(String mensaje) {
         System.out.println((char) 27 + "[31m" + "ERROR SINTACTICO! " + mensaje);
+        errorSintactico = true;
         System.exit(1);
     }
 
@@ -141,8 +142,6 @@ public class AnalizadorSintactico {
         if (tokenActual.getValorTablaTokens() != -2)
             error("Se esperaba la palabra clave 'begin' en la línea " + tokenActual.getNumeroLinea());
         avanza();
-        /* Originalmente era un while pero lo cambie por el metodo recursivo */
-        estructuraSentencias();
         tokenActual = tokens.get(indice);
         // Se verifica que termine con un end
         if (indice == tokens.size() - 1 && tokenActual.getValorTablaTokens() != -3)
@@ -484,7 +483,6 @@ public class AnalizadorSintactico {
         }
     }
 
-    @SuppressWarnings("unlikely-arg-type")
     private void lectura() {
         Token tokenActual = tokens.get(indice);
         if (tokenActual.getValorTablaTokens() == -4) {

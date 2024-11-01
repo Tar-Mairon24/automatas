@@ -56,6 +56,7 @@ public class practica5 {
 
         // Creamos un nuevo analizador sintáctico con la lista de tokens
         analizadorSintactico = new AnalizadorSintactico(tokens);
+        analizadorSintactico.analizar();
     }
 }
 

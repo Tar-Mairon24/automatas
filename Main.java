@@ -9,16 +9,20 @@ import lexico.ManejoArchivo;
 import lexico.Linea;
 import sintactico.AnalizadorSintactico;
 import utils.Token;
+import semantico.AnalizadorSemantico;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         String nombre = "";
         Scanner sc = new Scanner(System.in);
         nombre = sc.nextLine();
+        boolean errorSintactico = false;
         
 
         ManejoArchivo ma = new ManejoArchivo();
         AnalizadorLexico lexico = new AnalizadorLexico();
+        AnalizadorSintactico analizadorSintactico;
+        AnalizadorSemantico analizadorSemantico;
         ArrayList<Linea> lineas;
         ArrayList<Token> lexemas;
 
@@ -50,11 +54,14 @@ public class Main {
         }
 
         lexemas = lexico.getTokens();
-        AnalizadorSintactico analizadorSintactico;
+        analizadorSintactico = new AnalizadorSintactico(lexemas);
 
         if(lexico.notErrorLexico()){
-            analizadorSintactico = new AnalizadorSintactico(lexemas);
+            analizadorSintactico.analizar();
         }
+
+        analizadorSemantico = new AnalizadorSemantico(lexemas);
+        analizadorSemantico.analizar();
 
         sc.close();
     }
