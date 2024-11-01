@@ -16,12 +16,16 @@ public class AnalizadorSintactico {
         this.errorSintactico = false;
     }
 
+    public boolean getErrotSintactico() {
+        return errorSintactico;
+    }
+
     public void analizar() {
         try {
             encabezado();
             declaraciones(false);
             estructuraPrograma();
-            error("No se esperaba la palabra clave 'end' en la línea " + tokens.get(indice).getNumeroLinea());
+            //error("No se esperaba la palabra clave 'end' en la línea " + tokens.get(indice).getNumeroLinea());
         } catch (Exception e) {
             if (e instanceof IndexOutOfBoundsException || e instanceof NullPointerException)
                 error("Se esperaba end para finalizar el programa en la linea "
@@ -47,13 +51,14 @@ public class AnalizadorSintactico {
     }
 
     private void error(String mensaje) {
-        System.out.println((char) 27 + "[31m" + "ERROR SINTACTICO! " + mensaje);
+        System.out.println((char) 27 + "[31m" + "ERROR SINTACTICO! " + mensaje  + (char) 27 + "[0m");
         errorSintactico = true;
         System.exit(1);
     }
 
     private void aceptar() {
-        System.out.println((char) 27 + "[32m" + "El análisis sintáctico ha finalizado sin errores.");
+        System.out.println((char) 27 + "[32m" + "El análisis sintáctico ha finalizado sin errores." + (char) 27 + "[0m");
+        //System.out.println("El análisis sintáctico ha finalizado sin errores.");
         System.out.printf("El programa es correcto\n");
     }
 
@@ -142,6 +147,8 @@ public class AnalizadorSintactico {
         if (tokenActual.getValorTablaTokens() != -2)
             error("Se esperaba la palabra clave 'begin' en la línea " + tokenActual.getNumeroLinea());
         avanza();
+        /* Originalmente era un while pero lo cambie por el metodo recursivo */
+        estructuraSentencias();
         tokenActual = tokens.get(indice);
         // Se verifica que termine con un end
         if (indice == tokens.size() - 1 && tokenActual.getValorTablaTokens() != -3)
@@ -149,7 +156,7 @@ public class AnalizadorSintactico {
         // Si termina con un end se termina el programa sin errores
         if (tokenActual.getValorTablaTokens() == -3 && indice == tokens.size() - 1) {
             aceptar();
-            System.exit(0);
+            return;
         }
     }
 

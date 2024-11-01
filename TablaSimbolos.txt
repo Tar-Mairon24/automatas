@@ -1,0 +1,9 @@
+suma%	-52	0	0	0		pruebagral?
+promedio%	-52	0	0	0		pruebagral?
+a_1%	-52	0	0	0		pruebagral?
+valor%	-52	0	0	0		pruebagral?
+a_1&	-51	0	0	0		pruebagral?
+dos&	-51	0	0	0		pruebagral?
+tres&	-51	0	0	0		pruebagral?
+valor$	-54	0	0	0		pruebagral?
+b$	-54	0	0	0		pruebagral?

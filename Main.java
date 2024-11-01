@@ -61,6 +61,7 @@ public class Main {
         }
 
         analizadorSemantico = new AnalizadorSemantico(lexemas);
+
         analizadorSemantico.analizar();
 
         sc.close();
