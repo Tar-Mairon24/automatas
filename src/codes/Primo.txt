@@ -1,50 +1,50 @@
 program Primo?;
 var
 
-int: x&, i&;
-real: raiz%, suposicion%, abs_suposicion%;
+int: i&;
+real: x%, raiz%, suposicion%, abs_suposicion%;
 bool: siRaiz$, primo$;
 string: siPrimo#, noPrimo#;
 
 begin
 
-//calcular la raiz cuadrada de x&, el resultado es suposicion%
-if(x& < 0) then
+//calcular la raiz cuadrada de x%, el resultado es suposicion%
+if(x% < 0) then
     begin
-    siRtaiz$ := false;
+    siRaiz$ := false;
     end
 else
     begin
-    if(x& == 0) then
+    if(x% == 0) then
         begin   
         raiz% := 0;
         end
-    suposicion% := x& / 2.0;
-    abs_suposicion% := suposicion% * suposicion% - x&;
+    suposicion% := x% / 2.0;
+    abs_suposicion% := suposicion% * suposicion% - x%;
     if(abs_suposicion% < 0) then
         begin
         abs_suposicion% := abs_suposicion% * -0.1;
         end
     while(abs_suposicion% > 0.00000001) do
         begin
-        suposicion% := ( suposicion% + x& / suposicion% ) / 2.0;
+        suposicion% := ( suposicion% + x% / suposicion% ) / 2.0;
         end
     end 
 
 //Aqui ya calculamos lo que seria si es primo o no
 //como servirian librerias y funciones
 
-if(x& <= 1) then
+if(x% <= 1) then
     begin
     primo$ := false;
     end
-if(x& == 2) then
+if(x% == 2) then
     begin 
     primo$ := true;
     end
 while(i& <= suposicion%) do
     begin
-    if(x& == 0) then
+    if(x% == 0) then
         begin
         primo$ := false;
         end

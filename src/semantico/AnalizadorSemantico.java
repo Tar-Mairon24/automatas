@@ -28,7 +28,9 @@ public class AnalizadorSemantico {
     public void analizar(){
         Token tokenActual = tokens.get(indice);
         boolean entero = false, real = false, string = false, bool = false;
-        while(tokenActual.getValorTablaTokens() != -2){
+
+        // Aqui se guardan todas las variables declaradas en la tabla de simbolos
+        while(!salirDeclaratoria){
             tokenActual = tokens.get(indice);
             //System.out.println(tokenActual.toString());
             Simbolo simbolo;
@@ -51,7 +53,7 @@ public class AnalizadorSemantico {
             if(tokenActual.getEsIdentificador() == -2 && entero){ 
                 if(tokenActual.getValorTablaTokens() == -51){
                     simbolo = new Simbolo(tokenActual.getLexema(), tokenActual.getValorTablaTokens(),
-                                            0, 0, 0, "", ambito);
+                                            "0", 0, 0, "", ambito);
                     simbolos.add(simbolo);
                 } else {
                     error("usar un identificador de enteros para tipo int (debe terminar con &) en linea:" + tokenActual.getNumeroLinea());
@@ -62,7 +64,7 @@ public class AnalizadorSemantico {
             if(tokenActual.getEsIdentificador() == -2 && real){ 
                 if(tokenActual.getValorTablaTokens() == -52){
                     simbolo = new Simbolo(tokenActual.getLexema(), tokenActual.getValorTablaTokens(),
-                                            0, 0, 0, "", ambito);
+                                            "0", 0, 0, "", ambito);
                     simbolos.add(simbolo);
                 } else {
                     error("usar un identificador de reales para tipo real (debe terminar con %) en linea:" + tokenActual.getNumeroLinea());
@@ -73,7 +75,7 @@ public class AnalizadorSemantico {
             if(tokenActual.getEsIdentificador() == -2 && string){ 
                 if(tokenActual.getValorTablaTokens() == -53){
                     simbolo = new Simbolo(tokenActual.getLexema(), tokenActual.getValorTablaTokens(),
-                                            0, 0, 0, "", ambito);
+                                            "null", 0, 0, "", ambito);
                     simbolos.add(simbolo);
                 } else {
                     error("usar un identificador de cadenas para tipo string (debe terminar con %) en linea:" + tokenActual.getNumeroLinea());
@@ -84,7 +86,7 @@ public class AnalizadorSemantico {
             if(tokenActual.getEsIdentificador() == -2 && bool){ 
                 if(tokenActual.getValorTablaTokens() == -54){
                     simbolo = new Simbolo(tokenActual.getLexema(), tokenActual.getValorTablaTokens(),
-                                            0, 0, 0, "", ambito);
+                                            "null", 0, 0, "", ambito);
                     simbolos.add(simbolo);
                 } else {
                     error("usar un identificador boolean para tipo bool (debe terminar con $) en linea:" + tokenActual.getNumeroLinea());
@@ -103,10 +105,18 @@ public class AnalizadorSemantico {
             if (indice >= tokens.size()) {
                 break; // Avoid IndexOutOfBoundsException
             }
+
+            if(tokens.get(indice).getValorTablaTokens() == -2){
+                salirDeclaratoria = true;
+            }
         }
         
-
+        indice = 0;
+        Token siguienteToken = tokens.get(indice);
         for(Token token : tokens){
+            if(indice + 1 < tokens.size()){
+                siguienteToken = tokens.get(indice + 1);
+            }
             if(token.getEsIdentificador() == -2 ){
                 if(token.getValorTablaTokens() != -55){
                     if(!isTokenInSimbolos(token.getLexema())){
@@ -115,7 +125,37 @@ public class AnalizadorSemantico {
                 }
             }
             if(salirDeclaratoria){
-                if(token.getEsIdentificador() == -2){
+                if(enLinea){
+                    if(token.getEsIdentificador() == -2){
+                        if(token.getValorTablaTokens() != -51 && entero){
+                            error("usar un identificador de enteros para tipo int (debe terminar con &) en linea:" + token.getNumeroLinea());
+                        }
+                        if(token.getValorTablaTokens() != -52 && real){
+                            error("usar un identificador de reales para tipo real (debe terminar con %) en linea:" + token.getNumeroLinea());
+                        }
+                        if(token.getValorTablaTokens() != -53 && string){
+                            error("usar un identificador de cadenas para tipo string (debe terminar con %) en linea:" + token.getNumeroLinea());
+                        }
+                        if(token.getValorTablaTokens() != -54 && bool){
+                            error("usar un identificador boolean para tipo bool (debe terminar con $) en linea:" + token.getNumeroLinea());
+                        }
+                    }
+                    if(esConstante(token.getValorTablaTokens())){
+                        if(token.getValorTablaTokens() != -61 && entero){
+                            error("solo se pueden asginar constantes enteras a variables enteras en linea:" + token.getNumeroLinea());
+                        }
+                        if(token.getValorTablaTokens() != -62 && real){
+                            error("solo se pueden asginar constantes reales a variables reales en linea:" + token.getNumeroLinea());
+                        }
+                        if(token.getValorTablaTokens() != -63 && string){
+                            error("solo se pueden asginar constantes de cadena a variables de cadena en linea:" + token.getNumeroLinea());
+                        }
+                        if((token.getValorTablaTokens() != -64 || token.getValorTablaTokens() != 65) && bool){
+                            error("solo se pueden asginar constantes booleanas a variables booleanas en linea:" + token.getNumeroLinea());
+                        }
+                    }
+                }
+                if(token.getEsIdentificador() == -2 && siguienteToken.getValorTablaTokens() == -26){
                     switch(token.getValorTablaTokens()){
                         case -51 -> entero = true;
                         case -52 -> real = true;
@@ -131,43 +171,9 @@ public class AnalizadorSemantico {
                     bool = false;
                     enLinea = false;
                 }
-                if(enLinea){
-                    if(token.getEsIdentificador() == -2 && entero){
-                        if(token.getValorTablaTokens() != -51){
-                            error("solo se pueden asignar identificadores tipo entero. En Linea:" + token.getNumeroLinea());
-                        }
-                        if(token.getValorTablaTokens() != -61 || token.getValorTablaTokens() != -62){
-                            error("solo se pueden asignar numeros a identificadores tipo entero. En Linea:" + token.getNumeroLinea());
-                        }
-                    if(token.getValorTablaTokens() == -2 && real){
-                        if(token.getValorTablaTokens() != -52){
-                            error("solo se pueden asignar identificadores tipo real. En Linea:" + token.getNumeroLinea());
-                        }
-                        if(token.getValorTablaTokens() != -61 || token.getValorTablaTokens() != -62){
-                            error("solo se pueden asignar numeros a identificadores tipo real. En Linea:" + token.getNumeroLinea());
-                        }
-                    }
-                    if(token.getEsIdentificador() == -2 && string){
-                        if(token.getValorTablaTokens() != -53){
-                            error("solo se pueden asignar identificadores tipo string. En Linea:" + token.getNumeroLinea());
-                        }
-                        if(token.getValorTablaTokens() != -63){
-                            error("solo se pueden asignar cadenas a identificadores tipo string. En Linea:" + token.getNumeroLinea());
-                        }
-                    }
-                    if(token.getEsIdentificador() == -2 && bool){
-                        if(token.getValorTablaTokens() != -54){
-                            error("solo se pueden asignar identificadores tipo boolean. En Linea:" + token.getNumeroLinea());
-                        }
-                        if(token.getValorTablaTokens() != -64 || token.getValorTablaTokens() != -65){
-                            error("solo se pueden asignar valores logicos a identificadores tipo real. En Linea:" + token.getNumeroLinea());
-                        }
-                    }
-                    
-                }
             }
+            indice++;
         }
-    }
 
         if(!errorSemantico){
             escribirTablaSimbolos("TablaSimbolos.txt", simbolos);
@@ -188,6 +194,10 @@ public class AnalizadorSemantico {
 
     private boolean tipoDato(int token) {
         return token == -11 || token == -12 || token == -13 || token == -14;
+    }
+
+    private boolean esConstante(int token) {
+        return token >= -61 && token <= -65;
     }
 
 

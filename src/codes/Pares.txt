@@ -19,7 +19,7 @@ repeat
         end
     if(m& > n&) then
         begin
-        if(temp_n& % 2) then
+        if(temp_n& % 2 == 0) then
             begin
             suma& := suma& + temp_n&;
             end
@@ -27,7 +27,7 @@ repeat
         end
     if(n& > m&) then
         begin
-        if(temp_m& % 2) then
+        if(temp_m& % 2 == 0) then
             begin
             suma& := suma& + temp_m&;
             end

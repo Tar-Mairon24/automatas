@@ -3,13 +3,14 @@ package semantico;
 public class Simbolo {
     String id;
     int token;  
-    int valor;
+    String valor;
     int d1;
     int d2;
     String ptr;
     String ambito;
 
-    public Simbolo(String id, int token, int valor, int d1, int d2, String ptr, String ambito) {
+
+    public Simbolo(String id, int token, String valor, int d1, int d2, String ptr, String ambito) {
         this.id = id;
         this.token = token;  
         this.valor = valor;

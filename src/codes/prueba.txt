@@ -1,37 +1,12 @@
 program pruebagral?;
 var
-real : suma%, promedio%, a_1%, valor%;
-int : a_1&, dos&, tres&;
-
-bool : valor$, b# ;
+int: x&;
 
 begin
 
-dos& := 38.6;
-a_1& := (10 % tres& ) / promedio%;   
-read(valor$);
-
-if(dos& >= tres&  && b$ == true) then
-begin
-    write ( "mayor");
-end
-else
-begin
-    read (a_1&);
-end
-
-read(dos&);
-
-repeat
-begin
-    tres& := dos& * 45 / 23 ;
-    write (tres&);
-    if( dos& >= tres&  &&  b$ == true) then
+if(x& % 2 == 0) then
     begin
-        write ( "mayor");
+    write("par");
     end
-    read(dos&);
-end
-until( dos& > 100);
 
 end

@@ -59,7 +59,7 @@ public class AnalizadorSintactico {
     private void aceptar() {
         System.out.println((char) 27 + "[32m" + "El análisis sintáctico ha finalizado sin errores." + (char) 27 + "[0m");
         //System.out.println("El análisis sintáctico ha finalizado sin errores.");
-        System.out.printf("El programa es correcto\n");
+        System.out.printf((char) 27 + "[32m" + "El programa es correcto\n" + (char) 27 + "[0m");
     }
 
     private void encabezado() {
@@ -339,6 +339,7 @@ public class AnalizadorSintactico {
 
     private void aritmetica() {
         Token tokenActual;
+
         avanza();
         tokenActual = tokens.get(indice);
         if (!identificador(tokenActual.getValorTablaTokens()) && !isConstante(tokenActual.getValorTablaTokens()))
@@ -523,7 +524,7 @@ public class AnalizadorSintactico {
     }
 
     private boolean isOperando(int token) {
-        return token <= -21 && token >= -25;
+        return token <= -21 && token >= -25 || token == -27;
     }
 
     private boolean isLogical(int token) {
