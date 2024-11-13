@@ -17,6 +17,7 @@ repeat
         begin
         suma& := 0;
         end
+    
     if(m& > n&) then
         begin
         if(temp_n& % 2 == 0) then

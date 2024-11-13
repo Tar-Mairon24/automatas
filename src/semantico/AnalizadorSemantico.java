@@ -112,68 +112,82 @@ public class AnalizadorSemantico {
         }
         
         indice = 0;
+        salirDeclaratoria = false;
         for(Token token : tokens){
-            boolean clausula = false, asignacion = false;
-            if(token.getEsIdentificador() == -2 ){
-                if(token.getValorTablaTokens() != -55){
-                    if(!isTokenInSimbolos(token.getLexema())){
-                        error("variable no declarada: " + token.getLexema() + " en linea:" + token.getNumeroLinea());
-                    }
-                }
+            if(token.getValorTablaTokens() == -2){
+                salirDeclaratoria = true;
             }
-            if(enLinea){
-                if(token.getEsIdentificador() == -2){
-                    if(token.getValorTablaTokens() != -51 && entero){
-                        error("usar un identificador de enteros para tipo int (debe terminar con &) en linea:" + token.getNumeroLinea());
-                    }
-                    if(token.getValorTablaTokens() != -52 && real){
-                        error("usar un identificador de reales para tipo real (debe terminar con %) en linea:" + token.getNumeroLinea());
-                    }
-                    if(token.getValorTablaTokens() != -53 && string){
-                        error("usar un identificador de cadenas para tipo string (debe terminar con %) en linea:" + token.getNumeroLinea());
-                    }
-                    if(token.getValorTablaTokens() != -54 && bool){
-                        error("usar un identificador boolean para tipo bool (debe terminar con $) en linea:" + token.getNumeroLinea());
+            if(salirDeclaratoria){
+                if(token.getEsIdentificador() == -2 ){
+                    if(token.getValorTablaTokens() != -55){
+                        if(!isTokenInSimbolos(token.getLexema())){
+                            error("variable no declarada: " + token.getLexema() + " en linea:" + token.getNumeroLinea());
+                        }
                     }
                 }
-                if(esConstante(token.getValorTablaTokens())){
-                    if(token.getValorTablaTokens() != -61 && entero){
-                        error("dato incompatible con variables enteras en linea:" + token.getNumeroLinea());
+                if(enLinea){
+                    if(token.getEsIdentificador() == -2){
+                        if(token.getValorTablaTokens() == -51 || token.getValorTablaTokens() == -52 && entero){
+                            
+                        } else if(entero){
+                            error("identificador: " + token.getLexema() + " no compatible para tipo en int (debe terminar con &) en linea:" + token.getNumeroLinea());
+                        }
+                        if(token.getValorTablaTokens() == -52 || token.getValorTablaTokens() == -51 && real){
+                            
+                        } else if(real){
+                            error("identificador: " + token.getLexema() + " no compatible para tipo real (debe terminar con %) en linea:" + token.getNumeroLinea());
+                        }
+                        if(token.getValorTablaTokens() != -53 && string){
+                            error("identificador: " + token.getLexema() + " no compatible para tipo string (debe terminar con %) en linea:" + token.getNumeroLinea());
+                        }
+                        if(token.getValorTablaTokens() != -54 && bool){
+                            error("identificador: " + token.getLexema() + " no compatible para tipo bool (debe terminar con $) en linea:" + token.getNumeroLinea());
+                        }
                     }
-                    if(token.getValorTablaTokens() != -62 && real){
-                        error("dato incompatible con variables reales en linea:" + token.getNumeroLinea());
-                    }
-                    if(token.getValorTablaTokens() != -63 && string){
-                        error("dato incompatible con variables de cadena en linea:" + token.getNumeroLinea());
-                    }
-                    if((token.getValorTablaTokens() != -64 || token.getValorTablaTokens() != 65) && bool){
-                        error("dato incompatible con a variables booleanas en linea:" + token.getNumeroLinea());
+                    if(esConstante(token.getValorTablaTokens())){
+                        if(token.getValorTablaTokens() == -61 || token.getValorTablaTokens() == -62 && entero){
+                            
+                        } else if (token.getValorTablaTokens() != -61 && entero){
+                            error("dato: " + token.getLexema() + " incompatible con enteros en linea:" + token.getNumeroLinea());
+                        }
+                        if(token.getValorTablaTokens() == -62 || token.getValorTablaTokens() == -61 && real){
+                            
+                        } else if(real){
+                            error("dato: " + token.getLexema() + " incompatible con reales en linea:" + token.getNumeroLinea());
+                        }
+                        if(token.getValorTablaTokens() != -63 && string){
+                            error("dato: " + token.getLexema() + " incompatible con cadenas en linea:" + token.getNumeroLinea());
+                        }
+                        if((token.getValorTablaTokens() == -64 || token.getValorTablaTokens() == -65) && bool){
+                            
+                        } else if (bool){
+                            error("dato: " + token.getLexema() + " incompatible con booleanos en linea:" + token.getNumeroLinea());
+                        }
                     }
                 }
+                if(token.getEsIdentificador() == -2 || esConstante(token.getValorTablaTokens())){
+                    switch(token.getValorTablaTokens()){
+                        case -51 -> entero = true;
+                        case -52 -> real = true;
+                        case -53 -> string = true; 
+                        case -54 -> bool = true;
+                        case -61 -> entero = true;
+                        case -62 -> real = true;
+                        case -63 -> string = true;
+                        case -64 -> bool = true;
+                        case -65 -> bool = true;
+                    }
+                    enLinea = true;
+                }
+                if(token.getValorTablaTokens() == -75 || token.getValorTablaTokens() == -2){
+                    entero = false;
+                    real = false;
+                    string = false;
+                    bool = false;
+                    enLinea = false;
+                }
+                indice++;
             }
-            if(token.getEsIdentificador() == -2){
-                switch(token.getValorTablaTokens()){
-                    case -51 -> entero = true;
-                    case -52 -> real = true;
-                    case -53 -> string = true; 
-                    case -54 -> bool = true;
-                }
-                if(token.getValorTablaTokens() == -6 || token.getValorTablaTokens() == -8 || token.getValorTablaTokens() == -10){
-                    clausula = true;
-                }
-                if(token.getValorTablaTokens() == -26){
-                    asignacion = true;
-                }
-                enLinea = true;
-            }
-            if(token.getValorTablaTokens() == -75 || token.getValorTablaTokens() == -2){
-                entero = false;
-                real = false;
-                string = false;
-                bool = false;
-                enLinea = false;
-            }
-            indice++;
         }
 
         if(!errorSemantico){
@@ -200,13 +214,6 @@ public class AnalizadorSemantico {
     private boolean esConstante(int token) {
         return token == -61 || token == -62 || token == -63 || token == -64 || token == -65;
     }
-
-    private boolean esOperador(int token) {
-        return token == -21 || token == -22 || token == -24 || token == -25 || token == -26 || token == -27 ||
-                token == -31 || token == -32 || token == -33 || token == -34 || token == -35 || token == -36 ||
-                token == -41 || token == -42 || token == -43;
-    }
-
 
     private void error(String mensaje) {
         System.out.println((char) 27 + "[31m" + "ERROR SEMANTICO! " + mensaje + (char) 27 + "[0m");

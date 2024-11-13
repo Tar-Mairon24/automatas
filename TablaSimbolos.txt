@@ -1,1 +1,9 @@
-x&	-51	0	0	0		pruebagral?
+i&	-51	0	0	0		Primo?
+x%	-52	0	0	0		Primo?
+raiz%	-52	0	0	0		Primo?
+suposicion%	-52	0	0	0		Primo?
+abs_suposicion%	-52	0	0	0		Primo?
+siRaiz$	-54	null	0	0		Primo?
+primo$	-54	null	0	0		Primo?
+siPrimo#	-53	null	0	0		Primo?
+noPrimo#	-53	null	0	0		Primo?

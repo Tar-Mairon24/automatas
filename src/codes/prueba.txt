@@ -1,11 +1,14 @@
 program pruebagral?;
 var
 int: x&;
+bool: b$;
 
 begin
 
+b$ := true;
+b$ := false;
 x& := 1;
-if(x& == false) then
+if(b$ == true) then
     begin
     write("si");
     end
