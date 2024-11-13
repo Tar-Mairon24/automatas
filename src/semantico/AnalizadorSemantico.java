@@ -112,11 +112,8 @@ public class AnalizadorSemantico {
         }
         
         indice = 0;
-        Token siguienteToken = tokens.get(indice);
         for(Token token : tokens){
-            if(indice + 1 < tokens.size()){
-                siguienteToken = tokens.get(indice + 1);
-            }
+            boolean clausula = false, asignacion = false;
             if(token.getEsIdentificador() == -2 ){
                 if(token.getValorTablaTokens() != -55){
                     if(!isTokenInSimbolos(token.getLexema())){
@@ -124,53 +121,57 @@ public class AnalizadorSemantico {
                     }
                 }
             }
-            if(salirDeclaratoria){
-                if(enLinea){
-                    if(token.getEsIdentificador() == -2){
-                        if(token.getValorTablaTokens() != -51 && entero){
-                            error("usar un identificador de enteros para tipo int (debe terminar con &) en linea:" + token.getNumeroLinea());
-                        }
-                        if(token.getValorTablaTokens() != -52 && real){
-                            error("usar un identificador de reales para tipo real (debe terminar con %) en linea:" + token.getNumeroLinea());
-                        }
-                        if(token.getValorTablaTokens() != -53 && string){
-                            error("usar un identificador de cadenas para tipo string (debe terminar con %) en linea:" + token.getNumeroLinea());
-                        }
-                        if(token.getValorTablaTokens() != -54 && bool){
-                            error("usar un identificador boolean para tipo bool (debe terminar con $) en linea:" + token.getNumeroLinea());
-                        }
+            if(enLinea){
+                if(token.getEsIdentificador() == -2){
+                    if(token.getValorTablaTokens() != -51 && entero){
+                        error("usar un identificador de enteros para tipo int (debe terminar con &) en linea:" + token.getNumeroLinea());
                     }
-                    if(esConstante(token.getValorTablaTokens())){
-                        if(token.getValorTablaTokens() != -61 && entero){
-                            error("solo se pueden asginar constantes enteras a variables enteras en linea:" + token.getNumeroLinea());
-                        }
-                        if(token.getValorTablaTokens() != -62 && real){
-                            error("solo se pueden asginar constantes reales a variables reales en linea:" + token.getNumeroLinea());
-                        }
-                        if(token.getValorTablaTokens() != -63 && string){
-                            error("solo se pueden asginar constantes de cadena a variables de cadena en linea:" + token.getNumeroLinea());
-                        }
-                        if((token.getValorTablaTokens() != -64 || token.getValorTablaTokens() != 65) && bool){
-                            error("solo se pueden asginar constantes booleanas a variables booleanas en linea:" + token.getNumeroLinea());
-                        }
+                    if(token.getValorTablaTokens() != -52 && real){
+                        error("usar un identificador de reales para tipo real (debe terminar con %) en linea:" + token.getNumeroLinea());
+                    }
+                    if(token.getValorTablaTokens() != -53 && string){
+                        error("usar un identificador de cadenas para tipo string (debe terminar con %) en linea:" + token.getNumeroLinea());
+                    }
+                    if(token.getValorTablaTokens() != -54 && bool){
+                        error("usar un identificador boolean para tipo bool (debe terminar con $) en linea:" + token.getNumeroLinea());
                     }
                 }
-                if(token.getEsIdentificador() == -2 && siguienteToken.getValorTablaTokens() == -26){
-                    switch(token.getValorTablaTokens()){
-                        case -51 -> entero = true;
-                        case -52 -> real = true;
-                        case -53 -> string = true; 
-                        case -54 -> bool = true;
+                if(esConstante(token.getValorTablaTokens())){
+                    if(token.getValorTablaTokens() != -61 && entero){
+                        error("dato incompatible con variables enteras en linea:" + token.getNumeroLinea());
                     }
-                    enLinea = true;
+                    if(token.getValorTablaTokens() != -62 && real){
+                        error("dato incompatible con variables reales en linea:" + token.getNumeroLinea());
+                    }
+                    if(token.getValorTablaTokens() != -63 && string){
+                        error("dato incompatible con variables de cadena en linea:" + token.getNumeroLinea());
+                    }
+                    if((token.getValorTablaTokens() != -64 || token.getValorTablaTokens() != 65) && bool){
+                        error("dato incompatible con a variables booleanas en linea:" + token.getNumeroLinea());
+                    }
                 }
-                if(token.getValorTablaTokens() == -75){
-                    entero = false;
-                    real = false;
-                    string = false;
-                    bool = false;
-                    enLinea = false;
+            }
+            if(token.getEsIdentificador() == -2){
+                switch(token.getValorTablaTokens()){
+                    case -51 -> entero = true;
+                    case -52 -> real = true;
+                    case -53 -> string = true; 
+                    case -54 -> bool = true;
                 }
+                if(token.getValorTablaTokens() == -6 || token.getValorTablaTokens() == -8 || token.getValorTablaTokens() == -10){
+                    clausula = true;
+                }
+                if(token.getValorTablaTokens() == -26){
+                    asignacion = true;
+                }
+                enLinea = true;
+            }
+            if(token.getValorTablaTokens() == -75 || token.getValorTablaTokens() == -2){
+                entero = false;
+                real = false;
+                string = false;
+                bool = false;
+                enLinea = false;
             }
             indice++;
         }
@@ -197,7 +198,13 @@ public class AnalizadorSemantico {
     }
 
     private boolean esConstante(int token) {
-        return token >= -61 && token <= -65;
+        return token == -61 || token == -62 || token == -63 || token == -64 || token == -65;
+    }
+
+    private boolean esOperador(int token) {
+        return token == -21 || token == -22 || token == -24 || token == -25 || token == -26 || token == -27 ||
+                token == -31 || token == -32 || token == -33 || token == -34 || token == -35 || token == -36 ||
+                token == -41 || token == -42 || token == -43;
     }
 
 

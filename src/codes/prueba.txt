@@ -4,9 +4,9 @@ int: x&;
 
 begin
 
-if(x& % 2 == 0) then
+x& := 1;
+if(x& == false) then
     begin
-    write("par");
+    write("si");
     end
-
 end
