@@ -1,11 +1,10 @@
-program pruebagral?;
+program pruebagral1?;
 var
-int: x&;
+int : x&, y&;
 bool: b$;
 
 begin
 
-b$ := true;
 b$ := false;
 x& := 1;
 if(b$ == true) then

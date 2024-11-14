@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import utils.Token;
 
 public class ManejoArchivo {
-    private final File tablaErrores = new File("src/TablaErrores.txt"); // Nombre del archivo de la tabla de errores
+    private final File tablaErrores = new File("src/build/TablaErrores.txt"); // Nombre del archivo de la tabla de errores
     private final FileWriter writerErrores = new FileWriter(tablaErrores);
 
     public ManejoArchivo() throws IOException {
@@ -38,7 +38,7 @@ public class ManejoArchivo {
             br.close();
             return lineas;
         } catch(FileNotFoundException e){
-            System.out.println("No se encontró el archivo");
+            throw e;
 
         } catch (IOException e) {
             System.out.println("Ocurrió un error");
