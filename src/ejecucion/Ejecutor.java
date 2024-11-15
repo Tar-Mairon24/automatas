@@ -3,6 +3,8 @@ package ejecucion;
 import java.util.Stack;
 import semantico.Simbolo;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ public class Ejecutor {
             if(!isEstatuto(token.getValorTablaTokens()))
                 ejecucion.push(token);
         }
+        escribirTablaSimbolos("src/build/TablaSimbolos.dat", simbolos);
     }
 
     private void read(Token token) {
@@ -89,6 +92,16 @@ public class Ejecutor {
 
     private boolean isConstante(int token) {
         return token >= -65 && token <= -61;
+    }
+
+    public static void escribirTablaSimbolos(String archivoSalida, ArrayList<Simbolo> tablaSimbolos) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivoSalida))) {
+            for (Simbolo simbolo : tablaSimbolos)
+                bw.write(simbolo.toString() + "\n");
+            //System.out.println("Tabla de simbolos guardada en 'TablaSimbolos.txt'");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
