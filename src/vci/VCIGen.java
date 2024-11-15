@@ -28,36 +28,53 @@ public class VCIGen {
     }
 
     public void generarVCI(ArrayList<Token> tokens) {
-        boolean IOFlag = false;
+        boolean IOFlag = false, inCode = false;
+        int valor;
         for (Token token : tokens){
-            // Si el token es read or write se activa una flag que nos dice que hay que agregar la siguiete
-            // instruccion al VCI
-            if(token.getValorTablaTokens() == -4 || token.getValorTablaTokens() == -5){
-                estatutos.push(token);
-                IOFlag = true;
-           }
-            if(IOFlag){
-                if(isPrintable(token.getValorTablaTokens())){
+            valor = token.getValorTablaTokens();
+            if(inCode) {
+                if(isConstante(valor) || identificador(valor)){
                     vci.add(token);
-                    vci.add(estatutos.pop());
-                    IOFlag = false;
                 }
+                if(opAritmeticos(valor) || valor == -26){
+                    if(operadores.isEmpty()){
+                        operadores.push(token);
+                    } else {
+                        if(getPrioridad(valor) > getPrioridad(operadores.peek().getValorTablaTokens())){
+                            operadores.push(token);
+                        } else {
+                            while(getPrioridad(valor) <= getPrioridad(operadores.peek().getValorTablaTokens())){
+                                vci.add(operadores.pop());
+                            }
+                            operadores.push(token);
+                        }
+                    }
+                }
+                if(valor == -75) {
+                    while (!operadores.isEmpty()) {
+                        vci.add(operadores.pop());
+                    }
+                }
+                // Si el token es read or write se activa una flag que nos dice que hay que agregar la siguiete
+                // instruccion al VCI
+                if(valor == -4 || valor == -5){
+                    estatutos.push(token);
+                    IOFlag = true;
+               }
+                if(IOFlag){
+                    if(isPrintable(valor)){
+                        vci.add(token);
+                        vci.add(estatutos.pop());
+                        IOFlag = false;
+                    }
+                }
+            }
+            if(valor == -2){
+                inCode = true;
             }
         }
 
         guardarVCI("src/build/salida.vci", vci);
-    }
-
-    private boolean isPrintable(int token) {
-        return identificador(token) || isConstante(token);
-    }
-
-    private boolean isConstante(int token) {
-        return token >= -65 && token <= -61;
-    }
-
-    private boolean identificador(int token) {
-        return token <= -51 && token >= -54;
     }
 
     private int getPrioridad(int token){
@@ -87,6 +104,22 @@ public class VCIGen {
                 return -1;
             }
         }
+    }
+
+    private boolean opAritmeticos(int token) {
+        return token == -21 || token == -22 || token == -23 || token == -24 || token == -25 || token == -27;
+    }
+
+    private boolean isPrintable(int token) {
+        return identificador(token) || isConstante(token);
+    }
+
+    private boolean isConstante(int token) {
+        return token >= -65 && token <= -61;
+    }
+
+    private boolean identificador(int token) {
+        return token <= -51 && token >= -54;
     }
 
     public static void guardarVCI(String archivoSalida, ArrayList<Token> vci) {

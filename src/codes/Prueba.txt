@@ -2,17 +2,10 @@ program pruebagral1?;
 var
 int : x&, y&;
 
-
 begin
 
-write("Escriba un numero: ");
-read(x&);
-write("Tu numero es: ");
+x& := 8;
+x& := x& + 10 / 2;
 write(x&);
-write("\n");
-write("Escribe otro numero: ");
-read(y&);
-write("El otro numero es: ");
-write(y&);
 
 end
