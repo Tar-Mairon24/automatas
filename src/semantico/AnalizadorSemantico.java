@@ -23,6 +23,14 @@ public class AnalizadorSemantico {
         this.ambito = null;
     }
 
+    public boolean getErrorSemantico() {
+        return errorSemantico;
+    }
+
+    public ArrayList<Simbolo> getSimbolos() {
+        return simbolos;
+    }
+
     public void analizar() {
         Token tokenActual = tokens.get(indice);
         boolean entero = false, real = false, string = false, bool = false;
@@ -157,8 +165,8 @@ public class AnalizadorSemantico {
         }
 
         if (!errorSemantico) {
-            escribirTablaSimbolos("src/build/TablaSimbolos.txt", simbolos);
-            escribirTablaDirecciones("src/build/TablaDirecciones.txt", programa);
+            escribirTablaSimbolos("src/build/TablaSimbolos.dat", simbolos);
+            escribirTablaDirecciones("src/build/TablaDirecciones.dat", programa);
         } else
             System.out.println((char) 27 + "[31m" + "No se puede compilar el programa por errores semanticos");
     }

@@ -499,7 +499,7 @@ public class AnalizadorSintactico {
             if (tokenActual.getValorTablaTokens() == -73) {
                 avanza();
                 tokenActual = tokens.get(indice);
-                if (isPrintable(tokenActual.getValorTablaTokens())) {
+                if (tokenActual.getEsIdentificador() == -2) {
                     avanza();
                     tokenActual = tokens.get(indice);
                     if (tokenActual.getValorTablaTokens() == -74) {
@@ -514,6 +514,8 @@ public class AnalizadorSintactico {
                     } else {
                         error("Se esperaba la palabra ')' en la linea " + tokenActual.getNumeroLinea());
                     }
+                } else {
+                    error("Se esperaba un identificador en la linea " + tokenActual.getNumeroLinea());
                 }
             } else {
                 error("Se esperaba la palabra '(' en la linea " + tokenActual.getNumeroLinea());

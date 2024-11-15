@@ -10,6 +10,8 @@ import lexico.Linea;
 import sintactico.AnalizadorSintactico;
 import utils.Token;
 import semantico.AnalizadorSemantico;
+import vci.VCIGen;
+import ejecucion.Ejecutor;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -19,8 +21,10 @@ public class Main {
         AnalizadorLexico lexico = new AnalizadorLexico();
         AnalizadorSintactico analizadorSintactico;
         AnalizadorSemantico analizadorSemantico;
+        VCIGen vciGen = new VCIGen();
         ArrayList<Linea> lineas;
         ArrayList<Token> lexemas;
+        Ejecutor ejecutor;
 
         File buildDir = new File("src/build");
         if (buildDir.exists() && buildDir.isDirectory()) {
@@ -42,7 +46,7 @@ public class Main {
             }
         }
 
-        File tablatokens = new File("src/build/TablaTokens.txt"); // Nombre del archivo de la tabla de tokens
+        File tablatokens = new File("src/build/TablaTokens.dat"); // Nombre del archivo de la tabla de tokens
         FileWriter writerTokens = new FileWriter(tablatokens);
 
         for(Linea linea : lineas) {
@@ -74,6 +78,15 @@ public class Main {
         if(!analizadorSintactico.getErrotSintactico()){
             analizadorSemantico.analizar();
         }
+
+        vciGen = new VCIGen();
+
+        if(!analizadorSemantico.getErrorSemantico()){
+            vciGen.generarVCI(lexemas);
+        }
+
+        ejecutor = new Ejecutor(analizadorSemantico.getSimbolos());
+        ejecutor.ejecutar(vciGen.getVci());
 
         sc.close();
     }

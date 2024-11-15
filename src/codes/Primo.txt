@@ -8,6 +8,8 @@ string: siPrimo#, noPrimo#;
 
 begin
 
+read(x%);
+
 //calcular la raiz cuadrada de x%, el resultado es suposicion%
 if(x% < 0) then
     begin
