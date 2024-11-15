@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
 
-import semantico.Simbolo;
-
 public class VCIGen {
     private ArrayList<Token> vci;
     private Stack<Token> operadores;
@@ -63,7 +61,6 @@ public class VCIGen {
                }
                 if(IOFlag){
                     if(isPrintable(valor)){
-                        vci.add(token);
                         vci.add(estatutos.pop());
                         IOFlag = false;
                     }
