@@ -28,46 +28,50 @@ public class VCIGen {
     }
 
     public void generarVCI(ArrayList<Token> tokens) {
-        boolean IOFlag = false;
+        boolean IOFlag = false, inCode = false;
         int valor;
         for (Token token : tokens){
             valor = token.getValorTablaTokens();
-            if(isConstante(valor) || identificador(valor)){
-                vci.add(token);
-            }
-            if(opAritmeticos(valor)){
-                if(operadores.isEmpty()){
-                    operadores.push(token);
-                } else {
-                    if(getPrioridad(valor) > getPrioridad(operadores.peek().getValorTablaTokens())){
+            if(inCode) {
+                if(isConstante(valor) || identificador(valor)){
+                    vci.add(token);
+                }
+                if(opAritmeticos(valor) || valor == -26){
+                    if(operadores.isEmpty()){
                         operadores.push(token);
                     } else {
-                        while(getPrioridad(valor) <= getPrioridad(operadores.peek().getValorTablaTokens())){
-                            vci.add(operadores.pop());
+                        if(getPrioridad(valor) > getPrioridad(operadores.peek().getValorTablaTokens())){
+                            operadores.push(token);
+                        } else {
+                            while(getPrioridad(valor) <= getPrioridad(operadores.peek().getValorTablaTokens())){
+                                vci.add(operadores.pop());
+                            }
+                            operadores.push(token);
                         }
-                        operadores.push(token);
+                    }
+                }
+                if(valor == -75) {
+                    while (!operadores.isEmpty()) {
+                        vci.add(operadores.pop());
+                    }
+                }
+                // Si el token es read or write se activa una flag que nos dice que hay que agregar la siguiete
+                // instruccion al VCI
+                if(valor == -4 || valor == -5){
+                    estatutos.push(token);
+                    IOFlag = true;
+               }
+                if(IOFlag){
+                    if(isPrintable(valor)){
+                        vci.add(token);
+                        vci.add(estatutos.pop());
+                        IOFlag = false;
                     }
                 }
             }
-            if(valor == -75) {
-                while (!operadores.isEmpty()) {
-                    vci.add(operadores.pop());
-                }
+            if(valor == -2){
+                inCode = true;
             }
-            // Si el token es read or write se activa una flag que nos dice que hay que agregar la siguiete
-            // instruccion al VCI
-            if(valor == -4 || valor == -5){
-                estatutos.push(token);
-                IOFlag = true;
-           }
-            if(IOFlag){
-                if(isPrintable(valor)){
-                    vci.add(token);
-                    vci.add(estatutos.pop());
-                    IOFlag = false;
-                }
-            }
-
         }
 
         guardarVCI("src/build/salida.vci", vci);

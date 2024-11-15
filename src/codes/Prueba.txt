@@ -2,10 +2,9 @@ program pruebagral1?;
 var
 int : x&, y&;
 
-
 begin
 
-read(x&);
+x& := 8;
 x& := x& + 10 / 2;
 write(x&);
 
