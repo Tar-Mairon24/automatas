@@ -114,11 +114,9 @@ public class AnalizadorSemantico {
 
                 if (enLinea) {
                     if (token.getEsIdentificador() == -2) {
-                        if (token.getValorTablaTokens() == -51 || token.getValorTablaTokens() == -52 && entero) {
-                        } else if (entero)
+                        if (token.getValorTablaTokens() != -51 && entero)
                             error("identificador: " + token.getLexema() + " no compatible para tipo en int (debe terminar con &) en linea:" + token.getNumeroLinea());
-                        if (token.getValorTablaTokens() == -52 || token.getValorTablaTokens() == -51 && real) {
-                        } else if (real)
+                        if (token.getValorTablaTokens() != -52 && real)
                             error("identificador: " + token.getLexema() + " no compatible para tipo real (debe terminar con %) en linea:" + token.getNumeroLinea());
                         if (token.getValorTablaTokens() != -53 && string)
                             error("identificador: " + token.getLexema() + " no compatible para tipo string (debe terminar con %) en linea:" + token.getNumeroLinea());
@@ -126,11 +124,9 @@ public class AnalizadorSemantico {
                             error("identificador: " + token.getLexema() + " no compatible para tipo bool (debe terminar con $) en linea:" + token.getNumeroLinea());
                     }
                     if (esConstante(token.getValorTablaTokens())) {
-                        if (token.getValorTablaTokens() == -61 || token.getValorTablaTokens() == -62 && entero) {
-                        } else if (token.getValorTablaTokens() != -61 && entero)
+                        if (token.getValorTablaTokens() != -61 && entero) 
                             error("dato: " + token.getLexema() + " incompatible con enteros en linea:" + token.getNumeroLinea());
-                        if (token.getValorTablaTokens() == -62 || token.getValorTablaTokens() == -61 && real) {
-                        } else if (real)
+                        if (token.getValorTablaTokens() != -62 && real) 
                             error("dato: " + token.getLexema() + " incompatible con reales en linea:" + token.getNumeroLinea());
                         if (token.getValorTablaTokens() != -63 && string)
                             error("dato: " + token.getLexema() + " incompatible con cadenas en linea:" + token.getNumeroLinea());

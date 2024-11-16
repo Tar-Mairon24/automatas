@@ -1,11 +1,15 @@
 program pruebagral1?;
 var
-int : x&, y&;
+real : x%, y%;
+int : z&;
+string : cadena#;
+bool : hola$;
 
 begin
 
-x& := 8;
-x& := x& + 10 / 2;
-write(x&);
+//read(x%);
+//read(y%);
+z& := 10 + 5 * 8 + 3 / 2;
+write(z&);
 
 end
