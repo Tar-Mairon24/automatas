@@ -32,6 +32,10 @@ public class Simbolo {
         this.valor = valor;
     }
 
+    public String getAmbito() {
+        return ambito;
+    }
+
     @Override
     public String toString() {
         return id + "\t" + token + "\t" + valor + "\t" + d1 + "\t" + d2 + "\t" + ptr + "\t" + ambito;

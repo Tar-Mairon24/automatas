@@ -48,6 +48,15 @@ public class VCIGen {
                         }
                     }
                 }
+                if(valor == -73){
+                    operadores.push(token);
+                }
+                if(valor == -74){
+                    while(operadores.peek().getValorTablaTokens() != -73){
+                        vci.add(operadores.pop());
+                    }
+                    operadores.pop();
+                }
                 if(valor == -75) {
                     while (!operadores.isEmpty()) {
                         vci.add(operadores.pop());
@@ -94,7 +103,7 @@ public class VCIGen {
             case -42 -> {
                 return 10;
             }
-            case -26 -> {
+            case -26, -73 -> {
                 return 0;
             }
             default -> {
