@@ -1,11 +1,13 @@
 package vci;
 
 import utils.Token;
+import utils.TokenType;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 public class VCIGen {
@@ -13,6 +15,7 @@ public class VCIGen {
     private Stack<Token> operadores;
     private Stack<Token> direcciones;
     private Stack<Token> estatutos;
+    private boolean IOFlag = false;
 
     public VCIGen() {
         this.vci = new ArrayList<>();
@@ -26,8 +29,9 @@ public class VCIGen {
     }
 
     public void generarVCI(ArrayList<Token> tokens) {
-        boolean IOFlag = false, inCode = false;
+        boolean inCode = false;
         int valor;
+        int indiceActual = 0;
         for (Token token : tokens){
             valor = token.getValorTablaTokens();
             if(inCode) {
@@ -72,6 +76,14 @@ public class VCIGen {
                     if(isPrintable(valor)){
                         vci.add(estatutos.pop());
                         IOFlag = false;
+                    }
+                }
+                // parte del if
+                if (valor == TokenType.PALABRAS_RESERVADAS_IF.getValorTablaTokens()) {
+                    if (!procesarIf(tokens, indiceActual)) {
+                        System.out.println("Error en la estructura del if");
+                        IOFlag = true;
+                        return;
                     }
                 }
             }
@@ -126,6 +138,93 @@ public class VCIGen {
 
     private boolean identificador(int token) {
         return token <= -51 && token >= -54;
+    }
+
+    private boolean esCondicionValida(List<Token> tokens, int indiceActual) {
+        //Aqui vemos la logica de expresiones logicas
+        int tipoToken = tokens.get(indiceActual).getValorTablaTokens();
+        return tipoToken == TokenType.IDENTIFICADORES_ID_GENERAL.getValorTablaTokens() 
+            || tipoToken == TokenType.CONSTANTES_VERDADERO.getValorTablaTokens()
+            || tipoToken == TokenType.CONSTANTES_FALSO.getValorTablaTokens();
+    }
+
+    private boolean esSentenciaValida(Token token) {
+        // Implementar lógica de validación de una sentencia básica (ejemplo: asignación, operación, etc.)
+        int valor = token.getValorTablaTokens();
+        // Ejemplo básico: considerar válidos los identificadores y constantes
+        return identificador(valor) || isConstante(valor) || opAritmeticos(valor);
+    }
+
+    private boolean esBloqueValido(List<Token> tokens, int indice) {
+        // Lógica para validar el bloque; puede depender de la gramática específica.
+        // Por ahora, asumimos que un bloque puede ser una secuencia de tokens válidos hasta un delimitador.
+        while (indice < tokens.size() && tokens.get(indice).getValorTablaTokens() != TokenType.PALABRAS_RESERVADAS_ELSE.getValorTablaTokens()
+                && tokens.get(indice).getValorTablaTokens() != TokenType.PALABRAS_RESERVADAS_END.getValorTablaTokens()) {
+            // Validar cada sentencia individual
+            if (!esSentenciaValida(tokens.get(indice))) {
+                return false;
+            }
+            indice++;
+        }
+        return true;
+    }
+
+    private boolean procesarIf(List<Token> tokens, int indiceActual){
+        // Vemos que el primer token sea if
+        if(tokens.get(indiceActual).getValorTablaTokens() != TokenType.PALABRAS_RESERVADAS_IF.getValorTablaTokens()){
+            IOFlag = true;
+            return false;
+        }
+        indiceActual++;
+
+        // Validar despues que venga una condicion valida 
+        if (!esCondicionValida(tokens, indiceActual)) {
+            IOFlag = true;
+            return false;
+        }
+
+        // Saltar token que componene la condicion
+        while(indiceActual < tokens.size() && tokens.get(indiceActual).getValorTablaTokens() != TokenType.PALABRAS_RESERVADAS_THEN.getValorTablaTokens()){
+            indiceActual++;
+        }
+
+        // Validar then
+        if(tokens.get(indiceActual).getValorTablaTokens() != TokenType.PALABRAS_RESERVADAS_THEN.getValorTablaTokens()){
+            IOFlag = true;
+            return false;
+        }
+        indiceActual++;
+
+        // Vallidar que el then en bloque sea correcto
+        if(tokens.get(indiceActual).getValorTablaTokens() != TokenType.PALABRAS_RESERVADAS_THEN.getValorTablaTokens()){
+                IOFlag = true;
+                return false;
+        }
+
+        // en caso de que haya un segundo else
+        indiceActual = saltarBloque(tokens, indiceActual);
+
+        // Validar si hay un else
+        if(indiceActual < tokens.size() && tokens.get(indiceActual).getValorTablaTokens() == TokenType.PALABRAS_RESERVADAS_ELSE.getValorTablaTokens()){
+            indiceActual++;
+            // Validar que el else en bloque sea correcto
+            if(tokens.get(indiceActual).getValorTablaTokens() != TokenType.PALABRAS_RESERVADAS_ELSE.getValorTablaTokens()){
+                IOFlag = true;
+                return false;
+            }
+            // Terminamos el bloque
+            indiceActual = saltarBloque(tokens, indiceActual);
+        }
+        // En caso de llegar aqui pues es verdadero
+        return true;
+    }
+
+    private int saltarBloque(List<Token> tokens, int indice) {
+        while (indice < tokens.size() && tokens.get(indice).getValorTablaTokens() != TokenType.PALABRAS_RESERVADAS_ELSE.getValorTablaTokens()
+                && tokens.get(indice).getValorTablaTokens() != TokenType.PALABRAS_RESERVADAS_END.getValorTablaTokens()) {
+            indice++;
+        }
+        return indice;
     }
 
     public static void guardarVCI(String archivoSalida, ArrayList<Token> vci) {
