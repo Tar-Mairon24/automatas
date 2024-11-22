@@ -13,7 +13,6 @@ public class VCIGen {
     private Stack<Token> operadores;
     private Stack<Token> direcciones;
     private Stack<Token> estatutos;
-
     public VCIGen() {
         this.vci = new ArrayList<>();
         this.operadores = new Stack<>();
@@ -24,58 +23,95 @@ public class VCIGen {
     public ArrayList<Token> getVci() {
         return vci;
     }
-
+    
+    // Método principal para generar el VCI
     public void generarVCI(ArrayList<Token> tokens) {
         boolean IOFlag = false, inCode = false;
+        boolean isFirstToken = true;
         int valor;
-        for (Token token : tokens){
+        for (Token token : tokens) {
             valor = token.getValorTablaTokens();
-            if(inCode) {
-                if(isConstante(valor) || identificador(valor)){
+            if (inCode) {
+                if (isFirstToken && valor == -6) {
+                    direcciones.push(token);
+                    vci.add(token);
+                    isFirstToken = false;
+                    continue;
+                }
+                isFirstToken = false;
+
+                if (isConstante(valor) || identificador(valor)) {
                     vci.add(token);
                 }
-                if(opAritmeticos(valor) || valor == -26){
-                    if(operadores.isEmpty()){
+                if (opAritmeticos(valor) || valor == -26) {
+                    if (operadores.isEmpty()) {
                         operadores.push(token);
                     } else {
-                        if(getPrioridad(valor) > getPrioridad(operadores.peek().getValorTablaTokens())){
+                        if (getPrioridad(valor) > getPrioridad(operadores.peek().getValorTablaTokens())) {
                             operadores.push(token);
                         } else {
-                            while(getPrioridad(valor) <= getPrioridad(operadores.peek().getValorTablaTokens())){
+                            while (getPrioridad(valor) <= getPrioridad(operadores.peek().getValorTablaTokens())) {
                                 vci.add(operadores.pop());
                             }
                             operadores.push(token);
-                        }
+}
                     }
                 }
-                if(valor == -73){
+                if (valor == -73) {
                     operadores.push(token);
                 }
-                if(valor == -74){
-                    while(operadores.peek().getValorTablaTokens() != -73){
+                if (valor == -74) {
+                    while (operadores.peek().getValorTablaTokens() != -73) {
                         vci.add(operadores.pop());
                     }
                     operadores.pop();
                 }
-                if(valor == -75) {
+                if (valor == -75) {
                     while (!operadores.isEmpty()) {
                         vci.add(operadores.pop());
                     }
                 }
-                // Si el token es read or write se activa una flag que nos dice que hay que agregar la siguiete
-                // instruccion al VCI
-                if(valor == -4 || valor == -5){
+                if (valor == -4 || valor == -5) {
                     estatutos.push(token);
                     IOFlag = true;
-               }
-                if(IOFlag){
-                    if(isPrintable(valor)){
+                }
+                if (IOFlag) {
+                    if (isPrintable(valor)) {
                         vci.add(estatutos.pop());
                         IOFlag = false;
                     }
                 }
+                // Manejo de la sentencia if
+                if (valor == -6) {
+                    direcciones.push(token);
+                    estatutos.push(token);
+                    vci.add(token); // Agregar el token if al VCI
+                }
+                // Manejo de la sentencia else
+                if (valor == -7) {
+                    if (!direcciones.isEmpty() && direcciones.peek().getValorTablaTokens() == -6) {
+                        while (!direcciones.isEmpty() && direcciones.peek().getValorTablaTokens() != -6) {
+                            vci.add(direcciones.pop());
+                        }
+                        direcciones.push(token);
+                        vci.add(token); // Agregar el token else al VCI
+                    } else {
+                        // Error: else sin if correspondiente
+                        System.err.println("Error: 'else' sin 'if' correspondiente.");
+                    }
+                }
+
+                // Validación y movimiento de direcciones
+                if (valor == -3) {
+                    while (!direcciones.isEmpty() && direcciones.peek().getValorTablaTokens() != -6) {
+                        vci.add(direcciones.pop());
+                    }
+                    if (!direcciones.isEmpty()) {
+                        vci.add(direcciones.pop());
+                    }
+                }
             }
-            if(valor == -2){
+            if (valor == -2) {
                 inCode = true;
             }
         }
