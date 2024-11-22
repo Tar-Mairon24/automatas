@@ -82,7 +82,6 @@ public class VCIGen {
                 if (valor == TokenType.PALABRAS_RESERVADAS_IF.getValorTablaTokens()) {
                     if (!procesarIf(tokens, indiceActual)) {
                         System.out.println("Error en la estructura del if");
-                        System.out.println("Errores: " + procesarIf(tokens, indiceActual));
                         return;
                     }
                 }
@@ -144,9 +143,15 @@ public class VCIGen {
     private boolean esCondicionValida(List<Token> tokens, int indice) {
         //Aqui va la logica de expresiones condicionales
         int tipoToken = tokens.get(indice).getValorTablaTokens();
-        return tipoToken == TokenType.IDENTIFICADORES_ID_GENERAL.getValorTablaTokens() 
-            || tipoToken == TokenType.CONSTANTES_VERDADERO.getValorTablaTokens()
-            || tipoToken == TokenType.CONSTANTES_FALSO.getValorTablaTokens();
+        // Verificando que el tipo de token
+        if(tipoToken == TokenType.IDENTIFICADORES_ID_GENERAL.getValorTablaTokens() 
+        || tipoToken == TokenType.CONSTANTES_VERDADERO.getValorTablaTokens()
+        || tipoToken == TokenType.CONSTANTES_FALSO.getValorTablaTokens()
+        || tipoToken == TokenType.CONSTANTES_CADENA.getValorTablaTokens()){
+            return true;
+        }    
+
+        return false;
     }
 
     private boolean esSentenciaValida(Token token) {
@@ -178,14 +183,12 @@ public class VCIGen {
     }
 
     private boolean procesarIf(List<Token> tokens, int indiceActual) {
-        System.out.println("Validando token");
         // Validar que el primer token sea "if"
         if (tokens.get(indiceActual).getValorTablaTokens() != TokenType.PALABRAS_RESERVADAS_IF.getValorTablaTokens()) {
             IOFlag = true;
             return false;
         }
         indiceActual++;
-        System.out.println("Validando condicion en el indice: " + indiceActual);
         // Validar que después venga una condición válida
         if (!esCondicionValida(tokens, indiceActual)) {
             IOFlag = true;
@@ -195,17 +198,13 @@ public class VCIGen {
         while (indiceActual < tokens.size() && tokens.get(indiceActual).getValorTablaTokens() != TokenType.PALABRAS_RESERVADAS_THEN.getValorTablaTokens()) {
             indiceActual++;
         }
-        System.out.println("Revisando que va bien despues del while" );
-
+       
         // Validar que haya un "then"
-        System.out.println("Validando token then");
         if (tokens.get(indiceActual).getValorTablaTokens() != TokenType.PALABRAS_RESERVADAS_THEN.getValorTablaTokens()) {
             IOFlag = true;
-            System.out.println("Bandera actiavada");
             return false;
         }
         indiceActual++;
-        System.out.println("En el indice: " + indiceActual);
         // Guardar la dirección de salto para el bloque "then"
         direcciones.push(tokens.get(indiceActual));
 
@@ -214,10 +213,8 @@ public class VCIGen {
             IOFlag = true;
             return false;
         }
-        System.out.println("Validando el then");
 
         // Saltar el bloque
-        System.out.println("Saltando bloque");
         indiceActual = saltarBloque(tokens, indiceActual);
 
         // Validar si hay un "else" opcional
