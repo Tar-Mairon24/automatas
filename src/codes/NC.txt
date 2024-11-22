@@ -1,0 +1,19 @@
+program NC?;
+var
+int: x&;
+int: y&;
+
+begin
+    x& := 1;
+    y& := 2;
+    if (x& == 1) then
+    begin
+        y& := y& + 1;
+    end
+    else
+    begin
+        y& := y& - 1;
+    end
+    write(x&);
+    write(y&);
+end
