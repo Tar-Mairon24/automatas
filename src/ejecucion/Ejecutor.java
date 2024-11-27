@@ -124,10 +124,21 @@ public class Ejecutor {
         }
         // Suma 2 string y las concatena en una variable string
         if(token1.getValorTablaTokens() == -63  || token1.getValorTablaTokens() == -53 && token2.getValorTablaTokens() == -63 || token2.getValorTablaTokens() == -53) {
-            String valor1 = token1.getLexema().replaceAll("\"", "");
-            String valor2 = token2.getLexema().replaceAll("\"", "");
-            String resultado = valor2 + valor1;
-            ejecucion.push(new Token(resultado, -62, -1, -1));
+            String valor1 = "", valor2 = "", resultado = "";
+            if(token1.getEsIdentificador() == -2) {
+                valor1 = getValorSimbolo(token1.getLexema());
+            }
+            if(token2.getEsIdentificador() == -2) {
+                valor2 = getValorSimbolo(token2.getLexema());
+            }
+            if(token1.getEsIdentificador() == -1) {
+                valor1 = token1.getLexema().replaceAll("\"", "");
+            }
+            if(token2.getEsIdentificador() == -1) {
+                valor2 = token2.getLexema().replaceAll("\"", "");
+            }
+            resultado = valor2 + valor1;
+            ejecucion.push(new Token("\"" + resultado + "\"", -63, -1, -1));
             return;
         }
 
@@ -548,7 +559,7 @@ public class Ejecutor {
                 }
                 //si la variable es un string se guarda en la tabla de simbolos
                 if(token.getValorTablaTokens() == -53) {
-                    Pattern patron = Pattern.compile("^\".*\"$");
+                    Pattern patron = Pattern.compile(".*");
                     Matcher matcher = patron.matcher(valor);
                     if(matcher.matches()) {
                         actualizarValorSimbolo(token.getLexema(), valor);
