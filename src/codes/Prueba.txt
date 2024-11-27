@@ -1,17 +1,19 @@
 program pruebagral1?;
 var
-real : x%, y%;
-int : z&, w&;
-string : cadena#;
-bool : hola$;
+int : z&;
 
 begin
 
-//read(x%);
-//read(y%);
-z& := 20 + 30 / 2 - 6 * 3;
-y% := (20.0 + 30.0) / (2.0 - 6.0) * 3.0;
-write(z&);
-write(y%);
+z& := 30;
+if(z& > 20) then
+    begin
+    z& := 30 + 10;
+    write(z&);
+    end
+else 
+    begin
+    z& := 30 - 10;
+    write(z&);
+    end
 
 end
