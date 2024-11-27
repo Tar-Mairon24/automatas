@@ -24,16 +24,19 @@ public class Ejecutor {
     }
 
     public void ejecutar(ArrayList<Token> vci) {
-        
-        for (Token token : vci) {
-            if(token.getValorTablaTokens() == -4)
+        //iteramos por todos los tokens del VCI
+        for (int i = 0; i < vci.size(); i++) {
+            //si el token es un read se ejecuta el metodo read
+            if(vci.get(i).getValorTablaTokens() == -4)
                 read(ejecucion.pop());
 
-            if(token.getValorTablaTokens() == -5) 
+            //si el token es un write se ejecuta el metodo write
+            if(vci.get(i).getValorTablaTokens() == -5) 
                 write(ejecucion.pop());
 
-            if(opAritmeticos(token.getValorTablaTokens())) {
-                switch (token.getValorTablaTokens()) {
+            //si el token es un operador aritmetico se ejecuta la operacion correspondiente
+            if(opAritmeticos(vci.get(i).getValorTablaTokens()) || opRelacionales(vci.get(i).getValorTablaTokens()) || opLogicos(vci.get(i).getValorTablaTokens())) {
+                switch (vci.get(i).getValorTablaTokens()) {
                     case -21:
                         multiplicacion(ejecucion.pop(), ejecucion.pop());
                         break;
@@ -49,19 +52,61 @@ public class Ejecutor {
                     case -27:
                         modulo(ejecucion.pop(), ejecucion.pop());
                         break;
+                    case -31:
+                        menorQue(ejecucion.pop(), ejecucion.pop());
+                        break;
+                    case -32:
+                        menorIgualQue(ejecucion.pop(), ejecucion.pop());
+                        break;
+                    case -33:
+                        mayorQue(ejecucion.pop(), ejecucion.pop());
+                        break;
+                    case -34:
+                        mayorIgualQue(ejecucion.pop(), ejecucion.pop());
+                        break;
+                    case -35:
+                        igualQue(ejecucion.pop(), ejecucion.pop());
+                        break;
+                    case -36:
+                        diferenteQue(ejecucion.pop(), ejecucion.pop());
+                        break;
+                    case -41:
+                        break;
+                    case -42:
+                        break;
+                    case -43:
+                        break;
                 }
             }
 
-            if(token.getValorTablaTokens() == -26){
+            //si el token es un operador de asignacion se actualiza el valor del simbolo
+            if(vci.get(i).getValorTablaTokens() == -26){
                 String valorNuevo = ejecucion.pop().getLexema();
                 String simboloActualizar = ejecucion.pop().getLexema();
                 actualizarValorSimbolo(simboloActualizar, valorNuevo);
             }
+
+            //si el token es un if se comprueba el resultado de la condicion y se decide si se salta o no
+            if(vci.get(i).getValorTablaTokens() == -6) {
+                Token direccion = ejecucion.pop();
+                Token condicion = ejecucion.pop();
+                if(condicion.getValorTablaTokens() == 0) {
+                    i = saltarDireccion(direccion, vci);
+                }
+            }
             
-            if(isConstante(token.getValorTablaTokens()) || token.getEsIdentificador() == -2)
-                ejecucion.push(token);
+            //si el token es un else se salta el else
+            if(vci.get(i).getValorTablaTokens() == -7) {
+                Token direccion = ejecucion.pop();
+                i = saltarDireccion(direccion, vci);
+            }
+            
+            //si el token es una constante o un identificador se agrega a la pila de ejecucion
+            if(isConstante(vci.get(i).getValorTablaTokens()) || vci.get(i).getEsIdentificador() == -2 || vci.get(i).getValorTablaTokens() == 0)
+                ejecucion.push(vci.get(i));
         }
         escribirTablaSimbolos("src/build/TablaSimbolos.dat", simbolos);
+        terminarPrograma();
     }
 
     private void suma(Token token1, Token token2) {
@@ -215,11 +260,273 @@ public class Ejecutor {
         error("UnsupportedOperationException at line: " + token1.getNumeroLinea(), simbolos.get(0).getAmbito());
     }
 
+    private void menorQue(Token token1, Token token2){
+        Token verdadero = new Token("1", 1, -1, -1);
+        Token falso = new Token("0", 0, -1, -1);
+        // Compara 2 enteros y las guarda en token
+        if(token1.getValorTablaTokens() == -61 || token1.getValorTablaTokens() == -51 && token2.getValorTablaTokens() == -61 || token2.getValorTablaTokens() == -51) {
+            int valor1 = parseValorEntero(token1);
+            int valor2 = parseValorEntero(token2);
+            if(valor2 < valor1) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+            return;
+        }
+        //compara 2 reales y las guarda en token
+        if(token1.getValorTablaTokens() == -62  || token1.getValorTablaTokens() == -52 && token2.getValorTablaTokens() == -62 || token2.getValorTablaTokens() == -52) {
+            double valor1 = parseValorReal(token1);
+            double valor2 = parseValorReal(token2);
+            if(valor2 < valor1) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+            return;
+        }
+        //compara 2 strings y las guarda en token
+        if(token1.getValorTablaTokens() == -63  || token1.getValorTablaTokens() == -53 && token2.getValorTablaTokens() == -63 || token2.getValorTablaTokens() == -53) {
+            String valor1 = token1.getLexema().replaceAll("\"", "");
+            String valor2 = token2.getLexema().replaceAll("\"", "");
+            if(valor2.compareTo(valor1) < 0) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+            return;
+        }
+        //si los compardores son logicos da un error
+        if(token1.getValorTablaTokens() == -64  || token1.getValorTablaTokens() == -54 && token2.getValorTablaTokens() == -64 || token2.getValorTablaTokens() == -54) {
+            error("LogicalOperationNotSupportedExcepton at line: " + token1.getNumeroLinea(), simbolos.get(0).getAmbito());
+        }
+        error("UnsupportedOperationException at line: " + token1.getNumeroLinea(), simbolos.get(0).getAmbito());
+    }
+
+    private void menorIgualQue(Token token1, Token token2){
+        Token verdadero = new Token("1", 1, -1, -1);
+        Token falso = new Token("0", 0, -1, -1);
+        // Compara 2 enteros y las guarda en token
+        if(token1.getValorTablaTokens() == -61 || token1.getValorTablaTokens() == -51 && token2.getValorTablaTokens() == -61 || token2.getValorTablaTokens() == -51) {
+            int valor1 = parseValorEntero(token1);
+            int valor2 = parseValorEntero(token2);
+            if(valor2 <= valor1) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+            return;
+        }
+        //compara 2 reales y las guarda en token
+        if(token1.getValorTablaTokens() == -62  || token1.getValorTablaTokens() == -52 && token2.getValorTablaTokens() == -62 || token2.getValorTablaTokens() == -52) {
+            double valor1 = parseValorReal(token1);
+            double valor2 = parseValorReal(token2);
+            if(valor2 <= valor1) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+            return;
+        }
+        //compara 2 strings y las guarda en token
+        if(token1.getValorTablaTokens() == -63  || token1.getValorTablaTokens() == -53 && token2.getValorTablaTokens() == -63 || token2.getValorTablaTokens() == -53) {
+            String valor1 = token1.getLexema().replaceAll("\"", "");
+            String valor2 = token2.getLexema().replaceAll("\"", "");
+            if(valor2.compareTo(valor1) <= 0) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+            return;
+        }
+        //si los compardores son logicos da un error
+        if(token1.getValorTablaTokens() == -64  || token1.getValorTablaTokens() == -54 && token2.getValorTablaTokens() == -64 || token2.getValorTablaTokens() == -54) {
+            error("LogicalOperationNotSupportedExcepton at line: " + token1.getNumeroLinea(), simbolos.get(0).getAmbito());
+        }
+        error("UnsupportedOperationException at line: " + token1.getNumeroLinea(), simbolos.get(0).getAmbito());
+    }
+
+    private void mayorQue(Token token1, Token token2){
+        Token verdadero = new Token("1", 1, -1, -1);
+        Token falso = new Token("0", 0, -1, -1);
+        // Compara 2 enteros y las guarda en token
+        if(token1.getValorTablaTokens() == -61 || token1.getValorTablaTokens() == -51 && token2.getValorTablaTokens() == -61 || token2.getValorTablaTokens() == -51) {
+            int valor1 = parseValorEntero(token1);
+            int valor2 = parseValorEntero(token2);
+            if(valor2 > valor1) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+            return;
+        }
+        //compara 2 reales y las guarda en token
+        if(token1.getValorTablaTokens() == -62  || token1.getValorTablaTokens() == -52 && token2.getValorTablaTokens() == -62 || token2.getValorTablaTokens() == -52) {
+            double valor1 = parseValorReal(token1);
+            double valor2 = parseValorReal(token2);
+            if(valor2 > valor1) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+            return;
+        }
+        //compara 2 strings y las guarda en token
+        if(token1.getValorTablaTokens() == -63  || token1.getValorTablaTokens() == -53 && token2.getValorTablaTokens() == -63 || token2.getValorTablaTokens() == -53) {
+            String valor1 = token1.getLexema().replaceAll("\"", "");
+            String valor2 = token2.getLexema().replaceAll("\"", "");
+            if(valor2.compareTo(valor1) > 0) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+            return;
+        }
+        //si los compardores son logicos da un error
+        if(token1.getValorTablaTokens() == -64  || token1.getValorTablaTokens() == -54 && token2.getValorTablaTokens() == -64 || token2.getValorTablaTokens() == -54) {
+            error("LogicalOperationNotSupportedExcepton at line: " + token1.getNumeroLinea(), simbolos.get(0).getAmbito());
+        }
+        error("UnsupportedOperationException at line: " + token1.getNumeroLinea(), simbolos.get(0).getAmbito());
+    }
+
+    private void mayorIgualQue(Token token1, Token token2){
+        Token verdadero = new Token("1", 1, -1, -1);
+        Token falso = new Token("0", 0, -1, -1);
+        // Compara 2 enteros y las guarda en token
+        if(token1.getValorTablaTokens() == -61 || token1.getValorTablaTokens() == -51 && token2.getValorTablaTokens() == -61 || token2.getValorTablaTokens() == -51) {
+            int valor1 = parseValorEntero(token1);
+            int valor2 = parseValorEntero(token2);
+            if(valor2 >= valor1) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+            return;
+        }
+        //compara 2 reales y las guarda en token
+        if(token1.getValorTablaTokens() == -62  || token1.getValorTablaTokens() == -52 && token2.getValorTablaTokens() == -62 || token2.getValorTablaTokens() == -52) {
+            double valor1 = parseValorReal(token1);
+            double valor2 = parseValorReal(token2);
+            if(valor2 >= valor1) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+            return;
+        }
+        //compara 2 strings y las guarda en token
+        if(token1.getValorTablaTokens() == -63  || token1.getValorTablaTokens() == -53 && token2.getValorTablaTokens() == -63 || token2.getValorTablaTokens() == -53) {
+            String valor1 = token1.getLexema().replaceAll("\"", "");
+            String valor2 = token2.getLexema().replaceAll("\"", "");
+            if(valor2.compareTo(valor1) >= 0) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+            return;
+        }
+        //si los compardores son logicos da un error
+        if(token1.getValorTablaTokens() == -64  || token1.getValorTablaTokens() == -54 && token2.getValorTablaTokens() == -64 || token2.getValorTablaTokens() == -54) {
+            error("LogicalOperationNotSupportedExcepton at line: " + token1.getNumeroLinea(), simbolos.get(0).getAmbito());
+        }
+        error("UnsupportedOperationException at line: " + token1.getNumeroLinea(), simbolos.get(0).getAmbito());
+    }
+
+    private void igualQue(Token token1, Token token2){
+        Token verdadero = new Token("1", 1, -1, -1);
+        Token falso = new Token("0", 0, -1, -1);
+        // Compara 2 enteros y las guarda en token
+        if(token1.getValorTablaTokens() == -61 || token1.getValorTablaTokens() == -51 && token2.getValorTablaTokens() == -61 || token2.getValorTablaTokens() == -51) {
+            int valor1 = parseValorEntero(token1);
+            int valor2 = parseValorEntero(token2);
+            if(valor2 == valor1) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+            return;
+        }
+        //compara 2 reales y las guarda en token
+        if(token1.getValorTablaTokens() == -62  || token1.getValorTablaTokens() == -52 && token2.getValorTablaTokens() == -62 || token2.getValorTablaTokens() == -52) {
+            double valor1 = parseValorReal(token1);
+            double valor2 = parseValorReal(token2);
+            if(valor2 == valor1) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+            return;
+        }
+        //compara 2 strings y las guarda en token
+        if(token1.getValorTablaTokens() == -63  || token1.getValorTablaTokens() == -53 && token2.getValorTablaTokens() == -63 || token2.getValorTablaTokens() == -53) {
+            String valor1 = token1.getLexema().replaceAll("\"", "");
+            String valor2 = token2.getLexema().replaceAll("\"", "");
+            if(valor2.equals(valor1)) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+            return;
+        }
+        //si los compardores son logicos da un error
+        if(token1.getValorTablaTokens() == -64  || token1.getValorTablaTokens() == -54 && token2.getValorTablaTokens() == -64 || token2.getValorTablaTokens() == -54) {
+            error("LogicalOperationNotSupportedExcepton at line: " + token1.getNumeroLinea(), simbolos.get(0).getAmbito());
+        }
+        error("UnsupportedOperationException at line: " + token1.getNumeroLinea(), simbolos.get(0).getAmbito());
+    }
+
+    private void diferenteQue(Token token1, Token token2){
+        Token verdadero = new Token("1", 1, -1, -1);
+        Token falso = new Token("0", 0, -1, -1);
+        // Compara 2 enteros y las guarda en token
+        if(token1.getValorTablaTokens() == -61 || token1.getValorTablaTokens() == -51 && token2.getValorTablaTokens() == -61 || token2.getValorTablaTokens() == -51) {
+            int valor1 = parseValorEntero(token1);
+            int valor2 = parseValorEntero(token2);
+            if(valor2 != valor1) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+            return;
+        }
+        //compara 2 reales y las guarda en token
+        if(token1.getValorTablaTokens() == -62  || token1.getValorTablaTokens() == -52 && token2.getValorTablaTokens() == -62 || token2.getValorTablaTokens() == -52) {
+            double valor1 = parseValorReal(token1);
+            double valor2 = parseValorReal(token2);
+            if(valor2 != valor1) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+            return;
+        }
+        //compara 2 strings y las guarda en token
+        if(token1.getValorTablaTokens() == -63  || token1.getValorTablaTokens() == -53 && token2.getValorTablaTokens() == -63 || token2.getValorTablaTokens() == -53) {
+            String valor1 = token1.getLexema().replaceAll("\"", "");
+            String valor2 = token2.getLexema().replaceAll("\"", "");
+            if(!valor2.equals(valor1)) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+            return;
+        }
+        //si los compardores son logicos da un error
+        if(token1.getValorTablaTokens() == -64  || token1.getValorTablaTokens() == -54 && token2.getValorTablaTokens() == -64 || token2.getValorTablaTokens() == -54) {
+            error("LogicalOperationNotSupportedExcepton at line: " + token1.getNumeroLinea(), simbolos.get(0).getAmbito());
+        }
+        error("UnsupportedOperationException at line: " + token1.getNumeroLinea(), simbolos.get(0).getAmbito());
+    }
+
+    //lee lo que se escriba en la consola y lo guarda en una variable
     private void read(Token token) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         try {
+            //se guarda lo de la consola en una variable
             String valor = reader.readLine();
+            //se checa si el valor no es nulo
             if (valor != null) {
+                //si la variable es un entero se guarda en la tabla de simbolos
                 if(token.getValorTablaTokens() == -51) {
                     Pattern patron = Pattern.compile("^\\d+$");
                     Matcher matcher = patron.matcher(valor);
@@ -229,6 +536,7 @@ public class Ejecutor {
                         error("IntegerFormatException at line: " + token.getNumeroLinea(), simbolos.get(0).getAmbito());
                     }
                 }
+                //si la variable es un real se guarda en la tabla de simbolos
                 if(token.getValorTablaTokens() == -52) {
                     Pattern patron = Pattern.compile("^-?\\d+\\.\\d+$");
                     Matcher matcher = patron.matcher(valor);
@@ -238,6 +546,7 @@ public class Ejecutor {
                         error("RealNumberFormatException at line: " + token.getNumeroLinea(), simbolos.get(0).getAmbito());
                     }
                 }
+                //si la variable es un string se guarda en la tabla de simbolos
                 if(token.getValorTablaTokens() == -53) {
                     Pattern patron = Pattern.compile("^\".*\"$");
                     Matcher matcher = patron.matcher(valor);
@@ -247,7 +556,8 @@ public class Ejecutor {
                         error("StringFormatException at line: " + token.getNumeroLinea(), simbolos.get(0).getAmbito());
                     }
                 }
-                if(token.getValorTablaTokens() == -51) {
+                //si la variable es un booleano se gurada en la tabla de simbolos
+                if(token.getValorTablaTokens() == -54) {
                     if(valor.equals("true") || valor.equals("false")) {
                         actualizarValorSimbolo(token.getLexema(), valor);
                     } else {
@@ -295,12 +605,23 @@ public class Ejecutor {
             return; 
     }
 
+    //actualiza el valor de un simbolo
     private void actualizarValorSimbolo(String lexema, String valor) {
         for (Simbolo simbolo : simbolos) {
             if(simbolo.getID().equals(lexema)) {
                 simbolo.setValor(valor);
             }
         }
+    }
+
+    //salta a la direccion que se le indique
+    private int saltarDireccion(Token token, ArrayList<Token> vci) {
+        int index = 0;
+        index = Integer.parseInt(token.getLexema()) - 1;
+        if(index >= vci.size()) {
+            terminarPrograma();
+        }
+        return index;
     }
 
     private String getValorSimbolo(String lexema) {
@@ -336,9 +657,23 @@ public class Ejecutor {
         return token == -21 || token == -22 || token == -23 || token == -24 || token == -25 || token == -27;
     }
 
+    private boolean opRelacionales(int token) {
+        return token == -31 || token == -32 || token == -33 || token == -34 || token == -35 || token == -36;
+    }
+
+    private boolean opLogicos(int token) {
+        return token == -41 || token == -42 || token == -43;
+    }
+
     private void error(String mensaje, String ambito) {
         System.out.println((char) 27 + "[31m" + "Exception in thread: " + ambito + "\n" + mensaje + (char) 27 + "[0m");
+        System.out.println((char) 27 + "[31m" + "Program terminated with code 1" + ambito + "\n" + mensaje + (char) 27 + "[0m");
         System.exit(1);
+    }
+
+    private void terminarPrograma() {
+        System.out.println("\n" + (char) 27 + "[32m" + "Program terminated with code 0" + (char) 27 + "[0m");
+        System.exit(0);
     }
 
     public static void escribirTablaSimbolos(String archivoSalida, ArrayList<Simbolo> tablaSimbolos) {

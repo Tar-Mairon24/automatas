@@ -99,6 +99,7 @@ public class VCIGen {
                                 elseFlag = true;
                         //si es un else se actualiza la direccion en la cima de la pila de direcciones
                         if(temp.getValorTablaTokens() == -7){
+                            //las direcciones se guardan con un numero de token 0
                             actualizarVCI(direcciones.pop(), vci.size() + 1);
                             elseFlag = false;
                         }
@@ -126,6 +127,7 @@ public class VCIGen {
                     if(valor == -7){
                         estatutos.push(token);
                         vci.add(tokenVacio);
+                        //las direcciones se guardan con un numero de token 0
                         actualizarVCI(direcciones.pop(), vci.size() + 2);
                         direcciones.push(vci.size()-1);
                         vci.add(token);
@@ -204,7 +206,9 @@ public class VCIGen {
         return token <= -51 && token >= -54;
     }
 
+    //actualiza la direccion en la posicion de la pila de direcciones
     private void actualizarVCI(int direccion, int nuevaDireccion) {
+        //las direcciones se guardan con un numero de token 0
         vci.set(direccion, new Token(Integer.toString(nuevaDireccion), 0, -1, -1));
     }
 

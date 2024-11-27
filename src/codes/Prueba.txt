@@ -4,10 +4,14 @@ int : z&;
 
 begin
 
-z& := 30;
-if(z& > 20) then
+z& := 20;
+if(2 > 20) then
     begin
     z& := 30 + 10;
+    if(z& >= 40) then
+        begin
+        write("hola");
+        end
     write(z&);
     end
 else 
