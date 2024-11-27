@@ -11,7 +11,7 @@ import java.util.Stack;
 public class VCIGen {
     private ArrayList<Token> vci;
     private Stack<Token> operadores;
-    private Stack<Token> direcciones;
+    private Stack<Integer> direcciones;
     private Stack<Token> estatutos;
 
     public VCIGen() {
@@ -26,48 +26,112 @@ public class VCIGen {
     }
 
     public void generarVCI(ArrayList<Token> tokens) {
-        boolean IOFlag = false, inCode = false;
-        int valor;
+        boolean IOFlag = false, inCode = false, conditionFlag = false, elseFlag = false;
+        Token tokenVacio = new Token("", -0, -1, -1);
+        int valor, indice = 0;
         for (Token token : tokens){
             valor = token.getValorTablaTokens();
+            //el metodo no empieza hasta que encuentre el primer begin para que no haga
+            //checks innecearios
             if(inCode) {
+                //si es una constante o un identificador se agrega al VCI de inmediato
                 if(isConstante(valor) || identificador(valor)){
                     vci.add(token);
                 }
-                if(opAritmeticos(valor) || valor == -26){
+                //si es un operador se agrega a la pila de operadores hasta que tenga alguna salida
+                if(opAritmeticos(valor) || opRelacionales(valor) || opLogicos(valor) || valor == -26){
+                    //si la pila esta vacia se agrega el operador
                     if(operadores.isEmpty()){
                         operadores.push(token);
                     } else {
+                        //si el operador es de mayor prioridad que el que esta en la cima de la pila
+                        //se agrega a la pila
                         if(getPrioridad(valor) > getPrioridad(operadores.peek().getValorTablaTokens())){
                             operadores.push(token);
                         } else {
+                            //si no se vacia la pila hasta que sea menor o igual a la prioridad del operador
                             while(getPrioridad(valor) <= getPrioridad(operadores.peek().getValorTablaTokens())){
                                 vci.add(operadores.pop());
                             }
+                            //se agrega el operador a la pila
                             operadores.push(token);
                         }
                     }
                 }
+                //si es un parentesis izquierdo se agrega a la pila
                 if(valor == -73){
                     operadores.push(token);
                 }
+                //si es un parentesis derecho se sacan los operadores de la pila hasta encontrar el parentesis izquierdo
                 if(valor == -74){
                     while(operadores.peek().getValorTablaTokens() != -73){
                         vci.add(operadores.pop());
                     }
+                    //se saca el parentesis izquierdo
                     operadores.pop();
+                    //si la condicion es verdadera se agrega un token vacio y se guarda la direccion cuando termine la condicion
+                    if(conditionFlag){
+                        vci.add(tokenVacio);
+                        direcciones.push(vci.size()-1);
+                        vci.add(estatutos.peek());
+                        conditionFlag = false;
+                    }
                 }
+                //si es un punto y coma se sacan todos los operadores de la pila
                 if(valor == -75) {
                     while (!operadores.isEmpty()) {
                         vci.add(operadores.pop());
                     }
                 }
-                // Si el token es read or write se activa una flag que nos dice que hay que agregar la siguiete
+                //si es un end se manejan los estatutos
+                if(valor == -3){
+                    Token temp;
+                    //si estatutos esta vacia significa que es el ultimo end y no se hace nada
+                    if(estatutos.isEmpty()){
+                        
+                    } else {
+                        //se guarda el estatuto en un temporal
+                        temp = estatutos.pop();
+                        //si el estatuto es un if
+                        if(temp.getValorTablaTokens() == -6)
+                            //si hay un else despues del if se activa una bandera
+                            if(tokens.get(indice+1).getValorTablaTokens() == -7)
+                                elseFlag = true;
+                        //si es un else se actualiza la direccion en la cima de la pila de direcciones
+                        if(temp.getValorTablaTokens() == -7){
+                            actualizarVCI(direcciones.pop(), vci.size() + 1);
+                            elseFlag = false;
+                        }
+                    }
+                }
+                //si es un if se agrega a la pila de estatutos y la bandera de condicion se activa 
+                //que nos dice que cuando sea el proximo parentesis derecho se debe agregar un token vacio y el if al vci
+                if(valor == -6){
+                    conditionFlag = true;
+                    estatutos.push(token);
+                }
+                // Si el token es read or write se activa una flag de entrada y salida que nos dice que hay que agregar la siguiete
                 // instruccion al VCI
                 if(valor == -4 || valor == -5){
                     estatutos.push(token);
                     IOFlag = true;
-               }
+                }
+                //si llego un if con un else
+                if(elseFlag){
+                    //checar que si es un else por que todo lo demas ya se maneja
+                    //si es un else se agrega a la pila de estatutos
+                    //se actualiza la direccion en la cima de la pila de direcciones para que se salte el else
+                    //se guarda la direccion del vacio en la pila de direcciones
+                    //se agrega el else al VCI
+                    if(valor == -7){
+                        estatutos.push(token);
+                        vci.add(tokenVacio);
+                        actualizarVCI(direcciones.pop(), vci.size() + 2);
+                        direcciones.push(vci.size()-1);
+                        vci.add(token);
+                    }
+                }
+                //si la bandera de entrada y salida esta activa se agrega la siguiente instruccion al VCI que van a ser write o read
                 if(IOFlag){
                     if(isPrintable(valor)){
                         vci.add(estatutos.pop());
@@ -75,11 +139,15 @@ public class VCIGen {
                     }
                 }
             }
+            //si el token es un begin se activa la bandera de inicio de codigo
             if(valor == -2){
                 inCode = true;
             }
+            //incrementar el indice
+            indice++;
         }
 
+        //se guarda el VCI en un archivo
         guardarVCI("src/build/salida.vci", vci);
     }
 
@@ -116,6 +184,14 @@ public class VCIGen {
         return token == -21 || token == -22 || token == -23 || token == -24 || token == -25 || token == -27;
     }
 
+    private boolean opRelacionales(int token) {
+        return token == -31 || token == -32 || token == -33 || token == -34 || token == -35 || token == -36;
+    }
+
+    private boolean opLogicos(int token) {
+        return token == -41 || token == -42 || token == -43;
+    }
+
     private boolean isPrintable(int token) {
         return identificador(token) || isConstante(token);
     }
@@ -128,7 +204,12 @@ public class VCIGen {
         return token <= -51 && token >= -54;
     }
 
-    public static void guardarVCI(String archivoSalida, ArrayList<Token> vci) {
+    private void actualizarVCI(int direccion, int nuevaDireccion) {
+        vci.set(direccion, new Token(Integer.toString(nuevaDireccion), 0, -1, -1));
+    }
+
+
+    private static void guardarVCI(String archivoSalida, ArrayList<Token> vci) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivoSalida))) {
             for (Token token : vci) 
                 bw.write(token.getLexema() + "\n");

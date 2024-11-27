@@ -16,6 +16,7 @@ import utils.Token;
 public class Ejecutor {
     private Stack<Token> ejecucion;
     private ArrayList<Simbolo> simbolos;
+    
 
     public Ejecutor(ArrayList<Simbolo> simbolos) {
         this.ejecucion = new Stack<>();
@@ -23,6 +24,7 @@ public class Ejecutor {
     }
 
     public void ejecutar(ArrayList<Token> vci) {
+        
         for (Token token : vci) {
             if(token.getValorTablaTokens() == -4)
                 read(ejecucion.pop());
@@ -83,6 +85,7 @@ public class Ejecutor {
             ejecucion.push(new Token(resultado, -62, -1, -1));
             return;
         }
+
         // Si se tratan de sumar 2 logicos lanza una excepcion
         if(token1.getValorTablaTokens() == -64  || token1.getValorTablaTokens() == -54 && token2.getValorTablaTokens() == -64 || token2.getValorTablaTokens() == -54) {
             error("LogicalOperationNotSupportedExcepton at line: " + token1.getNumeroLinea(), simbolos.get(0).getAmbito());
