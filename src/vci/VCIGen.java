@@ -95,8 +95,12 @@ public class VCIGen {
                         //si el estatuto es un if
                         if(temp.getValorTablaTokens() == -6)
                             //si hay un else despues del if se activa una bandera
-                            if(tokens.get(indice+1).getValorTablaTokens() == -7)
+                            if(tokens.get(indice+1).getValorTablaTokens() == -7){
                                 elseFlag = true;
+                            } else {
+                                //si no hay un else se agrega el if al VCI
+                                actualizarVCI(direcciones.pop(), vci.size() + 1);
+                            }
                         //si es un else se actualiza la direccion en la cima de la pila de direcciones
                         if(temp.getValorTablaTokens() == -7){
                             //las direcciones se guardan con un numero de token 0
@@ -216,7 +220,11 @@ public class VCIGen {
     private static void guardarVCI(String archivoSalida, ArrayList<Token> vci) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivoSalida))) {
             for (Token token : vci) 
-                bw.write(token.getLexema() + "\n");
+                if(token.getValorTablaTokens() == 0){
+                    bw.write("0x" + token.getLexema() + "\n");
+                }else {
+                    bw.write(token.getLexema() + "\n");
+                }
             System.out.println("VCI guardado en 'salida.vci'");
         } catch (IOException e) {
             e.printStackTrace();
