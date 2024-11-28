@@ -1,32 +1,19 @@
 program pruebagral1?;
 var
-int : z&;
-string : cadena#;
+int : i&, f&;
 
 begin
 
-read(z&);
-if(z& > 20) then
-    begin
-    z& := 30 + 10;
-    if(z& >= 40) then
-        begin
-        write("hola");
-        end
-    write(z&);
-    end
-else 
-    begin
-    if(z& < 10) then 
-        begin
-        z& := z& +1;
-        read(cadena#);
-        end
-    z& := 30 - 10;
-    write(z&);
-    end
+i& := 2;
+f& := 2;
 
-cadena# := cadena# + " si salio";
-write(cadena#);
+if(! i& == 1) then
+    begin 
+    write("verdadero");
+    end
+else
+    begin
+    write("falso");
+    end
 
 end

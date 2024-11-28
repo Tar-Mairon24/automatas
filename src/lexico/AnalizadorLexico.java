@@ -253,7 +253,8 @@ public class AnalizadorLexico {
 						contador++;
 						ManejoArchivo ma = new ManejoArchivo();
 						ma.imprimirTablaErrores(contador, lexema.getLexema(), lexema.getNumeroLinea());
-						System.err.println("Error encontrado en la linea: " + lexema.getNumeroLinea() + " Token: " + lexema.getLexema() + " no valido");
+						System.out.println((char) 27 + "[31m" + "Lexic error at line: " + lexema.getNumeroLinea() + " Token: " + lexema.getLexema() + " not valid" + (char) 27 + "[0m");
+						//System.err.println("Error encontrado en la linea: " + lexema.getNumeroLinea() + " Token: " + lexema.getLexema() + " no valido");
 					}
 				}
 			}

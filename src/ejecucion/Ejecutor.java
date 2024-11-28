@@ -71,10 +71,13 @@ public class Ejecutor {
                         diferenteQue(ejecucion.pop(), ejecucion.pop());
                         break;
                     case -41:
+                        comparacionAnd(ejecucion.pop(), ejecucion.pop());
                         break;
                     case -42:
+                        comparacionOr(ejecucion.pop(), ejecucion.pop());
                         break;
                     case -43:
+                        negacion(ejecucion.pop());
                         break;
                 }
             }
@@ -527,6 +530,48 @@ public class Ejecutor {
             error("LogicalOperationNotSupportedExcepton at line: " + token1.getNumeroLinea(), simbolos.get(0).getAmbito());
         }
         error("UnsupportedOperationException at line: " + token1.getNumeroLinea(), simbolos.get(0).getAmbito());
+    }
+
+    //compara con un and dos tokens logicos
+    private void comparacionAnd(Token token1, Token token2) {
+        Token verdadero = new Token("1", 1, -1, -1);
+        Token falso = new Token("0", 0, -1, -1);
+        if(token1.getValorTablaTokens() == 1 || token1.getValorTablaTokens() == 0 && token2.getValorTablaTokens() == 1 || token2.getValorTablaTokens() == 0) {
+            if(token1.getValorTablaTokens() == 1 && token2.getValorTablaTokens() == 1) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+        }
+        return;
+    }
+
+    //comprara con un or dos tokens logicos
+    private void comparacionOr(Token token1, Token token2) {
+        Token verdadero = new Token("1", 1, -1, -1);
+        Token falso = new Token("0", 0, -1, -1);
+        if(token1.getValorTablaTokens() == 1 || token1.getValorTablaTokens() == 0 && token2.getValorTablaTokens() == 1 || token2.getValorTablaTokens() == 0) {
+            if(token1.getValorTablaTokens() == 1 || token2.getValorTablaTokens() == 1) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+        }
+        return;
+    }
+
+    //hace la negacion de un token logico
+    private void negacion(Token token) {
+        Token verdadero = new Token("1", 1, -1, -1);
+        Token falso = new Token("0", 0, -1, -1);
+        if(token.getValorTablaTokens() == 1 || token.getValorTablaTokens() == 0) {
+            if(token.getValorTablaTokens() == 1) {
+                ejecucion.push(falso);
+            } else {
+                ejecucion.push(verdadero);
+            }
+        }
+        return;
     }
 
     //lee lo que se escriba en la consola y lo guarda en una variable

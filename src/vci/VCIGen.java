@@ -34,10 +34,13 @@ public class VCIGen {
             //el metodo no empieza hasta que encuentre el primer begin para que no haga
             //checks innecearios
             if(inCode) {
+                //------------ Tokens constantes y variables ------------
                 //si es una constante o un identificador se agrega al VCI de inmediato
                 if(isConstante(valor) || identificador(valor)){
                     vci.add(token);
                 }
+
+                //------------ Tokens de operadores ------------
                 //si es un operador se agrega a la pila de operadores hasta que tenga alguna salida
                 if(opAritmeticos(valor) || opRelacionales(valor) || opLogicos(valor) || valor == -26){
                     //si la pila esta vacia se agrega el operador
@@ -58,31 +61,8 @@ public class VCIGen {
                         }
                     }
                 }
-                //si es un parentesis izquierdo se agrega a la pila
-                if(valor == -73){
-                    operadores.push(token);
-                }
-                //si es un parentesis derecho se sacan los operadores de la pila hasta encontrar el parentesis izquierdo
-                if(valor == -74){
-                    while(operadores.peek().getValorTablaTokens() != -73){
-                        vci.add(operadores.pop());
-                    }
-                    //se saca el parentesis izquierdo
-                    operadores.pop();
-                    //si la condicion es verdadera se agrega un token vacio y se guarda la direccion cuando termine la condicion
-                    if(conditionFlag){
-                        vci.add(tokenVacio);
-                        direcciones.push(vci.size()-1);
-                        vci.add(estatutos.peek());
-                        conditionFlag = false;
-                    }
-                }
-                //si es un punto y coma se sacan todos los operadores de la pila
-                if(valor == -75) {
-                    while (!operadores.isEmpty()) {
-                        vci.add(operadores.pop());
-                    }
-                }
+
+                // ------------ Tokens end finaliza los estatutos ------------
                 //si es un end se manejan los estatutos
                 if(valor == -3){
                     Token temp;
@@ -107,34 +87,79 @@ public class VCIGen {
                             actualizarVCI(direcciones.pop(), vci.size() + 1);
                             elseFlag = false;
                         }
+                        //si es un while se retiran 2 direcciones a la primera se le suma 2 y la segunda se guarda
+                        //normal y se agregan al vci
+                        if(temp.getValorTablaTokens() == -8){
+                            actualizarVCI(direcciones.pop(), vci.size() + 2);
+                            actualizarVCI(vci.size()-1, direcciones.pop());
+                            //el token enWhile es un salto incondicional esos llevan un numero de token 1
+                            Token enWhile = new Token("enWhile", 1, -1, -1);
+                            vci.add(enWhile);
+                        }
                     }
                 }
-                //si es un if se agrega a la pila de estatutos y la bandera de condicion se activa 
-                //que nos dice que cuando sea el proximo parentesis derecho se debe agregar un token vacio y el if al vci
-                if(valor == -6){
-                    conditionFlag = true;
-                    estatutos.push(token);
-                }
+
+                //------------ Tokens de estatutos ------------
                 // Si el token es read or write se activa una flag de entrada y salida que nos dice que hay que agregar la siguiete
                 // instruccion al VCI
                 if(valor == -4 || valor == -5){
                     estatutos.push(token);
                     IOFlag = true;
                 }
+
+                //si es un if se agrega a la pila de estatutos y la bandera de condicion se activa 
+                //que nos dice que cuando sea el proximo parentesis derecho se debe agregar un token vacio y el if al vci
+                if(valor == -6){
+                    conditionFlag = true;
+                    estatutos.push(token);
+                }
+                
                 //si llego un if con un else
-                if(elseFlag){
-                    //checar que si es un else por que todo lo demas ya se maneja
-                    //si es un else se agrega a la pila de estatutos
-                    //se actualiza la direccion en la cima de la pila de direcciones para que se salte el else
-                    //se guarda la direccion del vacio en la pila de direcciones
-                    //se agrega el else al VCI
-                    if(valor == -7){
-                        estatutos.push(token);
+                //checar que si es un else por que todo lo demas ya se maneja
+                //si es un else se agrega a la pila de estatutos
+                //se actualiza la direccion en la cima de la pila de direcciones para que se salte el else
+                //se guarda la direccion del vacio en la pila de direcciones
+                //se agrega el else al VCI
+                if(valor == -7 && elseFlag){
+                    estatutos.push(token);
+                    vci.add(tokenVacio);
+                    //las direcciones se guardan con un numero de token 0
+                    actualizarVCI(direcciones.pop(), vci.size() + 2);
+                    direcciones.push(vci.size()-1);
+                    vci.add(token);
+                }
+
+                if(valor == -8){
+                    estatutos.push(token);
+                    direcciones.push(vci.size()+1);
+                    conditionFlag = true;
+                }
+
+                //------------ Tokens de control de flujo ------------
+                //si es un parentesis izquierdo se agrega a la pila
+                if(valor == -73){
+                    operadores.push(token);
+                }
+                //si es un parentesis derecho se sacan los operadores de la pila hasta encontrar el parentesis izquierdo
+                if(valor == -74){
+                    while(operadores.peek().getValorTablaTokens() != -73){
+                        vci.add(operadores.pop());
+                    }
+                    //se saca el parentesis izquierdo
+                    operadores.pop();
+                    //si la condicion es verdadera se agrega un token vacio y se guarda la direccion cuando termine la condicion
+                    if(conditionFlag){
                         vci.add(tokenVacio);
-                        //las direcciones se guardan con un numero de token 0
-                        actualizarVCI(direcciones.pop(), vci.size() + 2);
                         direcciones.push(vci.size()-1);
-                        vci.add(token);
+                        vci.add(estatutos.peek());
+                        conditionFlag = false;
+                    }
+                }
+
+                //si es un punto y coma se sacan todos los operadores de la pila
+                if(valor == -75) {
+                    while (!operadores.isEmpty()) {
+                        vci.add(operadores.pop());
                     }
                 }
                 //si la bandera de entrada y salida esta activa se agrega la siguiente instruccion al VCI que van a ser write o read
