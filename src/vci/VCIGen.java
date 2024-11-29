@@ -70,30 +70,32 @@ public class VCIGen {
                     if(estatutos.isEmpty()){
                         
                     } else {
-                        //se guarda el estatuto en un temporal
-                        temp = estatutos.pop();
-                        //si el estatuto es un if
-                        if(temp.getValorTablaTokens() == -6)
-                            //si hay un else despues del if se activa una bandera
-                            if(tokens.get(indice+1).getValorTablaTokens() == -7){
-                                elseFlag = true;
-                            } else {
-                                //si no hay un else se agrega el if al VCI
+                        if(!repeatFlag){
+                            //se guarda el estatuto en un temporal
+                            temp = estatutos.pop();
+                            //si el estatuto es un if
+                            if(temp.getValorTablaTokens() == -6)
+                                //si hay un else despues del if se activa una bandera
+                                if(tokens.get(indice+1).getValorTablaTokens() == -7){
+                                    elseFlag = true;
+                                } else {
+                                    //si no hay un else se agrega el if al VCI
+                                    actualizarVCI(direcciones.pop(), vci.size() + 1);
+                                }
+                            //si es un else se actualiza la direccion en la cima de la pila de direcciones
+                            if(temp.getValorTablaTokens() == -7){
+                                //las direcciones se guardan con un numero de token 0
                                 actualizarVCI(direcciones.pop(), vci.size() + 1);
+                                elseFlag = false;
                             }
-                        //si es un else se actualiza la direccion en la cima de la pila de direcciones
-                        if(temp.getValorTablaTokens() == -7){
-                            //las direcciones se guardan con un numero de token 0
-                            actualizarVCI(direcciones.pop(), vci.size() + 1);
-                            elseFlag = false;
-                        }
-                        //si es un while se retiran 2 direcciones a la primera se le suma 2 y la segunda se guarda
-                        //normal y se agregan al vci
-                        if(temp.getValorTablaTokens() == -8){
-                            actualizarVCI(direcciones.pop(), vci.size() + 3);
-                            vci.add(new Token(Integer.toString(direcciones.pop()), 0, -1, -1));
-                            //el token enWhile es un salto incondicional esos llevan un numero de token 1
-                            vci.add(new Token("enWhile", 3, -1, -1));
+                            //si es un while se retiran 2 direcciones a la primera se le suma 2 y la segunda se guarda
+                            //normal y se agregan al vci
+                            if(temp.getValorTablaTokens() == -8){
+                                actualizarVCI(direcciones.pop(), vci.size() + 3);
+                                vci.add(new Token(Integer.toString(direcciones.pop()), 0, -1, -1));
+                                //el token enWhile es un salto incondicional esos llevan un numero de token 1
+                                vci.add(new Token("enWhile", 3, -1, -1));
+                            }
                         }
                     }
                 }
