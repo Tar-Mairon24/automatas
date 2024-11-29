@@ -1,15 +1,17 @@
 program CalculaFactorial?;
 var
-int: n&, resultado&;
+int: n&, resultado&, i&;
 
 begin
 
 read(n&);
+i& := 1;
+resultado& := 1;
 
-while (n& > 0) do
+while (i& <= n&) do
 begin
-    resultado& := resultado& * n&;
-    n& := n& - 1;
+    resultado& := resultado& * i&;
+    i& := i& + 1;
 end
 
 write("El factorial es: ");

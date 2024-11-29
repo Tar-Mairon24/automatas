@@ -7,25 +7,16 @@ begin
 f& := 1;
 i& := 1;
 
-write("Sacar el factorial de un numero\nEscribe un numero: ");
 read(n&);
-while (i& <= n&) do
+
+repeat 
     begin
-    //write("f * i = ");
-    if (i& < 3) then
-        begin
-        write("i es menor a 3\n");
-        end
-    else 
-        begin
-        write("i es mayor a 3\n");
-        end
     f& := f& * i&;
     i& := i& + 1;
-    //write(f&);
-    //write("\n");
-    end 
+    end
+until (i& <= n&);
 
 write(f&);
+    
 
 end

@@ -26,7 +26,7 @@ public class VCIGen {
     }
 
     public void generarVCI(ArrayList<Token> tokens) {
-        boolean IOFlag = false, inCode = false, conditionFlag = false, elseFlag = false;
+        boolean IOFlag = false, inCode = false, conditionFlag = false, elseFlag = false, repeatFlag = false;
         Token tokenVacio = new Token("", -0, -1, -1);
         int valor, indice = 0;
         for (Token token : tokens){
@@ -128,10 +128,18 @@ public class VCIGen {
                     vci.add(token);
                 }
 
+                //si es un while se agrega a la pila de estatutos y se guarda la direccion en la pila de direcciones
                 if(valor == -8){
                     estatutos.push(token);
                     direcciones.push(vci.size()+1);
                     conditionFlag = true;
+                }
+
+                //si es un repeat se agrega a la pila de estatutos y se guarda la direccion en la pila de direcciones
+                if(valor == -9){
+                    estatutos.push(token);
+                    direcciones.push(vci.size()+1);
+                    repeatFlag = true;
                 }
 
                 //------------ Tokens de control de flujo ------------
@@ -147,12 +155,18 @@ public class VCIGen {
                     //se saca el parentesis izquierdo
                     operadores.pop();
                     //si la condicion es verdadera se agrega un token vacio y se guarda la direccion cuando termine la condicion
-                    if(conditionFlag){
+                    if(conditionFlag && !repeatFlag){
                         vci.add(tokenVacio);
                         direcciones.push(vci.size()-1);
                         vci.add(estatutos.peek());
                         conditionFlag = false;
                     }
+                    if(repeatFlag){
+                        actualizarVCI(direcciones.pop()+1, vci.size()+1);
+                        vci.add(new Token("endRepeat", 4, -1, -1));
+                        estatutos.pop();
+                    }
+
                 }
 
                 //si es un punto y coma se sacan todos los operadores de la pila
