@@ -1,14 +1,31 @@
 program pruebagral1?;
 var
 int : i&, f&, n&;
-real : abs_suposicion%, suposicion%, x%;
 
 begin
 
-abs_suposicion% := 0.0;
-suposicion% := 2.0;
-x% := 3.0;
-abs_suposicion% := suposicion% * suposicion% - x%;
-write(abs_suposicion%);
+f& := 1;
+i& := 1;
+
+write("Sacar el factorial de un numero\nEscribe un numero: ");
+read(n&);
+while (i& <= n&) do
+    begin
+    //write("f * i = ");
+    if (i& < 3) then
+        begin
+        write("i es menor a 3\n");
+        end
+    else 
+        begin
+        write("i es mayor a 3\n");
+        end
+    f& := f& * i&;
+    i& := i& + 1;
+    //write(f&);
+    //write("\n");
+    end 
+
+write(f&);
 
 end

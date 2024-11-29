@@ -179,7 +179,7 @@ public class Ejecutor {
             return;
         }
         // Resta 2 reales y las guarda en una variable real
-        if(token1.getValorTablaTokens() == -62  || token1.getValorTablaTokens() == -62 && token2.getValorTablaTokens() == -62 || token2.getValorTablaTokens() == -52) {
+        if(token1.getValorTablaTokens() == -62  || token1.getValorTablaTokens() == -52 && token2.getValorTablaTokens() == -62 || token2.getValorTablaTokens() == -52) {
             double resultado = parseValorReal(token2) - parseValorReal(token1);
             ejecucion.push(new Token(String.valueOf(resultado), -62, -1, -1));
             return;
