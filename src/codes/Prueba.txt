@@ -4,16 +4,6 @@ int : i&, f&;
 
 begin
 
-i& := 2;
-f& := 2;
-
-if(! i& == 1) then
-    begin 
-    write("verdadero");
-    end
-else
-    begin
-    write("falso");
-    end
+write("hola \n mundo");
 
 end

@@ -82,13 +82,6 @@ public class Ejecutor {
                 }
             }
 
-            //si el token es un operador de asignacion se actualiza el valor del simbolo
-            if(vci.get(i).getValorTablaTokens() == -26){
-                String valorNuevo = ejecucion.pop().getLexema();
-                String simboloActualizar = ejecucion.pop().getLexema();
-                actualizarValorSimbolo(simboloActualizar, valorNuevo);
-            }
-
             //si el token es un if se comprueba el resultado de la condicion y se decide si se salta o no
             if(vci.get(i).getValorTablaTokens() == -6) {
                 Token direccion = ejecucion.pop();
@@ -102,6 +95,26 @@ public class Ejecutor {
             if(vci.get(i).getValorTablaTokens() == -7) {
                 Token direccion = ejecucion.pop();
                 i = saltarDireccion(direccion, vci);
+            }
+
+            if(vci.get(i).getValorTablaTokens() == -8) {
+                Token direccion = ejecucion.pop();
+                Token condicion = ejecucion.pop();
+                if(condicion.getValorTablaTokens() == 0) {
+                    i = saltarDireccion(direccion, vci);
+                }
+            }
+
+            if(vci.get(i).getValorTablaTokens() == 3) {
+                Token direccion = ejecucion.pop();
+                i = saltarDireccion(direccion, vci);
+            }
+
+            //si el token es un operador de asignacion se actualiza el valor del simbolo
+            if(vci.get(i).getValorTablaTokens() == -26){
+                String valorNuevo = ejecucion.pop().getLexema();
+                String simboloActualizar = ejecucion.pop().getLexema();
+                actualizarValorSimbolo(simboloActualizar, valorNuevo);
             }
             
             //si el token es una constante o un identificador se agrega a la pila de ejecucion
@@ -653,7 +666,14 @@ public class Ejecutor {
             }
         }
         if(token.getEsIdentificador() == -2){
-            System.out.print(getValorSimbolo(token.getLexema()));
+            lexema = getValorSimbolo(token.getLexema());
+            Pattern pattern = Pattern.compile("^.*\\n.*$");
+            Matcher matcher = pattern.matcher(lexema);
+            if(matcher.matches()) {
+                lexema = lexema.replaceAll("\\n", "\n");
+                System.out.print(lexema);
+                return;
+            }
             return;
         }
         if(isConstante(token.getValorTablaTokens()))

@@ -90,11 +90,10 @@ public class VCIGen {
                         //si es un while se retiran 2 direcciones a la primera se le suma 2 y la segunda se guarda
                         //normal y se agregan al vci
                         if(temp.getValorTablaTokens() == -8){
-                            actualizarVCI(direcciones.pop(), vci.size() + 2);
-                            actualizarVCI(vci.size()-1, direcciones.pop());
+                            actualizarVCI(direcciones.pop(), vci.size() + 3);
+                            vci.add(new Token(Integer.toString(direcciones.pop()), 0, -1, -1));
                             //el token enWhile es un salto incondicional esos llevan un numero de token 1
-                            Token enWhile = new Token("enWhile", 1, -1, -1);
-                            vci.add(enWhile);
+                            vci.add(new Token("enWhile", 3, -1, -1));
                         }
                     }
                 }
