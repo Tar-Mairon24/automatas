@@ -1,32 +1,31 @@
 program pruebagral1?;
 var
-int : z&;
-string : cadena#;
+int : i&, f&, n&;
 
 begin
 
-read(z&);
-if(z& > 20) then
-    begin
-    z& := 30 + 10;
-    if(z& >= 40) then
-        begin
-        write("hola");
-        end
-    write(z&);
-    end
-else 
-    begin
-    if(z& < 10) then 
-        begin
-        z& := z& +1;
-        read(cadena#);
-        end
-    z& := 30 - 10;
-    write(z&);
-    end
+f& := 1;
+i& := 1;
 
-cadena# := cadena# + " si salio";
-write(cadena#);
+write("Sacar el factorial de un numero\nEscribe un numero: ");
+read(n&);
+while (i& <= n&) do
+    begin
+    //write("f * i = ");
+    if (i& < 3) then
+        begin
+        write("i es menor a 3\n");
+        end
+    else 
+        begin
+        write("i es mayor a 3\n");
+        end
+    f& := f& * i&;
+    i& := i& + 1;
+    //write(f&);
+    //write("\n");
+    end 
+
+write(f&);
 
 end

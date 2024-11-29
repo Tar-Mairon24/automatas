@@ -71,19 +71,15 @@ public class Ejecutor {
                         diferenteQue(ejecucion.pop(), ejecucion.pop());
                         break;
                     case -41:
+                        comparacionAnd(ejecucion.pop(), ejecucion.pop());
                         break;
                     case -42:
+                        comparacionOr(ejecucion.pop(), ejecucion.pop());
                         break;
                     case -43:
+                        negacion(ejecucion.pop());
                         break;
                 }
-            }
-
-            //si el token es un operador de asignacion se actualiza el valor del simbolo
-            if(vci.get(i).getValorTablaTokens() == -26){
-                String valorNuevo = ejecucion.pop().getLexema();
-                String simboloActualizar = ejecucion.pop().getLexema();
-                actualizarValorSimbolo(simboloActualizar, valorNuevo);
             }
 
             //si el token es un if se comprueba el resultado de la condicion y se decide si se salta o no
@@ -99,6 +95,26 @@ public class Ejecutor {
             if(vci.get(i).getValorTablaTokens() == -7) {
                 Token direccion = ejecucion.pop();
                 i = saltarDireccion(direccion, vci);
+            }
+
+            if(vci.get(i).getValorTablaTokens() == -8) {
+                Token direccion = ejecucion.pop();
+                Token condicion = ejecucion.pop();
+                if(condicion.getValorTablaTokens() == 0) {
+                    i = saltarDireccion(direccion, vci);
+                }
+            }
+
+            if(vci.get(i).getValorTablaTokens() == 3) {
+                Token direccion = ejecucion.pop();
+                i = saltarDireccion(direccion, vci);
+            }
+
+            //si el token es un operador de asignacion se actualiza el valor del simbolo
+            if(vci.get(i).getValorTablaTokens() == -26){
+                String valorNuevo = ejecucion.pop().getLexema();
+                String simboloActualizar = ejecucion.pop().getLexema();
+                actualizarValorSimbolo(simboloActualizar, valorNuevo);
             }
             
             //si el token es una constante o un identificador se agrega a la pila de ejecucion
@@ -163,7 +179,7 @@ public class Ejecutor {
             return;
         }
         // Resta 2 reales y las guarda en una variable real
-        if(token1.getValorTablaTokens() == -62  || token1.getValorTablaTokens() == -62 && token2.getValorTablaTokens() == -62 || token2.getValorTablaTokens() == -52) {
+        if(token1.getValorTablaTokens() == -62  || token1.getValorTablaTokens() == -52 && token2.getValorTablaTokens() == -62 || token2.getValorTablaTokens() == -52) {
             double resultado = parseValorReal(token2) - parseValorReal(token1);
             ejecucion.push(new Token(String.valueOf(resultado), -62, -1, -1));
             return;
@@ -529,6 +545,48 @@ public class Ejecutor {
         error("UnsupportedOperationException at line: " + token1.getNumeroLinea(), simbolos.get(0).getAmbito());
     }
 
+    //compara con un and dos tokens logicos
+    private void comparacionAnd(Token token1, Token token2) {
+        Token verdadero = new Token("1", 1, -1, -1);
+        Token falso = new Token("0", 0, -1, -1);
+        if(token1.getValorTablaTokens() == 1 || token1.getValorTablaTokens() == 0 && token2.getValorTablaTokens() == 1 || token2.getValorTablaTokens() == 0) {
+            if(token1.getValorTablaTokens() == 1 && token2.getValorTablaTokens() == 1) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+        }
+        return;
+    }
+
+    //comprara con un or dos tokens logicos
+    private void comparacionOr(Token token1, Token token2) {
+        Token verdadero = new Token("1", 1, -1, -1);
+        Token falso = new Token("0", 0, -1, -1);
+        if(token1.getValorTablaTokens() == 1 || token1.getValorTablaTokens() == 0 && token2.getValorTablaTokens() == 1 || token2.getValorTablaTokens() == 0) {
+            if(token1.getValorTablaTokens() == 1 || token2.getValorTablaTokens() == 1) {
+                ejecucion.push(verdadero);
+            } else {
+                ejecucion.push(falso);
+            }
+        }
+        return;
+    }
+
+    //hace la negacion de un token logico
+    private void negacion(Token token) {
+        Token verdadero = new Token("1", 1, -1, -1);
+        Token falso = new Token("0", 0, -1, -1);
+        if(token.getValorTablaTokens() == 1 || token.getValorTablaTokens() == 0) {
+            if(token.getValorTablaTokens() == 1) {
+                ejecucion.push(falso);
+            } else {
+                ejecucion.push(verdadero);
+            }
+        }
+        return;
+    }
+
     //lee lo que se escriba en la consola y lo guarda en una variable
     private void read(Token token) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -588,24 +646,16 @@ public class Ejecutor {
         if(token.getValorTablaTokens() == -63) {
             lexema = token.getLexema();
             lexema = lexema.replaceAll("\"", "");
-            if(lexema.equals("\\n")) {
-                System.out.println();
-                return;
-            } else {
-                System.out.print(lexema);
-                return;
-            }
+            lexema = lexema.replaceAll("\\\\n", "\n"); // Replace escaped \n with actual newline
+            System.out.print(lexema);
+            return;
         }
         if(token.getValorTablaTokens() == -53) {
-            lexema = getValorSimbolo(token.getLexema());
+            lexema = token.getLexema();
             lexema = lexema.replaceAll("\"", "");
-            if(lexema.equals("\\n")) {
-                System.out.println();
-                return;
-            } else {
-                System.out.print(lexema);
-                return;
-            }
+            lexema = lexema.replaceAll("\\\\n", "\n"); // Replace escaped \n with actual newline
+            System.out.print(lexema);
+            return;
         }
         if(token.getEsIdentificador() == -2){
             System.out.print(getValorSimbolo(token.getLexema()));

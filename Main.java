@@ -56,11 +56,13 @@ public class Main {
 
         if(lexico.notErrorLexico()) {
             lexico.imprimirTablaTokens(writerTokens);
-            System.out.println("Tabla de tokens generada en build/TablaTokens.txt");
+            //System.out.println("Tabla de tokens generada en build/TablaTokens.txt");
         }
         else {
-            System.err.println("No se puede compilar el programa por errores lexicos");
-            System.out.println("Tabla de errores generada en build/TablaErrores.txt");
+            //System.err.println("No se puede compilar el programa por errores lexicos");
+            //System.out.println("Tabla de errores generada en build/TablaErrores.txt");
+            System.out.println((char) 27 + "[31m" + "Syntax error\nTabla de errores generada en buid/TablaErrores" + (char) 27 + "[0m");
+            System.exit(0);
         }
 
         // Cerrar el escritor
