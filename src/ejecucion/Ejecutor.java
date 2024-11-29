@@ -646,34 +646,19 @@ public class Ejecutor {
         if(token.getValorTablaTokens() == -63) {
             lexema = token.getLexema();
             lexema = lexema.replaceAll("\"", "");
-            if(lexema.equals("\\n")) {
-                System.out.println();
-                return;
-            } else {
-                System.out.print(lexema);
-                return;
-            }
+            lexema = lexema.replaceAll("\\\\n", "\n"); // Replace escaped \n with actual newline
+            System.out.print(lexema);
+            return;
         }
         if(token.getValorTablaTokens() == -53) {
-            lexema = getValorSimbolo(token.getLexema());
+            lexema = token.getLexema();
             lexema = lexema.replaceAll("\"", "");
-            if(lexema.equals("\\n")) {
-                System.out.println();
-                return;
-            } else {
-                System.out.print(lexema);
-                return;
-            }
+            lexema = lexema.replaceAll("\\\\n", "\n"); // Replace escaped \n with actual newline
+            System.out.print(lexema);
+            return;
         }
         if(token.getEsIdentificador() == -2){
-            lexema = getValorSimbolo(token.getLexema());
-            Pattern pattern = Pattern.compile("^.*\\n.*$");
-            Matcher matcher = pattern.matcher(lexema);
-            if(matcher.matches()) {
-                lexema = lexema.replaceAll("\\n", "\n");
-                System.out.print(lexema);
-                return;
-            }
+            System.out.print(getValorSimbolo(token.getLexema()));
             return;
         }
         if(isConstante(token.getValorTablaTokens()))

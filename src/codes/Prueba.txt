@@ -1,9 +1,14 @@
 program pruebagral1?;
 var
-int : i&, f&;
+int : i&, f&, n&;
+real : abs_suposicion%, suposicion%, x%;
 
 begin
 
-write("hola \n mundo");
+abs_suposicion% := 0.0;
+suposicion% := 2.0;
+x% := 3.0;
+abs_suposicion% := suposicion% * suposicion% - x%;
+write(abs_suposicion%);
 
 end
