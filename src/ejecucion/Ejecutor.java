@@ -88,6 +88,7 @@ public class Ejecutor {
                 Token condicion = ejecucion.pop();
                 if(condicion.getValorTablaTokens() == 0) {
                     i = saltarDireccion(direccion, vci);
+                    continue;
                 }
             }
             
@@ -102,12 +103,23 @@ public class Ejecutor {
                 Token condicion = ejecucion.pop();
                 if(condicion.getValorTablaTokens() == 0) {
                     i = saltarDireccion(direccion, vci);
+                    continue;
                 }
             }
 
             if(vci.get(i).getValorTablaTokens() == 3) {
                 Token direccion = ejecucion.pop();
                 i = saltarDireccion(direccion, vci);
+                continue;
+            }
+
+            if(vci.get(i).getValorTablaTokens() == 4) {
+                Token direccion = ejecucion.pop();
+                Token condicion = ejecucion.pop();
+                if(condicion.getValorTablaTokens() == 1) {
+                    i = saltarDireccion(direccion, vci);
+                    continue;
+                }
             }
 
             //si el token es un operador de asignacion se actualiza el valor del simbolo
@@ -496,14 +508,14 @@ public class Ejecutor {
             return;
         }
         if(token1.getValorTablaTokens() == -64  || token1.getValorTablaTokens() == -65 || token1.getValorTablaTokens() == -54 && token2.getValorTablaTokens() == -54) {
-            if(token1.getValorTablaTokens() == -64){
+            String valor1 = token1.getLexema();
+            String valor2 = getValorSimbolo(token2.getLexema());
+            if(valor2.equals(valor1)) {
                 ejecucion.push(verdadero);
-            } 
-            if(token1.getValorTablaTokens() == -65){
+            } else {
                 ejecucion.push(falso);
             }
             return;
-            
         }
         error("UnsupportedOperationException at line: " + token1.getNumeroLinea(), simbolos.get(0).getAmbito());
     }
@@ -684,7 +696,7 @@ public class Ejecutor {
     //salta a la direccion que se le indique
     private int saltarDireccion(Token token, ArrayList<Token> vci) {
         int index = 0;
-        index = Integer.parseInt(token.getLexema()) - 1;
+        index = Integer.parseInt(token.getLexema()) - 2;
         if(index >= vci.size()) {
             terminarPrograma();
         }
