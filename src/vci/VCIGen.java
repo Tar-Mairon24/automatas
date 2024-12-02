@@ -141,6 +141,10 @@ public class VCIGen {
                 if(valor == -9){
                     estatutos.push(token);
                     direcciones.push(vci.size()+1);
+                }
+
+                //si es un until se activa una vandera para la condicion del repeat
+                if(valor == -10){
                     repeatFlag = true;
                 }
 
@@ -164,9 +168,9 @@ public class VCIGen {
                         conditionFlag = false;
                     }
                     if(repeatFlag){
-                        actualizarVCI(direcciones.pop()+1, vci.size()+1);
+                        vci.add(new Token(Integer.toString(direcciones.pop()), 0, -1, -1));
                         vci.add(new Token("endRepeat", 4, -1, -1));
-                        estatutos.pop();
+                        repeatFlag = false;
                     }
 
                 }

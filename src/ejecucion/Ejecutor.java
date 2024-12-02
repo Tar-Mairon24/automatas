@@ -495,9 +495,15 @@ public class Ejecutor {
             }
             return;
         }
-        //si los compardores son logicos da un error
-        if(token1.getValorTablaTokens() == -64  || token1.getValorTablaTokens() == -54 && token2.getValorTablaTokens() == -64 || token2.getValorTablaTokens() == -54) {
-            error("LogicalOperationNotSupportedExcepton at line: " + token1.getNumeroLinea(), simbolos.get(0).getAmbito());
+        if(token1.getValorTablaTokens() == -64  || token1.getValorTablaTokens() == -65 || token1.getValorTablaTokens() == -54 && token2.getValorTablaTokens() == -54) {
+            if(token1.getValorTablaTokens() == -64){
+                ejecucion.push(verdadero);
+            } 
+            if(token1.getValorTablaTokens() == -65){
+                ejecucion.push(falso);
+            }
+            return;
+            
         }
         error("UnsupportedOperationException at line: " + token1.getNumeroLinea(), simbolos.get(0).getAmbito());
     }

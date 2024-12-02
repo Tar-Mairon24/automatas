@@ -1,22 +1,17 @@
 program pruebagral1?;
 var
-int : i&, f&, n&;
+int : i&;
 
 begin
 
-f& := 1;
 i& := 1;
 
-read(n&);
-
-repeat 
+repeat
     begin
-    f& := f& * i&;
     i& := i& + 1;
+    write(i&);
+    write("\n");
     end
-until (i& <= n&);
-
-write(f&);
-    
+until(i& <= 5);
 
 end
