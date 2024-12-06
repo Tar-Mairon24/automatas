@@ -1,31 +1,28 @@
 program pruebagral1?;
 var
-int : i&, f&, n&;
+int : i&;
+bool : condicion$;
 
 begin
 
-f& := 1;
 i& := 1;
+condicion$ := true;
 
-write("Sacar el factorial de un numero\nEscribe un numero: ");
-read(n&);
-while (i& <= n&) do
+repeat
     begin
-    //write("f * i = ");
-    if (i& < 3) then
+    write(i&);
+    write("\n");
+    if(i& == 300) then
         begin
-        write("i es menor a 3\n");
+        condicion$ := false;
+        write("Saliendo del repeat\n");
         end
-    else 
+    else
         begin
-        write("i es mayor a 3\n");
+        write("i = ");
         end
-    f& := f& * i&;
     i& := i& + 1;
-    //write(f&);
-    //write("\n");
-    end 
-
-write(f&);
+    end
+until(condicion$ == true);
 
 end
